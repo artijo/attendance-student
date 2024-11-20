@@ -1,33 +1,46 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Outlet, Link } from 'react-router-dom'
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const navLinks = [
+    { name: 'แดชบอร์ด', path: '/' },
+    { name: 'นักเรียน', path: '/students' },
+    { name: 'ครู', path: '/teachers' },
+    { name: 'ห้องเรียน', path: '/classroom' },
+    { name: 'วิชาเรียน', path: '/subjects' },
+    { name: 'กิจกรรม', path: '/activities' },
+    { name: 'การเข้าเรียน', path: '/attendances' },
+    { name: 'คำร้อง', path: '/leavereq' },
+    { name: 'ตั้งค่า', path: '/settings' },
+  ]
+
+  function openMenu() {
+    document.querySelector('header').classList.toggle('active').classList.toggle('close')
+  }
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <header className='bg-slate-300 sticky left-0 top-0 md:bottom-0 md:fixed md:w-56 h-14 md:h-full'>
+        <div className='p-2 md:p-3 text-white bg-slate-400 flex sm:block justify-between h-14'>
+          <div id='toggle' className='sm:hidden' onClick={openMenu}>menu</div>
+          <h1 className='text-center md:text-left'>ระบบจัดการโรงเรียน</h1>
+          <div className='sm:hidden'>ออกจากระบบ</div>
+        </div>
+          <nav className='md:p-3'>
+            <ul className='grid grid-cols-5 gap-3 md:flex md:flex-col md:gap-4'>
+              {navLinks.map((link, index) => (
+                <li key={index}>
+                  <Link to={link.path} className='md:block text-white hover:bg-slate-400 sub'>{link.name}</Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <button className='p-2 md:p-3 hidden md:block'>ออกจากระบบ</button>
+      </header>
+      <main className='md:ml-56'>
+        <Outlet />
+      </main>
     </>
   )
 }
