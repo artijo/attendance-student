@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  :root {
+    --color-primary: #004999;
+		--color-secondary:#0099ff;
+		--color-text: #111827; 		/* Gray 900 */
+		--color-text-alt: #6b7280; /* Gray 500 */
+		--color-bg: #ffffff; 			/* White */
+		--color-bg-alt: #f3f4f6; 	/* Gray 100 */
+		--color-line: #d1d5db; 		/* Gray 300 */
+		--color-line-alt: #e5e7eb; /* Gray 200 */
+  }
+  :root[class~="dark"] {
+		--color-primary: #006fe6;
+		--color-secondary:#0099ff;
+		--color-text: #f3f4f6;			/* Gray 100 */
+		--color-text-alt: #d1d5db;	/* Gray 300 */
+		--color-bg: #030712;				/* Gray 950 */
+		--color-bg-alt: #111827;		/* Gray 900 */
+		--color-line: #4b5563; 		/* Gray 600 */
+		--color-line-alt: #4b5563; /* Gray 600 */
+  }
+}
+
+
 header {
     overflow: hidden;
     transition: .3s ease-in-out;
