@@ -1,0 +1,39 @@
+/*
+	Font Name: lineseed
+	Weights: 100, 400, 700, 900, 950
+*/
+@font-face {
+    font-family: 'lineseed';
+    src: url('lineseedsansth_bd-webfont.woff2') format('woff2');
+    font-weight: 700;
+    font-style: normal;
+	font-display: fallback;
+}
+@font-face {
+    font-family: 'lineseed';
+    src: url('lineseedsansth_he-webfont.woff2') format('woff2');
+    font-weight: 900;
+    font-style: normal;
+	font-display: fallback;
+}
+@font-face {
+    font-family: 'lineseed';
+    src: url('lineseedsansth_rg-webfont.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+	font-display: fallback;
+}
+@font-face {
+    font-family: 'lineseed';
+    src: url('lineseedsansth_th-webfont.woff2') format('woff2');
+    font-weight: 100;
+    font-style: normal;
+	font-display: fallback;
+}
+@font-face {
+    font-family: 'lineseed';
+    src: url('lineseedsansth_xbd-webfont.woff2') format('woff2');
+    font-weight: 950;
+    font-style: normal;
+	font-display: fallback;
+}

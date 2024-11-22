@@ -1,3 +1,6 @@
+@import url('./assets/fonts/lineseed/font.css');
+@import url('./assets/fonts/tt/font.css');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -13,17 +16,35 @@
 		--color-line: #d1d5db; 		/* Gray 300 */
 		--color-line-alt: #e5e7eb; /* Gray 200 */
   }
-  :root[class~="dark"] {
-		--color-primary: #006fe6;
-		--color-secondary:#0099ff;
-		--color-text: #f3f4f6;			/* Gray 100 */
-		--color-text-alt: #d1d5db;	/* Gray 300 */
-		--color-bg: #030712;				/* Gray 950 */
-		--color-bg-alt: #111827;		/* Gray 900 */
-		--color-line: #4b5563; 		/* Gray 600 */
-		--color-line-alt: #4b5563; /* Gray 600 */
+  
+  body {
+	@apply font-body
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+	@apply font-heading;
+  }
+
+  h1 {
+	@apply text-4xl;
+  }
+  h2 {
+	@apply text-3xl;
+  }
+  h3 {
+	@apply text-2xl;
+  }
+  h4 {
+	@apply text-xl;
+  }
+  h5 {
+	@apply text-lg;
+  }
+  h6 {
+	@apply text-base;
   }
 }
+
 
 
 header {

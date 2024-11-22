@@ -16,12 +16,12 @@ function App() {
   ]
 
   function openMenu() {
-    document.querySelector('header').classList.toggle('active').classList.toggle('close')
+    document.querySelector('header').classList.toggle('active')
   }
 
   return (
     <>
-      <header className='bg- sticky left-0 top-0 md:bottom-0 md:fixed md:w-56 h-14 md:h-full'>
+      <header className='bg-slate-300 sticky left-0 top-0 md:bottom-0 md:fixed md:w-56 h-14 md:h-full'>
         <div className='p-2 md:p-3 text-white bg-slate-400 flex sm:block justify-between h-14'>
           <div id='toggle' className='sm:hidden' onClick={openMenu}>menu</div>
           <h1 className='text-center md:text-left'>ระบบจัดการโรงเรียน</h1>
