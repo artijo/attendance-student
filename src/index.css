@@ -45,7 +45,9 @@
   }
 }
 
-
+input::placeholder {
+  padding-left: 10px;
+}
 
 header {
     overflow: hidden;
@@ -53,5 +55,5 @@ header {
 }
 
 .active {
-    height: 175px;
+    height: 230px;
 }
