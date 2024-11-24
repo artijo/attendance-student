@@ -158,7 +158,7 @@ function App() {
           <button className="p-2 md:p-3">ออกจากระบบ</button>
         </div>
       </header>
-      <main className="md:ml-56 p-4">
+      <main className="md:ml-56 p-4 min-h-dvh">
         <Outlet />
       </main>
     </>
