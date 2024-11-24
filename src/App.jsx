@@ -1,6 +1,4 @@
-import { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
-import menuIcon from "./assets/icons/menu-svgrepo-com.svg";
 
 function App() {
   const navLinks = [
