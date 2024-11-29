@@ -1,9 +1,19 @@
-<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-<rect width="24" height="24" fill="currentColor"/>
-<defs>
-<pattern id="pattern0_75_582" patternContentUnits="objectBoundingBox" width="1" height="1">
-<use xlink:href="#image0_75_582" transform="scale(0.015625)"/>
-</pattern>
-<image id="image0_75_582" width="64" height="64" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAZVJREFUeJztmr1KA1EQRs9IsDHYWEgQEUklClZCSju1tPDvMdRn0FcRO0tLS7EULLVJIYJtGpvPIllZk7sqxt0J7pxquTO7e+7H3qkWgiAIgiCoK1ZUkGTALnAIdIB5YLoir3F5A16AW+ACuDIzpRqTAUhqD27cKMuwYu6AIzN7Gi6MBCBpDbgB5sr3qpRXYNPMHvKLnwKQ1ATugeUKxarkEVg3s162MDXUcMr/3TxAGzjOL3x8AYOh1wUWEjdeAtdAL1GbRGaAbeAgUesCSyNDUdKq0pxVIFwKks4L9rSSat4paG45uP8JkloFe9rKevIzoJl6iJk9l25aEl+4z2YXw0OwdkQA3gLeRADeAt5EAN4C3kQA3gLeRADeAt5EAN4C3kQA3gLeRADeAt5EAN4C3kQA3gLeRADeAt5EAN4C3kQA3gLe1D6AhrdACkkn9H/M+hYz2x/nXRMZAP3N71XxotofgQjAW8CbhqTsrCWHTq5eJYs/bfylX0fq/yNlyq5qSu2PQATgLeBN7QMIgiAIgqC+vAOCvqc1dNO0PAAAAABJRU5ErkJggg=="/>
-</defs>
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg version="1.1" id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 512 512"  xml:space="preserve"
+	 fill="#ffffff"
+	 fill-rule="evenodd"
+	 >
+<style type="text/css">
+	.st0{fill:currentColor;}
+</style>
+<g>
+	<path class="st0" d="M512,0H0v40h16v296h480V40h16V0z M464,304H48V40h416V304z"/>
+	<rect x="240" y="352" class="st0" width="32" height="160"/>
+	<polygon class="st0" points="113.273,512 145.273,512 212.179,352 180.179,352 	"/>
+	<polygon class="st0" points="299.82,352 366.726,512 398.726,512 331.82,352 	"/>
+</g>
 </svg>
