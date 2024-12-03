@@ -14,6 +14,7 @@ export default {
       'text-color-alt': 'var(--color-text-alt)',
       'background': 'var(--color-bg)',
       'background-alt': 'var(--color-bg-alt)',
+      'background-active': 'var(--color-active)',
       'line': 'var(--color-line)',
       'line-alt': 'var(--color-line-alt)',
     },
