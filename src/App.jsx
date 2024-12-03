@@ -86,7 +86,7 @@ function App() {
                     `h-full flex flex-col md:flex-row items-center content-center gap-2 border-t-[3px] px-4 py-3 md:border-s-[3px] md:border-t-0 ${
                       isActive
                         ? "border-blue-500 bg-background-active text-white"
-                        : "border-transparent text-white hover:border-gray-100 hover:bg-gray-50 hover:text-gray-700"
+                        : "border-transparent text-white hover:border-gray-100 hover:bg-gray-800 hover:text-white"
                     }`
                   }
                 >
