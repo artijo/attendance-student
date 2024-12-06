@@ -20,7 +20,7 @@ function App() {
   return (
     <>
       <header className="bg-background-alt text-white sticky left-0 top-0 md:bottom-0 md:fixed md:w-56 h-14 md:h-full">
-        <div className="p-2 md:p-3 text-white flex sm:block justify-between items-center h-14">
+        <div className="p-2 md:p-3 text-white flex sm:block justify-between items-center h-auto">
           <div
             id="toggle"
             className="sm:hidden flex items-center gap-1 border-2 my-2 p-2"
@@ -54,7 +54,7 @@ function App() {
             <span className="text-sm">MENU</span>
           </div>
           <h1 className="text-center text-xl md:text-left">
-            ระบบจัดการโรงเรียน
+            ระบบบันทึกการเข้าเรียนและกิจกรรม
           </h1>
           <div className="sm:hidden">
             <svg
