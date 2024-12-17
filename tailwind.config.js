@@ -17,7 +17,6 @@ export default {
       'background-active': 'var(--color-active)',
       'line': 'var(--color-line)',
       'line-alt': 'var(--color-line-alt)',
-      'light-black' : '#454545'
     },
   },
 },

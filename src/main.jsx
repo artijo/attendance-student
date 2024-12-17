@@ -7,19 +7,15 @@ import { BrowserRouter, Routes, Route } from "react-router";
 // import pages
 import Login from './pages/Login.jsx'
 import Dashboard from './pages/Dashboard.jsx'
-import AdminSearch from './pages/AdminSearch.jsx';
-import InformationPerson from './pages/InformationPerson.jsx';
 
 createRoot(document.getElementById('root')).render(
   // <StrictMode>
   <BrowserRouter>
       <Routes>
-        <Route path="login" element={<Login />} />
-          <Route path="/" element={<App />} >
+      <Route path="login" element={<Login />} />
+        <Route path="/" element={<App />} >
           <Route path='dashboard' element={<Dashboard />} />
         </Route>
-        {/* <Route path="/searchBarTest" element={<AdminSearch/>}></Route> */}
-        <Route path="/infomationtest" element={<InformationPerson person_uuid={"647dfd7a-cce1-4cd3-9aea-3c9db7b41717"} role={"Student"}/>}></Route>
       </Routes>
   </BrowserRouter>,
   // </StrictMode>,
