@@ -154,7 +154,7 @@ export const AttendenceHeroCard = ({timetable, studentId}) => {
                 ))
                 :
                 <div>
-                    
+                    ยังไม่อนุญาติการเข้าถึง หรือ วันนี้ไม่มีเรียน
                 </div>
                 
               }
