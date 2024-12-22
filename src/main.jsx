@@ -7,8 +7,9 @@ import { BrowserRouter, Routes, Route } from "react-router";
 // import pages
 import Login from './pages/Login.jsx'
 import Dashboard from './pages/Dashboard.jsx'
-import StudentAttendenceCheck from './pages/student/StudentAttendenceCheck.jsx';
+
 import { StudentAttendence } from './pages/student/StudentAttendence.jsx';
+import { StudentAttendenceHistory } from './pages/student/StudentAttendenceHistory.jsx'
 
 createRoot(document.getElementById('root')).render(
   // <StrictMode>
@@ -17,10 +18,9 @@ createRoot(document.getElementById('root')).render(
         <Route path="login" element={<Login />} />
           <Route path="/" element={<App />} >
           <Route path='dashboard' element={<Dashboard />} />
-          <Route path='attendenceSubjectHistory' element={<StudentAttendenceCheck/>}/>
+          <Route path='attendenceSubjectHistory' element={<StudentAttendenceHistory/>}/>
           <Route path='attendenceSubject' element={<StudentAttendence/>}/>
         </Route>
-        
       </Routes>
   </BrowserRouter>,
   // </StrictMode>,

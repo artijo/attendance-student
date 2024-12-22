@@ -2,7 +2,7 @@ import { TableRowHeader } from "./TableRowHeader";
 import { TableRowInfomation } from "./TableRowInfomation";
 import PropTypes from "prop-types";
 
-export const StudentAttendenceHistory =  ({object}) => {
+export const StudentAttendenceHistoryTable =  ({object}) => {
     return (
         <>
             {

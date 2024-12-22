@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-export const Option = ({term}) => {
+export const Option = ({array}) => {
 
     return (
         <>

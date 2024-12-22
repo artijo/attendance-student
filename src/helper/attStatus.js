@@ -8,6 +8,8 @@ export const formatStatus = (value) => {
             return "เข้ากิจกรรม"
         case "LEAVE":
             return "ลา"
+        case "LATE" :
+            return "เลท"
     }
 }
 

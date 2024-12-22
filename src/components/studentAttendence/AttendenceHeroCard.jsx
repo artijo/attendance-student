@@ -3,7 +3,6 @@ import PropTypes, { element } from "prop-types";
 import { DateTime } from 'luxon';
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 
 export const AttendenceHeroCard = ({timetable, studentId}) => {

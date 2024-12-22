@@ -8,10 +8,11 @@ export const StudentAttendence = () => {
     // const [attendanceInfomation, setAttendenceInfomation] = useState([]);
     const [timeTable, setTimetable] = useState([]);
     const stdId = '60070001' // สมมุติว่าได้ ข้อมูลนักเรียนแล้ว
-    const classroom = 'b6e081ab-66bd-4c2c-bac7-91e1294bb389' //สมมุติได้ห้องที่อยู่เทอมปัจจุบัน
+    const classroom = '95988c9c-cdd9-4fd6-928a-11d7a5721bd6' //สมมุติได้ห้องที่อยู่เทอมปัจจุบัน
     const hostName = 'http://127.0.0.1:3000/';
     // const dateObject = new Date();
     const dt = DateTime.now();
+    console.log(dt.weekday)
     
 
     const fetchTimeTable =  async () => {
@@ -24,15 +25,9 @@ export const StudentAttendence = () => {
       };
     };
 
-    
-   
-
     useEffect(() => {
       fetchTimeTable()
     },[])
-
-
-  
     return(
         <div>
             <AttendenceHeroCard timetable={timeTable} studentId={stdId} />
