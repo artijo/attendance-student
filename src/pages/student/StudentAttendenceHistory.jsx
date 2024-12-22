@@ -57,7 +57,7 @@ export const StudentAttendenceHistory = () => {
 
     const handleOnClick = async () => {
         try {
-            const response = await axios.get(`${hostName}s/attendenceHistory?classroom=${selectedClassroom}&subject=${selectedSubject}`);
+            const response = await axios.get(`${hostName}s/attendenceHistory?classroom=${selectedClassroom}&subject=${selectedSubject}&student=60070001`);
             // setSubjectList(response.data);
             setAttendance(response.data);
             console.log(response.data)

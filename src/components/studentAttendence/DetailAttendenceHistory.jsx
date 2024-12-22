@@ -4,7 +4,7 @@ import { DateTime } from "luxon";
 
 export const DetailAttendenceHistory = ({ attendence_info, setShow }) => {
     const formatDateTime = (date) => {
-        const dt = DateTime.fromISO(date).setZone("Asia/Bangkok");
+        const dt = DateTime.fromISO(date, { zone: 'UTC' });
         return `วัน ${dt.day} เดือน ${dt.month} ปี ${dt.year} เวลา ${dt.hour}:${dt.minute.toString().padStart(2, "0")}`;
     };
 
