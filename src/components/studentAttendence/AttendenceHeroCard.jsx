@@ -49,14 +49,10 @@ export const AttendenceHeroCard = ({timetable, studentId}) => {
     })
 
     const handleButtonClick = async (studingTimeId, timeStart, timeEnd, timeLate) => {
-        const utfString = `${dt.year}-${dt.month}-${dt.day}T${dt.hour}:${dt.minute}:${dt.second}`;
-        const timeInBangkok = DateTime.fromISO(utfString, { zone: 'UTC' });
-
-
         const attendenceInfo = {
             stdId: String(studentId),
             studingTimeId: studingTimeId,
-            attTimestamp : timeInBangkok,
+            attTimestamp : dt,
             latitude: latitude,
             longtitude : longtitude,
             operatedBy : "student",
@@ -66,7 +62,8 @@ export const AttendenceHeroCard = ({timetable, studentId}) => {
         };
         try{
             await axios.post('http://127.0.0.1:3000/s/attendenceSubject', attendenceInfo);
-            window.location.reload()
+            // window.location.reload()
+            // console.log(response)
         }catch(error){
             console.error(error);
         };

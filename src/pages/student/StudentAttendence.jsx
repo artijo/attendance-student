@@ -8,13 +8,11 @@ export const StudentAttendence = () => {
     // const [attendanceInfomation, setAttendenceInfomation] = useState([]);
     const [timeTable, setTimetable] = useState([]);
     const stdId = '60070001' // สมมุติว่าได้ ข้อมูลนักเรียนแล้ว
-    const classroom = '95988c9c-cdd9-4fd6-928a-11d7a5721bd6' //สมมุติได้ห้องที่อยู่เทอมปัจจุบัน
+    const classroom = 'bef7816e-c437-4e85-8d6c-a3b277878c4e' //สมมุติได้ห้องที่อยู่เทอมปัจจุบัน
     const hostName = 'http://127.0.0.1:3000/';
     // const dateObject = new Date();
     const dt = DateTime.now();
-    console.log(dt.weekday)
     
-
     const fetchTimeTable =  async () => {
       try{
         const response = await axios.get(`${hostName}s/studentTimetable/${classroom}/${dt.weekday}`);
