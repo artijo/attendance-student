@@ -1,9 +1,9 @@
 @import url('./assets/fonts/lineseed/font.css');
 @import url('./assets/fonts/tt/font.css');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+/* Path relative to this CSS file. */
+@config "../tailwind.config.js";
 
 @layer base {
   :root {
