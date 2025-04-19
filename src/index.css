@@ -7,13 +7,14 @@
 
 @layer base {
   :root {
-    --color-primary: #004999;
-		--color-secondary:#0099ff;
+    --color-primary: #0054A6;
+    --color-accent: #1262a5;
+		--color-secondary:#EE722A;
 		--color-text: #111827; 		
 		--color-text-alt: #6b7280; 
 		--color-bg: #F5F5F5; 			
 		--color-bg-alt: #333333; 	
-    --color-active: #282828;
+    --color-active: #0054A6;
 		--color-line: #d1d5db; 		
 		--color-line-alt: #e5e7eb; 
   }

@@ -9,6 +9,7 @@ export default {
     },
     colors: {
       'primary': 'var(--color-primary)',
+      'accent': 'var(--color-accent)',
       'secondary': 'var(--color-secondary)',
       'text-color': 'var(--color-text)',
       'text-color-alt': 'var(--color-text-alt)',
@@ -17,7 +18,6 @@ export default {
       'background-active': 'var(--color-active)',
       'line': 'var(--color-line)',
       'line-alt': 'var(--color-line-alt)',
-      'light-black' : '#454545'
     },
   },
 },

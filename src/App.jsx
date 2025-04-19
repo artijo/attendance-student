@@ -1,59 +1,184 @@
 import { Outlet, Link, NavLink } from "react-router";
+import { Navigate } from "react-router";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { HOSTNAME } from "./config";
+import Logo from "./assets/nps-logo.webp";
+import { userStore } from "./store";
+
+// config axios
+axios.defaults.withCredentials = true;
+axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("accessToken")}`;
+
+// let isRefreshing = false;
+
+// // Add axios interceptor for handling responses
+// axios.interceptors.response.use(
+//   (response) => response,
+//   async (error) => {
+//     if (error.response?.status === 401 && !error.config._retry) {
+//       error.config._retry = true;
+      
+//       if (!isRefreshing) {
+//         isRefreshing = true;
+//         try {
+//           const refreshToken = localStorage.getItem("refreshToken");
+//           const res = await axios.post(
+//             `${HOSTNAME}/auth/t/refresh`,
+//             {},
+//             {
+//               headers: {
+//                 Authorization: `Bearer ${refreshToken}`,
+//               },
+//             }
+//           );
+//           if (res.status === 200) {
+//             localStorage.setItem("accessToken", res.data.token);
+//           }
+//           isRefreshing = false;
+//           window.location.reload();
+//           return;
+//         } catch (refreshError) {
+//           isRefreshing = false;
+//           window.location.href = "/login";
+//           return Promise.reject(refreshError);
+//         }
+//       }
+//     }
+//     return Promise.reject(error);
+//   }
+// );
 
 function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const User = userStore((state) => state.user);
   const navLinks = [
     { name: "แดชบอร์ด", path: "/dashboard", icon:"home.svg" },
-    { name: "นักเรียน", path: "/students", icon:"student.svg" },
-    { name: "ครู", path: "/teachers", icon:"teacher.svg" },
     { name: "ห้องเรียน", path: "/classroom", icon:"classroom.svg" },
-    { name: "วิชาเรียน", path: "/subjects", icon:"subject.svg" },
+    { name: "วิชาที่สอน", path: "/subjects", icon:"subject.svg" },
     { name: "กิจกรรม", path: "/activities", icon:"activity.svg" },
-    { name: "การเข้าเรียน", path: "/attendances", icon:"attendance.svg" },
     { name: "คำร้อง", path: "/leavereq", icon: "leave.svg" },
-    { name: "ตั้งค่า", path: "/settings", icon: "settings.svg" },
   ];
 
   function openMenu() {
+    setIsMenuOpen(!isMenuOpen);
     document.querySelector("header").classList.toggle("active");
   }
+  function closeMenu() {
+    setIsMenuOpen(false);
+    document.querySelector("header").classList.remove("active");
+  }
+
+  const Logout = async () => {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    window.location.href = "/login";
+  }
+
+//   async function refreshTokens() {
+//     const refreshToken = localStorage.getItem("refreshToken");
+//     try {
+//       // refresh token headers['Authorization'] = 'Bearer ' + token;
+//       const response = await axios.post(
+//         `${HOSTNAME}/auth/t/refresh`,
+//         {},  // ข้อมูลที่ต้องการส่งไปใน request body (ถ้ามี)
+//         {
+//           headers: {
+//             Authorization: `Bearer ${refreshToken}`,
+//           }
+//         }
+//       );
+//       if (response.status === 200) {
+//         localStorage.setItem("accessToken", response.data.token);
+//       } 
+//       if (response.status !== 200) {
+//         throw new Error("Cannot refresh token");
+//       }
+
+//   } catch (error) {
+//     if (error.response && error.response.status === 401) {
+//       window.location.reload();
+//     }
+//     window.location.href = "/login";
+//   }
+//   }
+
+
+//   const checkAuth = async () => {
+//     try {
+//       const res = await axios.get(HOSTNAME+"/auth/t/check", { 
+//         headers: {
+//           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+//         },
+//       });
+//       if (res.status !== 200) {
+//         refreshTokens();
+//       }
+//     } catch (error) {
+//       refreshTokens();
+//     }
+// };
+
+
+
+//     if (!localStorage.getItem("refreshToken")) {
+//       return <Navigate to="/login" />;
+//     }
+//     useEffect(() => {
+//      checkAuth();
+
+//     }, []);
 
   return (
     <>
-      <header className="bg-background-alt text-white sticky left-0 top-0 md:bottom-0 md:fixed md:w-56 h-14 md:h-full">
+      <header className="font-heading bg-primary text-white sticky left-0 top-0 md:bottom-0 md:fixed md:w-56 h-[4.5rem] md:h-screen flex flex-col">
         <div className="p-2 md:p-3 text-white flex sm:block justify-between items-center h-auto">
           <div
             id="toggle"
-            className="sm:hidden flex items-center gap-1 border-2 my-2 p-2"
+            className="sm:hidden flex items-center rounded-md border-2 my-2 p-2 hover:bg-accent transition-colors duration-300"
             onClick={openMenu}
           >
-            <svg
-              width={25}
-              viewBox="-2.4 -2.4 28.80 28.80"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-              <g
-                id="SVGRepo_tracerCarrier"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                stroke="#CCCCCC"
-                strokeWidth="0.624"
-              ></g>
-              <g id="SVGRepo_iconCarrier">
-                {" "}
+            {!isMenuOpen ? (
+              <svg
+                width={25}
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   d="M4 6H20M4 12H20M4 18H20"
                   stroke="#ffffff"
-                  strokeWidth="1.2"
+                  strokeWidth="1.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                ></path>{" "}
-              </g>
-            </svg>
-            <span className="text-sm">MENU</span>
+                />
+              </svg>
+            ) : (
+              <svg
+                width={25}
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6 6L18 18M6 18L18 6"
+                  stroke="#ffffff"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            )}
           </div>
-          <h1 className="text-center text-xl md:text-left">
+          {/* Logo */}
+          <div className="hidden md:flex md:justify-center md:items-center md:mb-4">
+            <img
+              src={Logo}
+              alt="Logo"
+              className="w-10 h-10 md:w-16 md:h-16 mx-auto"
+            />
+          </div>
+          <h1 className="md:hidden text-center text-xl md:text-left font-bold">
             ระบบบันทึกการเข้าเรียนและกิจกรรม
           </h1>
           <div className="sm:hidden">
@@ -76,27 +201,39 @@ function App() {
             </svg>
           </div>
         </div>
-        <nav>
+        <div className="hidden md:block text-center mt-2 mb-6">
+          <h2 className="text-xl font-bold">{User? `${User.fName} ${User.lName}` : "ไม่มีชื่อ"}</h2>
+          <div className="mt-2 h-1 w-16 bg-secondary mx-auto rounded-full"></div>
+        </div>
+        <nav className="overflow-y-auto flex-1 md:max-h-[calc(100vh-260px)]
+          [&::-webkit-scrollbar]:w-2
+          [&::-webkit-scrollbar-track]:rounded-full
+          [&::-webkit-scrollbar-track]:bg-primary/60
+          [&::-webkit-scrollbar-thumb]:rounded-full
+          [&::-webkit-scrollbar-thumb]:bg-white/30
+          dark:[&::-webkit-scrollbar-track]:bg-primary/60
+          dark:[&::-webkit-scrollbar-thumb]:bg-white/30">
           <ul className="grid grid-cols-5 md:block">
             {navLinks.map((link, index) => (
-              <li key={index}>
+              <li key={index} className="md:mb-2 md:px-3">
                 <NavLink
                   to={link.path}
                   className={({ isActive }) =>
-                    `h-full flex flex-col md:flex-row items-center content-center gap-2 border-t-[3px] px-4 py-3 md:border-s-[3px] md:border-t-0 ${
+                    `h-full flex flex-col md:flex-row items-center content-center gap-2 border-t-[3px] px-4 py-3 md:rounded-lg md:border-0 ${
                       isActive
-                        ? "border-blue-500 bg-background-active text-white"
-                        : "border-transparent text-white hover:border-gray-100 hover:bg-gray-800 hover:text-white"
+                        ? "border-secondary md:bg-secondary text-white"
+                        : "border-transparent text-white hover:bg-accent/50 hover:text-white transition-colors duration-300"
                     }`
                   }
+                  onClick={closeMenu}
                 >
                   <img
                     src={`/ico/${link.icon}`}
                     alt={link.name}
-                    className="w-6 h-6 md:w-8 md:h-8 nav-icon"
+                    className="w-6 h-6 md:w-6 md:h-6 nav-icon"
                   />
 
-                  <span className="text-sm text-center font-medium">
+                  <span className="text-sm text-center md:text-left font-medium">
                     {link.name}
                   </span>
                 </NavLink>
@@ -105,13 +242,28 @@ function App() {
            
           </ul>
         </nav>
-        <div className="hidden mt-10 ml-4 md:flex items-center">
-        <svg viewBox="0 0 24 24" width={25} fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path fillRule="evenodd" clipRule="evenodd" d="M21.593 10.943c.584.585.584 1.53 0 2.116L18.71 15.95c-.39.39-1.03.39-1.42 0a.996.996 0 0 1 0-1.41 9.552 9.552 0 0 1 1.689-1.345l.387-.242-.207-.206a10 10 0 0 1-2.24.254H8.998a1 1 0 1 1 0-2h7.921a10 10 0 0 1 2.24.254l.207-.206-.386-.241a9.562 9.562 0 0 1-1.69-1.348.996.996 0 0 1 0-1.41c.39-.39 1.03-.39 1.42 0l2.883 2.893zM14 16a1 1 0 0 0-1 1v1.5a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1.505a1 1 0 1 0 2 0V5.5A2.5 2.5 0 0 0 12.5 3h-7A2.5 2.5 0 0 0 3 5.5v13A2.5 2.5 0 0 0 5.5 21h7a2.5 2.5 0 0 0 2.5-2.5V17a1 1 0 0 0-1-1z" fill="#ffffff"></path></g></svg>
-          <button className="p-2 md:p-3">ออกจากระบบ</button>
+        <div className="hidden mt-auto mx-3 mb-6 md:block">
+          <button 
+            onClick={Logout}
+            className="w-full py-2.5 px-4 text-sm font-medium text-white hover:bg-accent rounded-lg focus:outline-none focus:ring-2 focus:ring-white/30 transition-all duration-300 flex items-center justify-center"
+          >
+            <svg viewBox="0 0 24 24" width={20} className="mr-2" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fillRule="evenodd" clipRule="evenodd" d="M21.593 10.943c.584.585.584 1.53 0 2.116L18.71 15.95c-.39.39-1.03.39-1.42 0a.996.996 0 0 1 0-1.41 9.552 9.552 0 0 1 1.689-1.345l.387-.242-.207-.206a10 10 0 0 1-2.24.254H8.998a1 1 0 1 1 0-2h7.921a10 10 0 0 1 2.24.254l.207-.206-.386-.241a9.562 9.562 0 0 1-1.69-1.348.996.996 0 0 1 0-1.41c.39-.39 1.03-.39 1.42 0l2.883 2.893zM14 16a1 1 0 0 0-1 1v1.5a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1.505a1 1 0 1 0 2 0V5.5A2.5 2.5 0 0 0 12.5 3h-7A2.5 2.5 0 0 0 3 5.5v13A2.5 2.5 0 0 0 5.5 21h7a2.5 2.5 0 0 0 2.5-2.5V17a1 1 0 0 0-1-1z" fill="#ffffff"></path>
+            </svg>
+            ออกจากระบบ
+          </button>
+        </div>
+        <div className="hidden md:block text-center text-xs text-white/70 mb-3 font-body">
+          © {new Date().getFullYear()} โรงเรียนน้ำพองศึกษา
         </div>
       </header>
-      <main className="md:ml-56 p-4 min-h-dvh">
-        <Outlet />
+      <main className="md:ml-56 min-h-dvh bg-background font-body">
+        <div className="hidden md:block sticky top-0 z-10 mt-0 ml-0 mr-0 mb-6 bg-white p-4 shadow-sm border-b border-line">
+          <h1 className="text-2xl font-bold text-primary font-heading">ระบบบันทึกและติดตามการเข้าเรียนและกิจกรรมของนักเรียน สำหรับคุณครู</h1>
+        </div>
+        <div className="p-4 md:p-6">
+          <Outlet />
+        </div>
       </main>
     </>
   );
