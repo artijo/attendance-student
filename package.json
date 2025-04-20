@@ -12,6 +12,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.4",
     "axios": "^1.8.4",
+    "cookiejs": "^2.1.3",
     "luxon": "^3.6.1",
     "prop-types": "^15.8.1",
     "react": "^19.1.0",

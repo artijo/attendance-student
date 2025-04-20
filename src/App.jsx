@@ -5,49 +5,50 @@ import axios from "axios";
 import { HOSTNAME } from "./config";
 import Logo from "./assets/nps-logo.webp";
 import { userStore } from "./store";
+import cookie from "cookiejs";
 
 // config axios
 axios.defaults.withCredentials = true;
-axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("accessToken")}`;
+axios.defaults.headers.common["Authorization"] = `Bearer ${cookie.get("accessToken")}`;
 
-// let isRefreshing = false;
+let isRefreshing = false;
 
-// // Add axios interceptor for handling responses
-// axios.interceptors.response.use(
-//   (response) => response,
-//   async (error) => {
-//     if (error.response?.status === 401 && !error.config._retry) {
-//       error.config._retry = true;
+// Add axios interceptor for handling responses
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401 && !error.config._retry) {
+      error.config._retry = true;
       
-//       if (!isRefreshing) {
-//         isRefreshing = true;
-//         try {
-//           const refreshToken = localStorage.getItem("refreshToken");
-//           const res = await axios.post(
-//             `${HOSTNAME}/auth/t/refresh`,
-//             {},
-//             {
-//               headers: {
-//                 Authorization: `Bearer ${refreshToken}`,
-//               },
-//             }
-//           );
-//           if (res.status === 200) {
-//             localStorage.setItem("accessToken", res.data.token);
-//           }
-//           isRefreshing = false;
-//           window.location.reload();
-//           return;
-//         } catch (refreshError) {
-//           isRefreshing = false;
-//           window.location.href = "/login";
-//           return Promise.reject(refreshError);
-//         }
-//       }
-//     }
-//     return Promise.reject(error);
-//   }
-// );
+      if (!isRefreshing) {
+        isRefreshing = true;
+        try {
+          const refreshToken = cookie.get("refreshToken");
+          const res = await axios.post(
+            `${HOSTNAME}/auth/s/refresh`,
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${refreshToken}`,
+              },
+            }
+          );
+          if (res.status === 200) {
+            cookie.set("accessToken", res.data.token, { secure: true, expires: 1 });
+          }
+          isRefreshing = false;
+          window.location.reload();
+          return;
+        } catch (refreshError) {
+          isRefreshing = false;
+          window.location.href = "/login";
+          return Promise.reject(refreshError);
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -70,64 +71,64 @@ function App() {
   }
 
   const Logout = async () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    cookie.remove("accessToken");
+    cookie.remove("refreshToken");
     window.location.href = "/login";
   }
 
-//   async function refreshTokens() {
-//     const refreshToken = localStorage.getItem("refreshToken");
-//     try {
-//       // refresh token headers['Authorization'] = 'Bearer ' + token;
-//       const response = await axios.post(
-//         `${HOSTNAME}/auth/t/refresh`,
-//         {},  // ข้อมูลที่ต้องการส่งไปใน request body (ถ้ามี)
-//         {
-//           headers: {
-//             Authorization: `Bearer ${refreshToken}`,
-//           }
-//         }
-//       );
-//       if (response.status === 200) {
-//         localStorage.setItem("accessToken", response.data.token);
-//       } 
-//       if (response.status !== 200) {
-//         throw new Error("Cannot refresh token");
-//       }
+  async function refreshTokens() {
+    const refreshToken = cookie.get("refreshToken");
+    try {
+      // refresh token headers['Authorization'] = 'Bearer ' + token;
+      const response = await axios.post(
+        `${HOSTNAME}/auth/s/refresh`,
+        {},  // ข้อมูลที่ต้องการส่งไปใน request body (ถ้ามี)
+        {
+          headers: {
+            Authorization: `Bearer ${refreshToken}`,
+          }
+        }
+      );
+      if (response.status === 200) {
+        cookie.set("accessToken", response.data.token, { secure: true, expires: 1 });
+      } 
+      if (response.status !== 200) {
+        throw new Error("Cannot refresh token");
+      }
 
-//   } catch (error) {
-//     if (error.response && error.response.status === 401) {
-//       window.location.reload();
-//     }
-//     window.location.href = "/login";
-//   }
-//   }
-
-
-//   const checkAuth = async () => {
-//     try {
-//       const res = await axios.get(HOSTNAME+"/auth/t/check", { 
-//         headers: {
-//           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-//         },
-//       });
-//       if (res.status !== 200) {
-//         refreshTokens();
-//       }
-//     } catch (error) {
-//       refreshTokens();
-//     }
-// };
+  } catch (error) {
+    if (error.response && error.response.status === 401) {
+      window.location.reload();
+    }
+    window.location.href = "/login";
+  }
+  }
 
 
+  const checkAuth = async () => {
+    try {
+      const res = await axios.get(HOSTNAME+"/auth/s/check", { 
+        headers: {
+          Authorization: `Bearer ${cookie.get("accessToken")}`,
+        },
+      });
+      if (res.status !== 200) {
+        refreshTokens();
+      }
+    } catch (error) {
+      refreshTokens();
+    }
+};
 
-//     if (!localStorage.getItem("refreshToken")) {
-//       return <Navigate to="/login" />;
-//     }
-//     useEffect(() => {
-//      checkAuth();
 
-//     }, []);
+
+    if (!cookie.get("refreshToken") || !cookie.get("accessToken")) {
+      return <Navigate to="/login" />;
+    }
+    useEffect(() => {
+     checkAuth();
+
+    }, []);
 
   return (
     <>
