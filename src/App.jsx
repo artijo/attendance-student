@@ -55,9 +55,9 @@ function App() {
   const User = userStore((state) => state.user);
   const navLinks = [
     { name: "แดชบอร์ด", path: "/dashboard", icon:"home.svg" },
-    { name: "ห้องเรียน", path: "/classroom", icon:"classroom.svg" },
-    { name: "วิชาที่สอน", path: "/subjects", icon:"subject.svg" },
-    { name: "กิจกรรม", path: "/activities", icon:"activity.svg" },
+    // { name: "ห้องเรียน", path: "/classroom", icon:"classroom.svg" },
+    // { name: "วิชาที่สอน", path: "/subjects", icon:"subject.svg" },
+    // { name: "กิจกรรม", path: "/activities", icon:"activity.svg" },
     { name: "คำร้อง", path: "/leavereq", icon: "leave.svg" },
   ];
 
@@ -260,7 +260,7 @@ function App() {
       </header>
       <main className="md:ml-56 min-h-dvh bg-background font-body">
         <div className="hidden md:block sticky top-0 z-10 mt-0 ml-0 mr-0 mb-6 bg-white p-4 shadow-sm border-b border-line">
-          <h1 className="text-2xl font-bold text-primary font-heading">ระบบบันทึกและติดตามการเข้าเรียนและกิจกรรมของนักเรียน สำหรับคุณครู</h1>
+          <h1 className="text-2xl font-bold text-primary font-heading">ระบบบันทึกและติดตามการเข้าเรียนและกิจกรรมของนักเรียน สำหรับนักเรียน</h1>
         </div>
         <div className="p-4 md:p-6">
           <Outlet />
