@@ -10,7 +10,7 @@ function LeaveRequestListItem({ leaveRequest, onRefresh }) {
 
   const handleStatusChange = async (newStatus) => {
     try {
-      await axios.put(`${HOSTNAME}/leave/${leaveRequest.leaveId}`, {
+      await axios.put(`${HOSTNAME}/s/leave/${leaveRequest.leaveId}`, {
         leaveStatus: newStatus,
       });
       onRefresh();
@@ -114,19 +114,16 @@ function LeaveRequest() {
   const [filter, setFilter] = useState("all");
   
   const navigate = useNavigate();
-  const user = userStore((state) => state.user);
-  const studentId = user?.stdId || "";
 
   useEffect(() => {
     fetchLeaveRequests();
-  }, [studentId]);
+  }, []);
 
   const fetchLeaveRequests = async () => {
-    if (!studentId) return;
     
     setLoading(true);
     try {
-      const response = await axios.get(`${HOSTNAME}/leave/student/${studentId}`);
+      const response = await axios.get(`${HOSTNAME}/s/leave`);
       setLeaveRequests(response.data || []);
       setError(null);
     } catch (err) {
