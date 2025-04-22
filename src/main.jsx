@@ -1,19 +1,26 @@
-import { StrictMode } from 'react'
+import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { BrowserRouter, Routes, Route } from "react-router";
 
-// import pages
-import Login from './pages/Login.jsx'
-import Dashboard from './pages/Dashboard.jsx'
+// Lazy load components
+const Login = lazy(() => import('./pages/Login.jsx'))
+const Dashboard = lazy(() => import('./pages/Dashboard.jsx'))
+const StudentAttendence = lazy(() => import('./pages/student/StudentAttendence.jsx').then(module => ({ default: module.StudentAttendence })))
+const StudentAttendenceHistory = lazy(() => import('./pages/student/StudentAttendenceHistory.jsx').then(module => ({ default: module.StudentAttendenceHistory })))
 
-import { StudentAttendence } from './pages/student/StudentAttendence.jsx';
-import { StudentAttendenceHistory } from './pages/student/StudentAttendenceHistory.jsx'
+const LoadingSpinner = () => (
+  <div className="loading-spinner">
+    <div className="spinner"></div>
+    <p>Loading...</p>
+  </div>
+);
 
 createRoot(document.getElementById('root')).render(
   // <StrictMode>
   <BrowserRouter>
+    <Suspense fallback={<LoadingSpinner />}>
       <Routes>
         <Route path="login" element={<Login />} />
           <Route path="/" element={<App />} >
@@ -22,6 +29,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='attendenceSubject' element={<StudentAttendence/>}/>
         </Route>
       </Routes>
+    </Suspense>
   </BrowserRouter>,
   // </StrictMode>,
 )
