@@ -163,11 +163,12 @@ function CreateLeaveRequest() {
       <div className="flex items-center mb-6">
         <button
           onClick={() => navigate("/leavereq")}
-          className="mr-4 p-2 hover:bg-gray-100 rounded-full"
+          className="mr-4 p-2.5 hover:bg-gray-100 rounded-full transition-colors group"
+          aria-label="กลับไปหน้ารายการคำร้องขอลา"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 text-primary"
+            className="h-5 w-5 text-primary group-hover:text-accent transition-colors"
             viewBox="0 0 20 20"
             fill="currentColor"
           >
@@ -183,160 +184,242 @@ function CreateLeaveRequest() {
 
       <div className="bg-white rounded-lg border border-line shadow-sm p-6 max-w-2xl mx-auto">
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 mb-4">
+          <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 mb-6 flex items-start">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mt-0.5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 01-1-1v-4a1 1 0 112 0v4a1 1 0 01-1 1z" clipRule="evenodd" />
+            </svg>
             <p className="text-sm">{error}</p>
           </div>
         )}
         
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-text-color mb-1">
-              ประเภทการลา <span className="text-red-500">*</span>
-            </label>
-            <select
-              name="leaveTypeId"
-              value={formData.leaveTypeId}
-              onChange={handleChange}
-              className="w-full rounded-lg border-line p-2 focus:ring-2 focus:ring-primary focus:border-primary"
-              disabled={isSubmitting}
-              required
-            >
-              <option value="">เลือกประเภทการลา</option>
-              {leaveType && leaveType.map((type) => (
-                <option key={type.leaveTypeId} value={type.leaveTypeId}>
-                  {type.leaveTypeName}
-                </option>
-              ))}
-            </select>
-          </div>
+          <div className="space-y-6">
+            <div className="bg-gray-50 p-4 rounded-lg border border-line mb-6">
+              <h2 className="font-medium text-primary mb-3 text-lg flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clipRule="evenodd" />
+                </svg>
+                ข้อมูลการลา
+              </h2>
           
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-text-color mb-1">
-              วันที่ลา <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="date"
-              name="leaveDate"
-              value={formData.leaveDate}
-              onChange={handleChange}
-              className="w-full rounded-lg border-line p-2 focus:ring-2 focus:ring-primary focus:border-primary"
-              disabled={isSubmitting}
-              required
-            />
-          </div>
-          
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-text-color mb-1">
-              คาบเรียนที่ลา <span className="text-red-500">*</span>
-            </label>
-            {availableStudyTimes.length === 0 ? (
-              <p className="text-sm text-gray-500 p-2 border border-gray-200 rounded-lg bg-gray-50">
-                ไม่พบข้อมูลคาบเรียนในวันที่เลือก
-              </p>
-            ) : (
-              <div className="border border-line rounded-lg overflow-hidden">
-                {availableStudyTimes.map(studyTime => {
-                  const isSelected = formData.selectedStudyTimes.includes(studyTime.studyTimeId);
-                  const subject = studyTime.timetable?.subject || {};
-                  return (
-                    <div 
-                      key={studyTime.studyTimeId}
-                      className={`p-3 flex items-center border-b last:border-b-0 cursor-pointer hover:bg-gray-50 ${
-                        isSelected ? 'bg-primary' : ''
-                      }`}
-                      onClick={() => handleStudyTimeChange(studyTime.studyTimeId)}
-                    >
-                      <input 
-                        type="checkbox" 
-                        checked={isSelected}
-                        onChange={() => {}}
-                        className="h-5 w-5 text-primary border-gray-300 rounded focus:ring-primary mr-3"
-                      />
-                      <div className="flex-1">
-                        <div className="flex justify-between">
-                          <span className={`font-medium ${isSelected ? 'text-white' : ''}`}>
-                            {subject.subNameThai || "รายวิชา"}
-                          </span>
-                          <span className={`text-sm ${isSelected ? 'text-white' : 'text-gray-600'}`}>
-                            {formatTime(studyTime.timetable?.timeStart)} - {formatTime(studyTime.timetable?.timeEnd)}
-                          </span>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-text-color mb-2 flex items-center">
+                    ประเภทการลา
+                    <span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <select
+                    name="leaveTypeId"
+                    value={formData.leaveTypeId}
+                    onChange={handleChange}
+                    className={`w-full rounded-lg border ${error && !formData.leaveTypeId ? 'border-red-400 ring-1 ring-red-400' : 'border-line'} p-2.5 transition-colors focus:ring-2 focus:ring-primary focus:border-primary`}
+                    disabled={isSubmitting}
+                    required
+                  >
+                    <option value="">เลือกประเภทการลา</option>
+                    {leaveType && leaveType.map((type) => (
+                      <option key={type.leaveTypeId} value={type.leaveTypeId}>
+                        {type.leaveTypeName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-text-color mb-2 flex items-center">
+                    วันที่ลา
+                    <span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    name="leaveDate"
+                    value={formData.leaveDate}
+                    onChange={handleChange}
+                    className={`w-full rounded-lg border ${error && !formData.leaveDate ? 'border-red-400 ring-1 ring-red-400' : 'border-line'} p-2.5 transition-colors focus:ring-2 focus:ring-primary focus:border-primary`}
+                    disabled={isSubmitting}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-text-color mb-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1.5 text-text-color-alt" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
+                </svg>
+                คาบเรียนที่ลา
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              
+              {availableStudyTimes.length === 0 ? (
+                <div className="text-sm text-text-color-alt p-6 border border-dashed border-line rounded-lg bg-gray-50 text-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  ไม่พบข้อมูลคาบเรียนในวันที่เลือก
+                </div>
+              ) : (
+                <div className={`border rounded-lg overflow-hidden transition-all ${error && formData.selectedStudyTimes.length === 0 ? 'border-red-400 ring-1 ring-red-400' : 'border-line'}`}>
+                  {availableStudyTimes.map(studyTime => {
+                    const isSelected = formData.selectedStudyTimes.includes(studyTime.studyTimeId);
+                    const subject = studyTime.timetable?.subject || {};
+                    return (
+                      <div 
+                        key={studyTime.studyTimeId}
+                        className={`relative p-4 flex items-center border-b last:border-b-0 cursor-pointer 
+                          transition-all duration-200 hover:bg-gray-50
+                          ${isSelected ? 'bg-primary/10 bg-opacity-10' : ''}`}
+                        onClick={() => handleStudyTimeChange(studyTime.studyTimeId)}
+                      >
+                        <div className={`w-5 h-5 rounded-md border flex-shrink-0 flex items-center justify-center mr-3 transition-colors
+                          ${isSelected 
+                            ? 'bg-primary border-primary text-white' 
+                            : 'border-gray-300 bg-white'}`}
+                        >
+                          {isSelected && (
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                            </svg>
+                          )}
                         </div>
-                        <div className={`text-sm ${isSelected ? 'text-white' : 'text-gray-600'}`}>
-                          <span>{subject.subCode || ""}</span>
-                          {subject.subNameEng && 
-                            <span className={`ml-2 ${isSelected ? 'text-white opacity-90' : 'text-gray-500'}`}>
-                              ({subject.subNameEng})
+                        
+                        <div className="flex-1">
+                          <div className="flex justify-between flex-wrap gap-2">
+                            <span className={`font-medium ${isSelected ? 'text-primary' : 'text-text-color'}`}>
+                              {subject.subNameThai || "รายวิชา"}
                             </span>
-                          }
+                            <span className={`text-sm ${isSelected ? 'text-primary' : 'text-text-color-alt'}`}>
+                              {formatTime(studyTime.timetable?.timeStart)} - {formatTime(studyTime.timetable?.timeEnd)} น.
+                            </span>
+                          </div>
+                          <div className="flex flex-wrap gap-4 mt-1">
+                            <span className="text-sm text-text-color-alt">{subject.subCode || ""}</span>
+                            {subject.subNameEng && 
+                              <span className="text-sm text-text-color-alt">
+                                {subject.subNameEng}
+                              </span>
+                            }
+                            {subject.teacher && 
+                              <span className="text-sm text-text-color-alt">
+                                อาจารย์: {subject.teacher.fName} {subject.teacher.lName}
+                              </span>
+                            }
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-            <p className="text-xs text-text-color-alt mt-1">
-              เลือกคาบเรียนที่ต้องการลา (สามารถเลือกได้มากกว่า 1 คาบ)
-            </p>
-          </div>
-          
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-text-color mb-1">
-              เหตุผลในการลา <span className="text-red-500">*</span>
-            </label>
-            <textarea
-              name="leaveReason"
-              value={formData.leaveReason}
-              onChange={handleChange}
-              className="w-full rounded-lg border-line p-2 focus:ring-2 focus:ring-primary focus:border-primary min-h-[150px]"
-              placeholder="ระบุเหตุผลในการลา เช่น มีอาการป่วย มีธุระสำคัญ ฯลฯ"
-              disabled={isSubmitting}
-              required
-            />
-          </div>
-          
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-text-color mb-1">
-              แนบไฟล์ (ถ้ามี)
-            </label>
-            <input
-              type="file"
-              name="leaveFile"
-              onChange={handleFileChange}
-              className="w-full text-sm p-2 border border-line rounded-lg focus:ring-2 focus:ring-primary focus:border-primary"
-              disabled={isSubmitting}
-            />
-            <p className="text-xs text-text-color-alt mt-1">
-              รองรับไฟล์ PDF, JPG, PNG (ไม่เกิน 5MB)
-            </p>
-          </div>
-          
-          <div className="flex justify-end space-x-3">
-            <button
-              type="button"
-              onClick={() => navigate("/leavereq")}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-text-color hover:bg-gray-100 transition-colors"
-              disabled={isSubmitting}
-            >
-              ยกเลิก
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-accent transition-colors flex items-center"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  กำลังส่ง...
-                </>
-              ) : (
-                "ส่งคำร้อง"
+                    );
+                  })}
+                </div>
               )}
-            </button>
+              <p className="text-xs text-text-color-alt mt-1 ml-1 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 01-1-1v-4a1 1 0 112 0v4a1 1 0 01-1 1z" clipRule="evenodd" />
+                </svg>
+                เลือกคาบเรียนที่ต้องการลา (สามารถเลือกได้มากกว่า 1 คาบ)
+              </p>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-text-color mb-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1.5 text-text-color-alt" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+                เหตุผลในการลา
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <textarea
+                name="leaveReason"
+                value={formData.leaveReason}
+                onChange={handleChange}
+                className={`w-full rounded-lg border ${error && !formData.leaveReason.trim() ? 'border-red-400 ring-1 ring-red-400' : 'border-line'} p-3 transition-colors focus:ring-2 focus:ring-primary focus:border-primary min-h-[150px]`}
+                placeholder="ระบุเหตุผลในการลา เช่น มีอาการป่วย มีธุระสำคัญ ฯลฯ"
+                disabled={isSubmitting}
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-text-color mb-2 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1.5 text-text-color-alt" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 102 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clipRule="evenodd" />
+                </svg>
+                แนบไฟล์ (ถ้ามี)
+              </label>
+              
+              <div className="flex items-center justify-center w-full">
+                <label htmlFor="file-upload" className={`flex flex-col items-center justify-center w-full h-32 rounded-lg cursor-pointer 
+                  border-2 border-dashed border-line hover:bg-gray-50 transition-colors ${formData.leaveFile ? 'bg-primary bg-opacity-5' : ''}`}>
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    {formData.leaveFile ? (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-primary mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p className="text-sm text-text-color font-medium">{formData.leaveFile.name}</p>
+                        <p className="text-xs text-text-color-alt">
+                          {(formData.leaveFile.size / 1024 / 1024).toFixed(2)} MB
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-text-color-alt mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                        </svg>
+                        <p className="text-sm text-text-color-alt">
+                          <span className="font-medium">คลิกเพื่อเลือกไฟล์</span> หรือลากไฟล์มาวาง
+                        </p>
+                        <p className="text-xs text-text-color-alt">
+                          รองรับไฟล์ PDF, JPG, PNG (ไม่เกิน 5MB)
+                        </p>
+                      </>
+                    )}
+                  </div>
+                  <input 
+                    id="file-upload" 
+                    type="file" 
+                    name="leaveFile"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    disabled={isSubmitting}
+                  />
+                </label>
+              </div>
+            </div>
+            
+            <div className="pt-4 border-t flex flex-wrap justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => navigate("/leavereq")}
+                className="px-5 py-2.5 border border-line rounded-lg text-text-color hover:bg-gray-100 transition-colors"
+                disabled={isSubmitting}
+              >
+                ยกเลิก
+              </button>
+              <button
+                type="submit"
+                className="px-5 py-2.5 bg-primary text-white rounded-lg hover:bg-accent transition-colors shadow-sm hover:shadow flex items-center"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    กำลังส่ง...
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    ส่งคำร้อง
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </form>
       </div>

@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { HOSTNAME } from "../../config";
 import { DateTime } from "luxon";
-import { userStore } from "../../store";
 import { useNavigate } from "react-router";
 
 function LeaveRequestListItem({ leaveRequest, onRefresh }) {
