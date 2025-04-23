@@ -1,30 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DateTime } from "luxon";
 import axios from "axios";
 import { HOSTNAME } from "../../config";
 import { useNavigate } from "react-router";
-import { userStore } from "../../store";
 
 function CreateLeaveRequest() {
   const navigate = useNavigate();
-  const user = userStore((state) => state.user);
-  const studentId = user?.stdId || "";
   
   const [formData, setFormData] = useState({
     leaveTypeId: "",
     leaveDate: DateTime.now().toISODate(),
     leaveReason: "",
     leaveFile: null,
+    selectedStudyTimes: [],
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [leaveType, setLeaveType] = useState(null);
   const [error, setError] = useState("");
+  const [availableStudyTimes, setAvailableStudyTimes] = useState([]);
 
-  const leaveTypes = [
-    { id: "SICK", name: "ลาป่วย" },
-    { id: "PERSONAL", name: "ลากิจ" },
-    { id: "OTHER", name: "อื่นๆ" },
-  ];
+  async function fetchLeaveTypes() {
+    try {
+      const response = await axios.get(`${HOSTNAME}/s/leavetype`);
+      setLeaveType(response.data || []);
+    } catch (error) {
+      console.error("Error fetching leave types:", error);
+      setError("ไม่สามารถโหลดประเภทการลาได้");
+    }
+  }
+
+  async function getStudingTime(date) {
+    try {
+      const response = await axios.get(`${HOSTNAME}/s/studingTime/${date}`);
+      const studyTimes = response.data || [];
+      // Sort study times by timeStart
+      const sortedStudyTimes = [...studyTimes].sort((a, b) => {
+        return a.timetable?.timeStart?.localeCompare(b.timetable?.timeStart);
+      });
+      setAvailableStudyTimes(sortedStudyTimes);
+      return sortedStudyTimes;
+    } catch (error) {
+      console.error("Error fetching studying time:", error);
+      setError("ไม่สามารถโหลดข้อมูลเวลาที่เรียนได้");
+      setAvailableStudyTimes([]);
+      return [];
+    }
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -33,6 +55,21 @@ function CreateLeaveRequest() {
 
   const handleFileChange = (e) => {
     setFormData((prev) => ({ ...prev, leaveFile: e.target.files[0] || null }));
+  };
+
+  const handleStudyTimeChange = (studyTimeId) => {
+    setFormData(prev => {
+      const isSelected = prev.selectedStudyTimes.includes(studyTimeId);
+      let updatedTimes;
+      
+      if (isSelected) {
+        updatedTimes = prev.selectedStudyTimes.filter(id => id !== studyTimeId);
+      } else {
+        updatedTimes = [...prev.selectedStudyTimes, studyTimeId];
+      }
+      
+      return { ...prev, selectedStudyTimes: updatedTimes };
+    });
   };
 
   const validateForm = () => {
@@ -48,6 +85,11 @@ function CreateLeaveRequest() {
     
     if (!formData.leaveReason.trim()) {
       setError("กรุณากรอกเหตุผลในการลา");
+      return false;
+    }
+    
+    if (formData.selectedStudyTimes.length === 0) {
+      setError("กรุณาเลือกอย่างน้อยหนึ่งคาบเรียนที่ต้องการลา");
       return false;
     }
     
@@ -68,26 +110,27 @@ function CreateLeaveRequest() {
       return;
     }
     
-    if (!studentId) {
-      setError("ไม่พบข้อมูลนักเรียน กรุณาเข้าสู่ระบบใหม่");
-      return;
-    }
-    
     setIsSubmitting(true);
     
     try {
       // Create form data for file upload
       const submitData = new FormData();
-      submitData.append("studentId", studentId);
       submitData.append("leaveTypeId", formData.leaveTypeId);
       submitData.append("leaveDate", formData.leaveDate);
       submitData.append("leaveReason", formData.leaveReason);
       
+      // Append each study time ID
+      formData.selectedStudyTimes.forEach(studyTimeId => {
+        submitData.append("studyTimeIds[]", studyTimeId);
+      });
+      
       if (formData.leaveFile) {
         submitData.append("leaveFile", formData.leaveFile);
       }
+
+      console.log("Submitting leave request with data:", submitData.entries());
       
-      await axios.post(`${HOSTNAME}/leave`, submitData, {
+      await axios.post(`${HOSTNAME}/s/leave`, submitData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -102,8 +145,21 @@ function CreateLeaveRequest() {
     }
   };
 
+  useEffect(() => {
+    fetchLeaveTypes();
+  }, []);
+
+  useEffect(() => {
+    getStudingTime(formData.leaveDate);
+  }, [formData.leaveDate]);
+
+  // Format time for display (from HH:MM:SS to HH:MM)
+  const formatTime = (timeString) => {
+    return timeString ? timeString.substring(0, 5) : "";
+  };
+
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto">
       <div className="flex items-center mb-6">
         <button
           onClick={() => navigate("/leavereq")}
@@ -146,9 +202,9 @@ function CreateLeaveRequest() {
               required
             >
               <option value="">เลือกประเภทการลา</option>
-              {leaveTypes.map((type) => (
-                <option key={type.id} value={type.id}>
-                  {type.name}
+              {leaveType && leaveType.map((type) => (
+                <option key={type.leaveTypeId} value={type.leaveTypeId}>
+                  {type.leaveTypeName}
                 </option>
               ))}
             </select>
@@ -167,6 +223,61 @@ function CreateLeaveRequest() {
               disabled={isSubmitting}
               required
             />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block text-sm font-medium text-text-color mb-1">
+              คาบเรียนที่ลา <span className="text-red-500">*</span>
+            </label>
+            {availableStudyTimes.length === 0 ? (
+              <p className="text-sm text-gray-500 p-2 border border-gray-200 rounded-lg bg-gray-50">
+                ไม่พบข้อมูลคาบเรียนในวันที่เลือก
+              </p>
+            ) : (
+              <div className="border border-line rounded-lg overflow-hidden">
+                {availableStudyTimes.map(studyTime => {
+                  const isSelected = formData.selectedStudyTimes.includes(studyTime.studyTimeId);
+                  const subject = studyTime.timetable?.subject || {};
+                  return (
+                    <div 
+                      key={studyTime.studyTimeId}
+                      className={`p-3 flex items-center border-b last:border-b-0 cursor-pointer hover:bg-gray-50 ${
+                        isSelected ? 'bg-primary' : ''
+                      }`}
+                      onClick={() => handleStudyTimeChange(studyTime.studyTimeId)}
+                    >
+                      <input 
+                        type="checkbox" 
+                        checked={isSelected}
+                        onChange={() => {}}
+                        className="h-5 w-5 text-primary border-gray-300 rounded focus:ring-primary mr-3"
+                      />
+                      <div className="flex-1">
+                        <div className="flex justify-between">
+                          <span className={`font-medium ${isSelected ? 'text-white' : ''}`}>
+                            {subject.subNameThai || "รายวิชา"}
+                          </span>
+                          <span className={`text-sm ${isSelected ? 'text-white' : 'text-gray-600'}`}>
+                            {formatTime(studyTime.timetable?.timeStart)} - {formatTime(studyTime.timetable?.timeEnd)}
+                          </span>
+                        </div>
+                        <div className={`text-sm ${isSelected ? 'text-white' : 'text-gray-600'}`}>
+                          <span>{subject.subCode || ""}</span>
+                          {subject.subNameEng && 
+                            <span className={`ml-2 ${isSelected ? 'text-white opacity-90' : 'text-gray-500'}`}>
+                              ({subject.subNameEng})
+                            </span>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            <p className="text-xs text-text-color-alt mt-1">
+              เลือกคาบเรียนที่ต้องการลา (สามารถเลือกได้มากกว่า 1 คาบ)
+            </p>
           </div>
           
           <div className="mb-4">
