@@ -26,6 +26,9 @@ function LeaveRequestListItem({ leaveRequest, onRefresh }) {
             {getLeaveTypeName()}
           </h3>
           <p className="text-sm text-text-color-alt mt-1">
+            หมายเลขคำร้อง: <span className="font-medium">{leaveRequest.leaveId?.substring(0, 8) || "-"}</span>
+          </p>
+          <p className="text-sm text-text-color-alt mt-1">
             วันที่ลา: {formatDate(leaveRequest.leaveDate)}
           </p>
           <p className="text-sm text-text-color mt-2">
