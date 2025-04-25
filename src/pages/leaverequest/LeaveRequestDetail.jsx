@@ -319,7 +319,7 @@ function LeaveRequestDetail() {
                   onClick={async () => {
                     if (confirm("คุณต้องการยกเลิกคำร้องขอลานี้ใช่หรือไม่?")) {
                       try {
-                        await axios.put(`${HOSTNAME}/leave/${leaveRequest.leaveId}`, {
+                        await axios.delete(`${HOSTNAME}/s/leave/${leaveRequest.leaveId}`, {
                           leaveStatus: "CANCELED",
                         });
                         navigate("/leavereq");
