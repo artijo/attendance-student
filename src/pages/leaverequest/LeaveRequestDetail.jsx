@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { DateTime } from "luxon";
 import axios from "axios";
 import { HOSTNAME } from "../../config";
 import { useParams, useNavigate } from "react-router";
+import { formatTitle, formatDate, formatDateTime} from "../../helper";
 
 function LeaveRequestDetail() {
   const { id } = useParams();
@@ -30,18 +30,6 @@ function LeaveRequestDetail() {
       fetchLeaveRequestDetails();
     }
   }, [id]);
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    const dt = DateTime.fromISO(dateString);
-    return dt.toFormat("dd/MM/yyyy");
-  };
-
-  const formatDateTime = (dateString) => {
-    if (!dateString) return "-";
-    const dt = DateTime.fromISO(dateString);
-    return dt.toFormat("dd/MM/yyyy HH:mm น.");
-  };
 
   // Updated to use the new data structure
   const getLeaveTypeName = (leaveRequest) => {
@@ -209,7 +197,7 @@ function LeaveRequestDetail() {
               </h4>
               <div className="bg-gray-50 p-4 rounded-lg border border-line hover:shadow-sm transition-shadow">
                 <p className="text-text-color font-medium">
-                  {leaveRequest.student?.title} {leaveRequest.student?.fName} {leaveRequest.student?.lName}
+                  {formatTitle(leaveRequest.student?.title)}{leaveRequest.student?.fName} {leaveRequest.student?.lName}
                 </p>
                 <p className="text-sm text-text-color-alt mt-1">
                   อีเมล: {leaveRequest.student?.email || "-"}
