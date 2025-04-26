@@ -1,1 +1,1 @@
-export const HOSTNAME = "http://localhost:3000";
+export const HOSTNAME = "https://studentattendanceapi-production.up.railway.app";
