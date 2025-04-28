@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 
-function EnrollmentCard({ enrollmentInfo, index }) {
+function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
     // console.log(enrollmentInfo);
     const teacher = enrollmentInfo.timetable.subject.teacher;
     const timetable = enrollmentInfo.timetable;
@@ -73,7 +73,9 @@ function EnrollmentCard({ enrollmentInfo, index }) {
                         </div>
                     </div>
                 
-                    <button className="text-sm mt-2 w-fit ml-auto px-2 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">
+                    <button
+                        onClick={() => callEnrollmentApi()} 
+                        className="text-sm mt-2 w-fit ml-auto px-2 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">
                         ลงเช็คชื่อ
                     </button>
                 </div> :
@@ -99,12 +101,6 @@ function EnrollmentCard({ enrollmentInfo, index }) {
                             </div>
                             <p className="text-sm font-medium">คุณครู {teacher.fName} {teacher.lName}</p>
                         </div>
-                    </div>
-                    <div className="flex justify-between items-center">
-
-                        {/* <button className="text-sm mt-2 px-2 py-1.5  bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">
-                ลงเช็คชื่อ
-            </button> */}
                     </div>
 
                 </div>
