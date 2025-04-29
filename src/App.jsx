@@ -1,5 +1,5 @@
 import { Outlet, Link, NavLink } from "react-router";
-import { Navigate } from "react-router";
+import { Navigate, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { HOSTNAME } from "./config";
@@ -23,6 +23,10 @@ axios.interceptors.response.use(
       if (!isRefreshing) {
         isRefreshing = true;
         try {
+          // Save current path before redirecting to login
+          if (window.location.pathname !== '/login') {
+            localStorage.setItem('redirectPath', window.location.pathname);
+          }
           const refreshToken = cookie.get("refreshToken");
           const res = await axios.post(
             `${HOSTNAME}/auth/s/refresh`,
@@ -80,6 +84,8 @@ function App() {
   const Logout = async () => {
     cookie.remove("accessToken");
     cookie.remove("refreshToken");
+    // Don't save path on logout as it's an intentional action
+    localStorage.removeItem('redirectPath');
     window.location.href = "/login";
   }
 
@@ -120,16 +126,28 @@ function App() {
         },
       });
       if (res.status !== 200) {
+        // Save current path before redirecting to login
+        if (window.location.pathname !== '/login') {
+          localStorage.setItem('redirectPath', window.location.pathname);
+        }
         refreshTokens();
       }
     } catch (error) {
+      // Save current path before redirecting to login
+      if (window.location.pathname !== '/login') {
+        localStorage.setItem('redirectPath', window.location.pathname);
+      }
       refreshTokens();
     }
-};
+  };
 
 
 
     if (!cookie.get("refreshToken") || !cookie.get("accessToken")) {
+      // Save current path before redirecting to login
+      if (window.location.pathname !== '/login' && window.location.pathname !== '/') {
+        localStorage.setItem('redirectPath', window.location.pathname);
+      }
       return <Navigate to="/login" />;
     }
     useEffect(() => {
