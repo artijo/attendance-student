@@ -7,8 +7,9 @@ import { BrowserRouter, Routes, Route } from "react-router";
 // Lazy load components
 const Login = lazy(() => import('./pages/Login.jsx'))
 const Dashboard = lazy(() => import('./pages/Dashboard.jsx'))
-const StudentAttendence = lazy(() => import('./pages/student/StudentAttendence.jsx').then(module => ({ default: module.StudentAttendence })))
-const StudentAttendenceHistory = lazy(() => import('./pages/student/StudentAttendenceHistory.jsx').then(module => ({ default: module.StudentAttendenceHistory })))
+const StudentAttendence = lazy(() => import('./pages/Attendence/StudentAttendence.jsx'))
+// const StudentAttendence = lazy(() => import('./pages/student/StudentAttendence.jsx').then(module => ({ default: module.StudentAttendence })))
+// const StudentAttendenceHistory = lazy(() => import('./pages/student/StudentAttendenceHistory.jsx').then(module => ({ default: module.StudentAttendenceHistory })))
 const LeaveRequest = lazy(() => import('./pages/leaverequest/LeaveRequest.jsx'))
 const CreateLeaveRequest = lazy(() => import('./pages/leaverequest/CreateLeaveRequest.jsx'))
 const LeaveRequestDetail = lazy(() => import('./pages/leaverequest/LeaveRequestDetail.jsx'))
@@ -28,11 +29,15 @@ createRoot(document.getElementById('root')).render(
         <Route path="login" element={<Login />} />
           <Route path="/" element={<App />} >
           <Route path='dashboard' element={<Dashboard />} />
-          <Route path='attendenceSubjectHistory' element={<StudentAttendenceHistory/>}/>
-          <Route path='attendenceSubject' element={<StudentAttendence/>}/>
+          <Route path='attendence' element={<StudentAttendence/>}/>
+          {/* <Route path='attendenceSubjectHistory' element={<StudentAttendenceHistory/>}/>
+          <Route path='attendenceSubject' element={<StudentAttendence/>}/> */}
           <Route path='leavereq' element={<LeaveRequest />}/>
           <Route path='leavereq/create' element={<CreateLeaveRequest />}/>
           <Route path='leavereq/:id' element={<LeaveRequestDetail />}/>
+
+
+          
         </Route>
       </Routes>
     </Suspense>
