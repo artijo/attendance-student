@@ -267,7 +267,7 @@ function ClassroomTimetable() {
                   
                   <div className="mt-4">
                     <Link
-                      to={`/leader/subjects/${entry.subject.subId}/attendance/${entry.studyTime[0].studyTimeId}`}
+                      to={`/leader/attendance/${entry.studyTime[0].studyTimeId}`}
                       className={`w-full py-2 text-center rounded-md inline-block ${
                         isActive 
                           ? "bg-green-500 text-white hover:bg-green-600" 

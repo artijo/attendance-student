@@ -16,6 +16,7 @@ const LeaveRequestDetail = lazy(() => import('./pages/leaverequest/LeaveRequestD
 const Classrooms = lazy(() => import('./pages/leader/Classrooms.jsx'))
 const ClassroomMembers = lazy(() => import('./pages/leader/ClassroomMembers.jsx'))
 const ClassroomTimetable = lazy(() => import('./pages/leader/ClassroomTimetable.jsx'))
+const Attendance = lazy(() => import('./pages/leader/Attendance.jsx'))
 
 const LoadingSpinner = () => (
   <div className="loading-spinner">
@@ -41,7 +42,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='leader/classrooms' element={<Classrooms />}/>
           <Route path='leader/classrooms/:classId/members' element={<ClassroomMembers />}/>
           <Route path='leader/classrooms/:classId/timetable' element={<ClassroomTimetable />}/>
-          
+          <Route path='leader/attendance/:studingid' element={<Attendance />}/>
         </Route>
       </Routes>
     </Suspense>
