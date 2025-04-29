@@ -65,7 +65,7 @@ function App() {
   
   // Add the leader link only if the user is a leader
   const navLinks = User && User.isLeader 
-    ? [...baseNavLinks, { name: "สำหรับหัวหน้าห้อง", path: "/leader", icon: "classroom.svg" }] 
+    ? [...baseNavLinks, { name: "สำหรับหัวหน้าห้อง", path: "/leader/classrooms", icon: "classroom.svg" }] 
     : baseNavLinks;
 
   function openMenu() {

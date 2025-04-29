@@ -13,6 +13,9 @@ const StudentAttendence = lazy(() => import('./pages/Attendence/StudentAttendenc
 const LeaveRequest = lazy(() => import('./pages/leaverequest/LeaveRequest.jsx'))
 const CreateLeaveRequest = lazy(() => import('./pages/leaverequest/CreateLeaveRequest.jsx'))
 const LeaveRequestDetail = lazy(() => import('./pages/leaverequest/LeaveRequestDetail.jsx'))
+const Classrooms = lazy(() => import('./pages/leader/Classrooms.jsx'))
+const ClassroomMembers = lazy(() => import('./pages/leader/ClassroomMembers.jsx'))
+const ClassroomAttendance = lazy(() => import('./pages/leader/ClassroomAttendance.jsx'))
 
 const LoadingSpinner = () => (
   <div className="loading-spinner">
@@ -35,8 +38,9 @@ createRoot(document.getElementById('root')).render(
           <Route path='leavereq' element={<LeaveRequest />}/>
           <Route path='leavereq/create' element={<CreateLeaveRequest />}/>
           <Route path='leavereq/:id' element={<LeaveRequestDetail />}/>
-
-
+          <Route path='leader/classrooms' element={<Classrooms />}/>
+          <Route path='leader/classrooms/:classId/members' element={<ClassroomMembers />}/>
+          <Route path='leader/classrooms/:classId/attendance' element={<ClassroomAttendance />}/>
           
         </Route>
       </Routes>
