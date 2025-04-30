@@ -132,7 +132,7 @@ const AttendanceWithLink = () => {
                   ({attendanceData.studyTime?.timetable?.subject?.subNameEng})
                 </p>
                 
-                <p className="text-gray-600">อาจารย์:</p>
+                <p className="text-gray-600">คุณครู:</p>
                 <p className="font-medium">
                   {`${attendanceData.studyTime?.timetable?.subject?.teacher?.fName} ${attendanceData.studyTime?.timetable?.subject?.teacher?.lName}`}
                 </p>
