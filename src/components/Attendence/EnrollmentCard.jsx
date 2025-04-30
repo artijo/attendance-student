@@ -111,7 +111,6 @@ function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
                         }`}
                     >
                         { isEnrollmentCheck() ?  'เช็คชื่อแล้ว' : 'เช็คชื่อ'}
-                        
                     </button>
                 )}
             </div>

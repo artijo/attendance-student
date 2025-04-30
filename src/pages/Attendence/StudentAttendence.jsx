@@ -120,15 +120,15 @@ function StudentAttendence() {
     }
 
     return (
-        <div>
+        <div className="m-5">
+            <div className="mb-4">
+                <h1 className="text-lg font-medium">เช็คชื่อเข้าเรียน</h1>
+                <h4 className="text-3xl font-medium">{weekDayToThaiString(dtNow.weekday)}, {getThaiMonth(dtNow.month)} {dtNow.day} </h4>
+            </div>
             {location.latitude && location.longitude && (
-                <div className="m-4">
+                <div>
                     {studingTime.length > 0 ? (
-                        <div className="m-4">
-                            <div className="mb-4">
-                                <h1 className="text-lg font-medium">เช็คชื่อเข้าเรียน</h1>
-                                <h4 className="text-3xl font-medium">{weekDayToThaiString(dtNow.weekday)}, {getThaiMonth(dtNow.month)} {dtNow.day} </h4>
-                            </div>
+                        <div>
                             <div className="mb-4 grid grid-cols-1 gap-4">
                                 {studingTime.map((item, index) => (
                                     <EnrollmentCard key={index} index={index + 1} enrollmentInfo={item} callEnrollmentApi={() => callEnrollmentApi(item, location)} />
@@ -136,11 +136,7 @@ function StudentAttendence() {
                             </div>
                         </div>
                     ) : (
-                        <div className="m-4">
-                            <div className="mb-4">
-                                <h1 className="text-lg font-medium">เช็คชื่อเข้าเรียน</h1>
-                                <h4 className="text-3xl font-medium">{weekDayToThaiString(dtNow.weekday)}, {getThaiMonth(dtNow.month)} {dtNow.day} </h4>
-                            </div>
+                        <div>
                             <div className="mb-4 grid grid-cols-1 gap-4">
                                 <p className="text-center text-gray-500">ไม่มีข้อมูลการเรียนในวันนี้</p>
                             </div>
