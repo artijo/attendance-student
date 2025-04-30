@@ -1,10 +1,29 @@
+import axios from "axios";
 import { DateTime } from "luxon";
+import { HOSTNAME } from "../../config";
+import { useEffect } from "react";
 
 function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
-    // console.log(enrollmentInfo);
     const teacher = enrollmentInfo.timetable.subject.teacher;
     const timetable = enrollmentInfo.timetable;
     const subject = enrollmentInfo.timetable.subject;
+
+    const isEnrollmentCheck = async () => {
+        try{
+            const response = await axios.post(`${HOSTNAME}/s/attendence/isEnrollment`, {enrollmentInfo : enrollmentInfo})
+            if(response.status === 200) {
+                if(parseInt(response.data.isFound) === 1) {
+                    return true;
+                }else if(parseInt(response.data.isFound) === 0){
+                    return false;
+                };
+            }else{
+                throw new Error(response.data.message);
+            };
+        }catch(error) {
+            console.error(error);
+        };
+    };
 
     const timeFormat = (time) => {
         const spiltTime = time.split(":");
@@ -52,6 +71,11 @@ function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
         }
     };
 
+    // useEffect(() => {
+    //     isEnrollmentCheck()
+    // },[])
+
+
     return (
         <div className="grid grid-cols-1 border border-gray-200 rounded-lg bg-white shadow">
             <div className="flex items-center p-3 pb-1.5 border-b border-b-gray-200">
@@ -76,82 +100,23 @@ function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
                         <p className="text-base text-gray-950 font-bold">{teacher.fName} {teacher.lName}</p>
                     </div>
                 </div>
-                { compareTime() && (
+                {compareTime() && (
                     <button
+                        disabled={isEnrollmentCheck()}
                         onClick={() => callEnrollmentApi()}
-                        className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold tracking-wide px-4 py-2 rounded-md shadow-sm transition-all duration-200 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                        className={`text-sm font-semibold tracking-wide px-4 py-2 rounded-md shadow-sm transition-all duration-200 ease-in-out transform focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
+                            isEnrollmentCheck() 
+                            ? 'bg-gray-400 cursor-not-allowed opacity-50' 
+                            : 'bg-blue-600 hover:bg-blue-700 hover:scale-105 text-white'
+                        }`}
                     >
-                        ลงเช็คชื่อ
+                        { isEnrollmentCheck() ?  'เช็คชื่อแล้ว' : 'เช็คชื่อ'}
+                        
                     </button>
                 )}
             </div>
         </div>
     );
-    // className="flex flex-col gap-3 p-4 border border-gray-200 bg-gray-100 rounded-lg"
-    // "flex flex-col gap-3 p-6 rounded-lg bg-yellow-300/90"
-    // return (
-    //     <div>
-    //         {/* {compareTime() ?
-    //             <div
-    //                 className="flex flex-col justify-center gap-3 p-5 bg-secondary rounded-2xl shadow-md text-white h-[200px]"
-    //             >
-    //                 <div className="flex items-center gap-2">
-    //                     <p className="text-sm font-bold">คาบที่ {index} : {timeFormat(timetable.timeStart)} - {timeFormat(timetable.timeEnd)}</p>
-    //                     <p className="px-1.5 bg-yellow-100 rounded-md text-yellow-700 text-xs font-normal">กำลังอยู่ในคาบ</p>
-
-    //                 </div>
-
-    //                 <div className="flex items-center gap-3">
-    //                     <div
-    //                         className="w-fit h-fit p-1.5 border-2 border-white text-white rounded-full"
-    //                     >
-    //                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-    //                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-    //                         </svg>
-    //                     </div>
-    //                     <div>
-    //                         <div className="flex flex-row items-center gap-2">
-    //                             <h4 className="text-lg font-semibold">{subject.subNameThai}</h4>
-    //                             <h5 className="px-1.5 bg-blue-100 rounded-md text-blue-600 text-xs font-normal">{subject.subCode}</h5>
-    //                         </div>
-    //                         <p className="text-sm font-medium">คุณครู {teacher.fName} {teacher.lName}</p>
-    //                     </div>
-    //                 </div>
-                
-    //                 <button
-    //                     onClick={() => callEnrollmentApi()} 
-    //                     className="text-sm mt-2 w-fit ml-auto px-2 py-1.5 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200">
-    //                     ลงเช็คชื่อ
-    //                 </button>
-    //             </div> :
-    //             <div
-    //                 className="flex flex-col gap-3 p-5 bg-white rounded-2xl shadow-md"
-    //             >
-    //                 <div className="flex items-center gap-2">
-    //                     <p className='text-sm font-bold text-primary'>คาบที่ {index} : {timeFormat(timetable.timeStart)} - {timeFormat(timetable.timeEnd)}</p>
-    //                 </div>
-
-    //                 <div className="flex items-center gap-3">
-    //                     <div
-    //                         className="w-fit h-fit p-1.5 border-2 border-blue-300 text-blue-200 rounded-full"
-    //                     >
-    //                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-    //                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-    //                         </svg>
-    //                     </div>
-    //                     <div>
-    //                         <div className="flex flex-row items-center gap-2">
-    //                             <h4 className="text-lg font-semibold">{subject.subNameThai}</h4>
-    //                             <h5 className="px-1.5 bg-blue-100 rounded-md text-blue-600 text-xs font-normal">{subject.subCode}</h5>
-    //                         </div>
-    //                         <p className="text-sm font-medium">คุณครู {teacher.fName} {teacher.lName}</p>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         } */}
-    //     </div>
-
-    // );
 };
 
 export default EnrollmentCard;
