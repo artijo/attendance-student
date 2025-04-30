@@ -4,6 +4,35 @@ import { HOSTNAME } from '../../config';
 import { formatDateTime } from '../../helper';
 import axios from 'axios';
 
+// Helper function to format the datetime string specifically for the attendance API response
+const formatAttendanceTime = (datetimeStr) => {
+  if (!datetimeStr) return "ไม่พบข้อมูลเวลา";
+  
+  try {
+    // Handle the specific format: "YYYY-MM-DD HH:MM:SS"
+    const [datePart, timePart] = datetimeStr.split(' ');
+    if (!datePart || !timePart) return formatDateTime(datetimeStr); // Fallback to general formatter
+    
+    const [year, month, day] = datePart.split('-');
+    const [hour, minute, second] = timePart.split(':');
+    
+    const date = new Date(year, month-1, day, hour, minute, second);
+    
+    // Format as Thai date
+    return date.toLocaleString('th-TH', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+  } catch (e) {
+    console.error("Error formatting datetime:", e);
+    return formatDateTime(datetimeStr); // Fallback to general formatter
+  }
+};
+
 const AttendanceWithLink = () => {
   const { token } = useParams();
   const navigate = useNavigate();
@@ -114,7 +143,11 @@ const AttendanceWithLink = () => {
                 </p>
                 
                 <p className="text-gray-600">เวลาเข้าเรียน:</p>
-                <p className="font-medium">{formatDateTime(attendanceData.attendanceTime)}</p>
+                <p className="font-medium">
+                  {attendanceData.attendanceTime ? 
+                    formatAttendanceTime(attendanceData.attendanceTime) : 
+                    "ไม่พบข้อมูลเวลา"}
+                </p>
                 
                 <p className="text-gray-600">สถานะ:</p>
                 <p className="font-medium text-green-600">เข้าเรียน</p>
