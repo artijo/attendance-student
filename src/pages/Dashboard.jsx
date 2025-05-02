@@ -242,7 +242,7 @@ function Dashboard() {
         </h1>
         <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
         <p className="mt-3 text-gray-600">
-          {weekDayToThaiString(currentDateTime.weekday)}, {currentDateTime.day} {getThaiMonth(currentDateTime.month)} {currentDateTime.year}
+          {weekDayToThaiString(currentDateTime.weekday)}, {currentDateTime.day} {getThaiMonth(currentDateTime.month)} {currentDateTime.year+543}
         </p>
       </div>
 
