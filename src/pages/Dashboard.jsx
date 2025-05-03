@@ -524,7 +524,7 @@ function Dashboard() {
             className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center hover:bg-gray-50 transition-all hover:shadow-lg border border-gray-200"
           >
             <div className="bg-primary bg-opacity-10 p-3 rounded-full mb-3">
-              <img src="/public/ico/attendance.svg" alt="Attendance" className="w-6 h-6" />
+              <img src="/ico/attendance.svg" alt="Attendance" className="w-6 h-6" />
             </div>
             <span className="text-center font-medium text-gray-800">เช็คชื่อ</span>
           </Link>
@@ -534,7 +534,7 @@ function Dashboard() {
             className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center hover:bg-gray-50 transition-all hover:shadow-lg border border-gray-200"
           >
             <div className="bg-secondary bg-opacity-10 p-3 rounded-full mb-3">
-              <img src="/public/ico/leave.svg" alt="Leave Request" className="w-6 h-6" />
+              <img src="/ico/leave.svg" alt="Leave Request" className="w-6 h-6" />
             </div>
             <span className="text-center font-medium text-gray-800">ลาเรียน</span>
           </Link>
