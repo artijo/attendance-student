@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { DateTime } from "luxon";
 import axios from "axios";
-import { HOSTNAME } from "../config";
+import { HOSTNAME, TIME_ZONE } from "../config";
 import { getThaiMonth, weekDayToThaiString } from "../helper";
 
 function Dashboard() {
-  const [currentDateTime, setCurrentDateTime] = useState(DateTime.now().setZone("Asia/Bangkok"));
+  const [currentDateTime, setCurrentDateTime] = useState(DateTime.now().setZone(TIME_ZONE));
   const [currentClasses, setCurrentClasses] = useState([]);
   const [upcomingClasses, setUpcomingClasses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -108,7 +108,7 @@ function Dashboard() {
         const todayClasses = [];
 
         // Get today's day of week (1-7, where 1 is Monday)
-        const todayDayOfWeek = DateTime.now().setZone("Asia/Bangkok").weekday;
+        const todayDayOfWeek = DateTime.now().setZone(TIME_ZONE).weekday;
         
         allClasses.forEach(classItem => {
           const timeStart = classItem.timetable.timeStart;
@@ -124,8 +124,8 @@ function Dashboard() {
             current.push(classItem);
           } else {
             // Check if class is upcoming (not past)
-            const dtNow = DateTime.now().setZone("Asia/Bangkok");
-            const dtEnd = DateTime.fromISO(timeEnd).setZone("Asia/Bangkok");
+            const dtNow = DateTime.now().setZone(TIME_ZONE);
+            const dtEnd = DateTime.fromISO(timeEnd).setZone(TIME_ZONE);
             
             if (dtNow < dtEnd) {
               upcoming.push(classItem);
@@ -220,7 +220,7 @@ function Dashboard() {
     
     // Update current time every minute
     const timer = setInterval(() => {
-      setCurrentDateTime(DateTime.now().setZone("Asia/Bangkok"));
+      setCurrentDateTime(DateTime.now().setZone(TIME_ZONE));
     }, 60000);
     
     return () => clearInterval(timer);

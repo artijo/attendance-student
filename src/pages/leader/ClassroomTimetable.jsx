@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { HOSTNAME } from "../../config";
+import { HOSTNAME, TIME_ZONE } from "../../config";
 import { useParams, Link } from "react-router-dom";
 import { DateTime } from "luxon";
 
@@ -10,14 +10,14 @@ function ClassroomTimetable() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [classInfo, setClassInfo] = useState(null);
-  const [currentDateTime, setCurrentDateTime] = useState(DateTime.now().setZone("Asia/Bangkok"));
+  const [currentDateTime, setCurrentDateTime] = useState(DateTime.now().setZone(TIME_ZONE));
 
   useEffect(() => {
     fetchTimetable();
     
     // Update current time every minute
     const timer = setInterval(() => {
-      setCurrentDateTime(DateTime.now().setZone("Asia/Bangkok"));
+      setCurrentDateTime(DateTime.now().setZone(TIME_ZONE));
     }, 60000);
     
     return () => clearInterval(timer);

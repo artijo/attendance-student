@@ -1,7 +1,6 @@
 import axios from "axios";
 import { DateTime } from "luxon";
-import { HOSTNAME } from "../../config";
-import { useEffect } from "react";
+import { HOSTNAME, TIME_ZONE } from "../../config";
 
 function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
     const teacher = enrollmentInfo.timetable.subject.teacher;
@@ -31,9 +30,9 @@ function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
     };
 
     const compareTime = () => {
-        const dtNow = DateTime.now().setZone("Asia/Bangkok");
-        const dtStart = DateTime.fromISO(timetable.timeStart).setZone("Asia/Bangkok");
-        const dtEnd = DateTime.fromISO(timetable.timeEnd).setZone("Asia/Bangkok");
+        const dtNow = DateTime.now().setZone(TIME_ZONE);
+        const dtStart = DateTime.fromISO(timetable.timeStart).setZone(TIME_ZONE);
+        const dtEnd = DateTime.fromISO(timetable.timeEnd).setZone(TIME_ZONE);
         if (dtNow >= dtStart && dtNow <= dtEnd) {
             return true;
         }else {
@@ -42,9 +41,9 @@ function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
     };
 
     const compareTimeStatus = () => {
-        const dtNow = DateTime.now().setZone("Asia/Bangkok");
-        const dtStart = DateTime.fromISO(timetable.timeStart).setZone("Asia/Bangkok");
-        const dtEnd = DateTime.fromISO(timetable.timeEnd).setZone("Asia/Bangkok");
+        const dtNow = DateTime.now().setZone(TIME_ZONE);
+        const dtStart = DateTime.fromISO(timetable.timeStart).setZone(TIME_ZONE);
+        const dtEnd = DateTime.fromISO(timetable.timeEnd).setZone(TIME_ZONE);
         // console.log(dtNow >= dtStart);
         // console.log(dtStart);
         if (dtNow >= dtStart && dtNow <= dtEnd) {

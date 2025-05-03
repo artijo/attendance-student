@@ -1,12 +1,12 @@
 import { DateTime } from "luxon";
 import { getThaiMonth, weekDayToThaiString } from "../../helper";
 import axios from "axios";
-import { HOSTNAME } from "../../config";
+import { HOSTNAME, TIME_ZONE } from "../../config";
 import { useEffect, useState } from "react";
 import EnrollmentCard from "../../components/Attendence/EnrollmentCard";
 
 function StudentAttendence() {
-    const dtNow = DateTime.now().setZone("Asia/Bangkok");
+    const dtNow = DateTime.now().setZone(TIME_ZONE);
     const [studingTime, setStudingTime] = useState([]);
     const [loading, setLoading] = useState(false);
     const [notPermission, setNotPermission] = useState(false);
