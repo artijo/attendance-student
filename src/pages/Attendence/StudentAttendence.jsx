@@ -120,7 +120,7 @@ function StudentAttendence() {
     }
 
     return (
-        <div className="m-5">
+        <div className="sm:max-w-md md:max-w-lg mx-auto p-2">
             <div className="mb-4">
                 <h1 className="text-lg font-medium">เช็คชื่อเข้าเรียน</h1>
                 <h4 className="text-3xl font-medium">{weekDayToThaiString(dtNow.weekday)}, {getThaiMonth(dtNow.month)} {dtNow.day} </h4>

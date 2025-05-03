@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { BrowserRouter, Routes, Route } from "react-router";
+import AttendenceHistory from './pages/AttendenceHistory/AttendenceHistory.jsx';
 
 // Lazy load components
 const Login = lazy(() => import('./pages/Login.jsx'))
@@ -33,6 +34,9 @@ createRoot(document.getElementById('root')).render(
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='attendence' element={<StudentAttendence/>}/>
           <Route path='attendance/qr/:token' element={<AttendanceWithLink />} />
+
+          <Route path='history' element={<AttendenceHistory/>}/>
+
           <Route path='leavereq' element={<LeaveRequest />}/>
           <Route path='leavereq/create' element={<CreateLeaveRequest />}/>
           <Route path='leavereq/:id' element={<LeaveRequestDetail />}/>
