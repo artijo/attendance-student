@@ -9,8 +9,8 @@ function AttendenceByDaySummarizeDetail() {
     const [studingTime, setStudingTime] = useState([]);
     const location = useLocation();
     const { date, termId } = location.state;
-    console.log(date);
-    console.log(termId);
+    // console.log(date);
+    // console.log(termId);
 
     const formatAttStatus = (status) => {
         switch (status) {

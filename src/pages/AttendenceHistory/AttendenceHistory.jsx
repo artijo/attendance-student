@@ -29,8 +29,6 @@ function AttendenceHistory() {
         };
     };
 
-
-
     useEffect(() => {
         const arrayState = sessionStorage.getItem("savedIsTapOpenArray");
         if (arrayState != null) {

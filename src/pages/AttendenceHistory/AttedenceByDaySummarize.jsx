@@ -17,10 +17,10 @@ function daybetween(Start, End) {
                 break;
             }
             if (currentDate.weekday !== 6 && currentDate.weekday !== 7) {
-                
+
                 dates.push(currentDate.toISODate().split("-").join("-"));
             };
-            currentDate = currentDate.plus({ days: 1 }); 
+            currentDate = currentDate.plus({ days: 1 });
         }
     } else {
         console.error("termStart or termEnd is not set!");
@@ -33,7 +33,6 @@ function AttedenceByDaySummarize({ term }) {
     const termStart = DateTime.fromISO(term.termStart).setZone('Asia/Bangkok').toString().split("T")[0];
     const termEnd = DateTime.fromISO(term.termEnd).setZone('Asia/Bangkok').toString().split("T")[0];
     const termDaybetween = daybetween(termStart, termEnd);
-    // console.log(termDaybetween);
     const holidaybetween = term.holiday.map((holiday) => {
         const formatDate = DateTime.fromISO(holiday.startHolidayDate).setZone('Asia/Bangkok').toString().split("T")[0];
         return formatDate;
@@ -45,12 +44,28 @@ function AttedenceByDaySummarize({ term }) {
     const sliceDayList = termday.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     const navigateDetailPage = (date) => {
-        navigate('/history/datedetail',{state : {date: date, termId: term.termId}})
+        navigate('/history/datedetail', { state: { date: date, termId: term.termId } })
     }
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
+
+    if (!termday.length > 0) {
+        return (
+            <div className="p-2 border border-gray-200 rounded-md shadow">
+                <div className="flex flex-row items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-9 text-[#007BFF]   ">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                    </svg>
+                    <h3 className="font-heading text-base text-[#007BFF]">ยังไม่มีรายการแสดงการเข้าเรียน</h3>
+                </div>
+                <p className="text-sm text-[#4F4F4F] indent-10 font-body">เนื่องจากยังไม่มีข้อมูลการเข้าเรียนตามคาบเรียนในขณะนี้ อาจเป็นเพราะยังไม่ถึงวันที่มีการเรียนการสอนในระบบ กรุณาตรวจสอบอีกครั้งเมื่อถึงวันที่มีคาบเรียน</p>
+                
+            </div>
+        );
+    };
+
 
     return (
         <div>
