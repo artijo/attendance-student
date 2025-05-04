@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { HOSTNAME } from "../../config";
+import { formatDateToThai, formatTimeThai } from "../../helper";
 
 function Activities() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -11,28 +12,6 @@ function Activities() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  // Format date to Thai format
-  const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    const date = new Date(dateString);
-    
-    // Add 543 to convert to Buddhist Era (BE)
-    const thaiYear = date.getFullYear() + 543;
-    
-    return date.toLocaleDateString('th-TH', { ...options, year: 'numeric' })
-      .replace(date.getFullYear(), thaiYear);
-  };
-
-  // Format time (HH:MM)
-  const formatTime = (timeString) => {
-    if (!timeString) return "";
-    const parts = timeString.split(":");
-    return `${parts[0]}:${parts[1]}`;
-  };
-
-
   // Fetch activities when classId changes
   useEffect(() => {
     
@@ -177,9 +156,9 @@ function Activities() {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-gray-700">{formatDate(activity.actDate)}</span>
+                    <span className="text-gray-700">{formatDateToThai(activity.actDate)}</span>
                     {activity.actDateEnd && activity.actDate !== activity.actDateEnd && (
-                      <span className="text-gray-700"> - {formatDate(activity.actDateEnd)}</span>
+                      <span className="text-gray-700"> - {formatDateToThai(activity.actDateEnd)}</span>
                     )}
                   </div>
                   
@@ -188,7 +167,7 @@ function Activities() {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 mr-2" viewBox="0 0 20 20" fill="currentColor">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-gray-700">{formatTime(activity.actStartTime)} - {formatTime(activity.actEndTime)} น.</span>
+                    <span className="text-gray-700">{formatTimeThai(activity.actStartTime)} - {formatTimeThai(activity.actEndTime)} น.</span>
                   </div>
                   
                   {/* Location */}

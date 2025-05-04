@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import { HOSTNAME, TIME_ZONE } from "../../config";
 import { DateTime } from "luxon";
+import { formatDate, formatDateTime, formatTitle, formatTimeThai } from "../../helper";
 
 function ActivityDetail() {
   const { id } = useParams();
@@ -193,21 +194,6 @@ function ActivityDetail() {
     }
   }, [activity, userClassrooms, selectedDate]);
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const thaiYear = date.getFullYear() + 543;
-    return `${day}/${month}/${thaiYear}`;
-  };
-  
-  const formatTime = (timeString) => {
-    if (!timeString) return "";
-    const parts = timeString.split(":");
-    return `${parts[0]}:${parts[1]}`;
-  };
-  
   const getTodayParticipation = (participations) => {
     if (!participations) return [];
     const today = DateTime.now().setZone(TIME_ZONE).startOf('day');
@@ -350,7 +336,7 @@ function ActivityDetail() {
               <div>
                 <p className="text-sm text-text-color-alt mb-1">เวลา</p>
                 <p className="text-base font-medium">
-                  {formatTime(activity?.actStartTime)} - {formatTime(activity?.actEndTime)} น.
+                  {formatTimeThai(activity?.actStartTime)} - {formatTimeThai(activity?.actEndTime)}
                 </p>
               </div>
             </div>
@@ -607,15 +593,7 @@ function ActivityDetail() {
                       );
                       
                       // Helper function for title display
-                      const getTitleDisplay = (title) => {
-                        switch(title) {
-                          case 'MR': return 'นาย';
-                          case 'MS': return 'นางสาว';
-                          case 'BOY': return 'เด็กชาย';
-                          case 'GIRL': return 'เด็กหญิง';
-                          default: return title || '';
-                        }
-                      };
+                      // ...existing code...
                       
                       return (
                         <tr key={participant.actParticipateId}>
@@ -626,10 +604,10 @@ function ActivityDetail() {
                             {participant.stdId}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                            {getTitleDisplay(participant.student?.title)} {participant.student?.fName} {participant.student?.lName}
+                            {formatTitle(participant.student?.title)} {participant.student?.fName} {participant.student?.lName}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {new Date(participant.joinTimestamp).toLocaleString('th-TH')}
+                            {formatDateTime(participant.joinTimestamp)}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {participant.note || '-'}
@@ -692,13 +670,13 @@ function ActivityDetail() {
                           {participant.stdId}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {participant.student?.title} {participant.student?.fName} {participant.student?.lName}
+                          {formatTitle(participant.student?.title)} {participant.student?.fName} {participant.student?.lName}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                           {classroom ? `ม.${classroom.classLevel}/${classroom.classRoom}` : "-"}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(participant.joinTimestamp).toLocaleString('th-TH')}
+                          {formatDateTime(participant.joinTimestamp)}
                         </td>
                       </tr>
                     );

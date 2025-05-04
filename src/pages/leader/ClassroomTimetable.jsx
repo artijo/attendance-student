@@ -3,6 +3,7 @@ import axios from "axios";
 import { HOSTNAME, TIME_ZONE } from "../../config";
 import { useParams, Link } from "react-router-dom";
 import { DateTime } from "luxon";
+import { formatDateToThai, formatTimeThai, weekDayToThaiString } from "../../helper";
 
 function ClassroomTimetable() {
   const { classId } = useParams();
@@ -49,13 +50,6 @@ function ClassroomTimetable() {
     }
   };
 
-  const formatTime = (timeString) => {
-    if (!timeString) return "-";
-    
-    // Convert time string (HH:MM:SS) to formatted time (HH:MM)
-    return timeString.substring(0, 5);
-  };
-
   const isCurrentlyInClass = (timeStart, timeEnd) => {
     if (!timeStart || !timeEnd) return false;
     
@@ -75,12 +69,6 @@ function ClassroomTimetable() {
     });
   };
 
-  const getWeekdayName = (dayOfWeek) => {
-    const weekdays = ["อาทิตย์", "จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์"];
-    // Convert from 0-6 (Sunday-Saturday) to correct index
-    return weekdays[dayOfWeek % 7];
-  };
-  
   const isClassToday = (subject) => {
     if (!subject.studyTime || subject.studyTime.length === 0) return false;
     
@@ -92,10 +80,6 @@ function ClassroomTimetable() {
       const studyDate = DateTime.fromISO(time.studingTimeDate).toISODate();
       return studyDate === todayDate;
     });
-  };
-
-  const formatDate = (date) => {
-    return date.setLocale("th").toFormat("d MMMM yyyy");
   };
 
   // Filter timetable to show only today's subjects
@@ -135,7 +119,7 @@ function ClassroomTimetable() {
       <div className="mb-4 bg-gray-50 p-4 rounded-lg flex justify-between items-center">
         <div>
           <p className="text-gray-700">
-            <span className="font-medium">วันที่</span> {formatDate(currentDateTime)}
+            <span className="font-medium">วันที่</span> {formatDateToThai(currentDateTime.toISODate())}
           </p>
           <p className="text-gray-500 text-sm">
             เวลาปัจจุบัน: {currentDateTime.toFormat("HH:mm น.")}
@@ -214,9 +198,8 @@ function ClassroomTimetable() {
                     >
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                     </svg>
-                    <span className="text-gray-700">
-                      {formatTime(entry.timeStart)} - {formatTime(entry.timeEnd)} น. 
-                      <span className="text-gray-500 text-xs ml-2">(สาย {formatTime(entry.timeLate)} น.)</span>
+                    <span className="text-gray-700">{formatTimeThai(entry.timeStart)} - {formatTimeThai(entry.timeEnd)}
+                      <span className="text-gray-500 text-xs ml-2">(สาย {formatTimeThai(entry.timeLate)})</span>
                     </span>
                   </div>
                   
@@ -246,7 +229,7 @@ function ClassroomTimetable() {
                       <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
                     </svg>
                     <span className="text-gray-700">
-                      วันเรียน: ทุกวัน{getWeekdayName(entry.dayOfWeek)}
+                      วันเรียน: ทุก{weekDayToThaiString(entry.dayOfWeek)}
                     </span>
                   </div>
                   

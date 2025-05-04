@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { HOSTNAME, TIME_ZONE } from "../../config";
-import { formatDate } from "../../helper";
+import { formatDate, formatTitle } from "../../helper";
 import { DateTime } from "luxon";
 
 function CheckIn() {
@@ -182,7 +182,7 @@ function CheckIn() {
             const query = searchQuery.toLowerCase();
             result = result.filter(student => {
                 // Get Thai display for title
-                const titleDisplay = getTitleDisplay(student.student?.title);
+                const titleDisplay = formatTitle(student.student?.title);
                 const studentName = `${titleDisplay} ${student.student?.fName} ${student.student?.lName}`.toLowerCase();
                 const studentId = student.stdId?.toLowerCase() || '';
                 const studentNo = student.stdNo?.toString() || '';
@@ -210,19 +210,6 @@ function CheckIn() {
             absent: students.length - presentCount
         }));
     }, [studentStatuses, students]);
-
-    // Helper function to convert title codes to Thai display
-    const getTitleDisplay = (title) => {
-        if (!title) return '';
-        
-        switch(title) {
-            case 'MR': return 'นาย';
-            case 'MS': return 'นางสาว';
-            case 'BOY': return 'เด็กชาย';
-            case 'GIRL': return 'เด็กหญิง';
-            default: return title;
-        }
-    };
 
     const handleAttendanceChange = async (studentId, status, note = notes[studentId] || '') => {
         if (!isValidDate) {
@@ -531,7 +518,7 @@ function CheckIn() {
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-text-color">{student.stdNo}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-text-color-alt">{student.stdId}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-body text-text-color">
-                                                    {getTitleDisplay(student.student?.title)} {student.student?.fName} {student.student?.lName}
+                                                    {formatTitle(student.student?.title)} {student.student?.fName} {student.student?.lName}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap">
                                                     <div className="flex justify-center gap-4">
