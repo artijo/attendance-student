@@ -18,6 +18,9 @@ const Classrooms = lazy(() => import('./pages/leader/Classrooms.jsx'))
 const ClassroomMembers = lazy(() => import('./pages/leader/ClassroomMembers.jsx'))
 const ClassroomTimetable = lazy(() => import('./pages/leader/ClassroomTimetable.jsx'))
 const Attendance = lazy(() => import('./pages/leader/Attendance.jsx'))
+const Activities = lazy(() => import('./pages/leader/Activities.jsx'))
+const ActivityDetail = lazy(() => import('./pages/leader/ActivityDetail.jsx'))
+const CheckIn = lazy(() => import('./pages/leader/CheckIn.jsx'))
 const JoinActivityWithLink = lazy(() => import('./pages/activity/JoinActivityWithLink.jsx'))
 
 const LoadingSpinner = () => (
@@ -46,6 +49,9 @@ createRoot(document.getElementById('root')).render(
           <Route path='leader/classrooms/:classId/members' element={<ClassroomMembers />}/>
           <Route path='leader/classrooms/:classId/timetable' element={<ClassroomTimetable />}/>
           <Route path='leader/attendance/:studingid' element={<Attendance />}/>
+          <Route path='leader/activities' element={<Activities />} />
+          <Route path='leader/activities/:id' element={<ActivityDetail />} />
+          <Route path='leader/checkin/:id' element={<CheckIn />} />
         </Route>
       </Routes>
     </Suspense>
