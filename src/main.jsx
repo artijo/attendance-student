@@ -18,6 +18,7 @@ const Classrooms = lazy(() => import('./pages/leader/Classrooms.jsx'))
 const ClassroomMembers = lazy(() => import('./pages/leader/ClassroomMembers.jsx'))
 const ClassroomTimetable = lazy(() => import('./pages/leader/ClassroomTimetable.jsx'))
 const Attendance = lazy(() => import('./pages/leader/Attendance.jsx'))
+const JoinActivityWithLink = lazy(() => import('./pages/activity/JoinActivityWithLink.jsx'))
 
 const LoadingSpinner = () => (
   <div className="loading-spinner">
@@ -35,7 +36,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='attendence' element={<StudentAttendence/>}/>
           <Route path='attendance/qr/:token' element={<AttendanceWithLink />} />
-
+          <Route path='activity/qr/:token' element={<JoinActivityWithLink />} />
           <Route path='history' element={<AttendenceHistory/>}/>
           <Route path='history/datedetail' element={<AttendenceByDaySummarizeDetail/>}/>
           <Route path='leavereq' element={<LeaveRequest />}/>
