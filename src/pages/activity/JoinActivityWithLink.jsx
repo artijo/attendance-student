@@ -56,12 +56,28 @@ const JoinActivityWithLink = () => {
         if (err.response?.status === 404) {
           setError("หมดเวลาเข้าร่วมกิจกรรม");
         } else if (err.response?.status === 400) {
-          setError("ไม่ใช่นักเรียนที่สามารถเข้าร่วมกิจกรรมนี้ได้");
+          // Handle specific 400 error messages from server
+          const errorMessage = err.response?.data?.message;
+          if (errorMessage === "activity is not in date") {
+            setError("ไม่สามารถเข้าร่วมกิจกรรมได้เนื่องจากไม่อยู่ในช่วงวันที่จัดกิจกรรม");
+          } else if (errorMessage === "activity is not in time") {
+            setError("ไม่สามารถเข้าร่วมกิจกรรมได้เนื่องจากไม่อยู่ในช่วงเวลาที่จัดกิจกรรม");
+          } else if (errorMessage === "activity is full") {
+            setError("ไม่สามารถเข้าร่วมกิจกรรมได้เนื่องจากกิจกรรมเต็มแล้ว");
+          } else if (errorMessage === "you are not in classroom that can join this activity") {
+            setError("คุณไม่ได้อยู่ในห้องเรียนที่สามารถเข้าร่วมกิจกรรมนี้ได้");
+          } else if (errorMessage === "bad requset") {
+            setError("คำขอไม่ถูกต้อง โปรดลองใหม่อีกครั้ง");
+          } else {
+            setError("ไม่สามารถเข้าร่วมกิจกรรมได้");
+          }
         } else if (err.response?.status === 500 && 
                   (err.response?.data?.message?.name === 'TokenExpiredError' || 
                    (typeof err.response?.data?.message === 'string' && 
                     err.response?.data?.message.includes('jwt expired')))) {
           setError("หมดเวลาเข้าร่วมกิจกรรม - โทเคนหมดอายุ");
+        } else if (err.response?.status === 500 && err.response?.data?.message === "something happening") {
+          setError("เกิดข้อผิดพลาดในระบบ โปรดติดต่อผู้ดูแลระบบ");
         } else {
           setError(err.response?.data?.message?.message || 
                   err.response?.data?.message || 
