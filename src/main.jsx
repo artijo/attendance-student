@@ -3,9 +3,6 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
-import AttendenceHistory from './pages/AttendenceHistory/AttendenceHistory.jsx';
-import AttendenceByDaySummarizeDetail from './pages/AttendenceHistory/Page/AttendenceByDaySummarizeDetail.jsx';
-import AttendenceBySubjectSumarizeDetail from './pages/AttendenceHistory/Page/AttendenceBySubjectSumarizeDetail.jsx';
 
 // Lazy load components
 const Login = lazy(() => import('./pages/Login.jsx'))
@@ -23,6 +20,9 @@ const Activities = lazy(() => import('./pages/leader/Activities.jsx'))
 const ActivityDetail = lazy(() => import('./pages/leader/ActivityDetail.jsx'))
 const CheckIn = lazy(() => import('./pages/leader/CheckIn.jsx'))
 const JoinActivityWithLink = lazy(() => import('./pages/activity/JoinActivityWithLink.jsx'))
+const AttendenceHistory = lazy(() => import('./pages/AttendenceHistory/AttendenceHistory.jsx'));
+const AttendenceByDaySummarizeDetail = lazy(() => import('./pages/AttendenceHistory/Page/AttendenceByDaySummarizeDetail.jsx'));
+const AttendenceBySubjectSumarizeDetail = lazy(() => import('./pages/AttendenceHistory/Page/AttendenceBySubjectSumarizeDetail.jsx'));
 
 const LoadingSpinner = () => (
   <div className="loading-spinner">
