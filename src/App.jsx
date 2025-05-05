@@ -63,6 +63,7 @@ function App() {
     { name: "แดชบอร์ด", path: "/dashboard", icon: "home.svg" },
     { name: "เช็คชื่อเข้าเรียน", path: "/attendence", icon: "attendance.svg" },
     { name: "ประวัติ", path: "/history", icon: "history.svg"},
+    { name: "กิจกรรม", path: "/activity", icon: "activity.svg"},
     // { name: "วิชาที่สอน", path: "/subjects", icon:"subject.svg" },
     // { name: "กิจกรรม", path: "/activities", icon:"activity.svg" },
     { name: "คำร้อง", path: "/leavereq", icon: "leave.svg" },

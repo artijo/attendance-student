@@ -2,7 +2,15 @@ import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
+<<<<<<< Updated upstream
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+=======
+import { BrowserRouter, Routes, Route } from "react-router";
+import AttendenceHistory from './pages/AttendenceHistory/AttendenceHistory.jsx';
+import AttendenceByDaySummarizeDetail from './pages/AttendenceHistory/Page/AttendenceByDaySummarizeDetail.jsx';
+import AttendenceBySubjectSumarizeDetail from './pages/AttendenceHistory/Page/AttendenceBySubjectSumarizeDetail.jsx';
+import ActivityMainPage from './pages/activity/ActivityMainPage.jsx';
+>>>>>>> Stashed changes
 
 // Lazy load components
 const Login = lazy(() => import('./pages/Login.jsx'))
@@ -41,6 +49,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='attendence' element={<StudentAttendence/>}/>
           <Route path='attendance/qr/:token' element={<AttendanceWithLink />} />
+          <Route path='activity' element={<ActivityMainPage/>}/>
           <Route path='activity/qr/:token' element={<JoinActivityWithLink />} />
           <Route path='history' element={<AttendenceHistory/>}/>
           <Route path='history/datedetail' element={<AttendenceByDaySummarizeDetail/>}/>
