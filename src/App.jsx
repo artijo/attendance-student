@@ -208,7 +208,7 @@ function App() {
           <h1 className="md:hidden text-center text-xl md:text-left font-bold">
             ระบบบันทึกการเข้าเรียนและกิจกรรม
           </h1>
-          <div className="sm:hidden">
+          <div className="sm:hidden" onClick={Logout}>
             <svg
               width={25}
               fill="#ffffff"
