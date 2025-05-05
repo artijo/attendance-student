@@ -47,7 +47,7 @@ function AttendenceBySubjectSumarizeDetail() {
     const location = useLocation();
     const { subject, term } = location.state;
     const [filter, setFilter] = useState('in');
-
+    // console.log(studytime);
     const formatAttStatus = (status) => {
         switch (status) {
             case 'present': {
@@ -88,37 +88,37 @@ function AttendenceBySubjectSumarizeDetail() {
     const handleFilterList = (filter) => {
         const studytimeClone = [...studytime];
         const dtNow = DateTime.now().setZone('Asia/Bangkok');
-        if (filter === 'all') {
-            setFilterStudyTime(studytimeClone);
-        } else if (filter === 'not-in') {
+        if (filter === 'not-in') {
             const filterNotin = studytimeClone.filter((studytime) => {
                 const dtStudytime = DateTime.fromISO(studytime.studingTimeDate).setZone('Asia/Bangkok');
                 return dtStudytime > dtNow;
             });
+            
             setFilterStudyTime(filterNotin);
-            // console.log(filterNotin);
         } else if (filter === 'in') {
             const filterIn = studytimeClone.filter((studytime) => {
                 const dtStudytime = DateTime.fromISO(studytime.studingTimeDate).setZone('Asia/Bangkok');
+                // console.log(`${dtStudytime < dtNow} ${studytime.studyTimeId}`);
                 return dtStudytime < dtNow;
             });
+            // console.log(filterIn)
             setFilterStudyTime(filterIn);
-            // console.log(filterIn);
         };
     };
 
 
     const handleFilterOnChange = (value) => {
         setFilter(value);
+        handleFilterList(value);
     };
-
-    useEffect(() => {
-        handleFilterList(filter);
-    }, [filter])
 
     useEffect(() => {
         callSummarizeStuingTime();
     }, []);
+
+    useEffect(() => {
+        handleFilterList(filter);
+    },[studytime])
 
     return (
         <div className="sm:max-w-md md:max-w-lg mx-auto p-2">
@@ -134,13 +134,6 @@ function AttendenceBySubjectSumarizeDetail() {
                     >
                         คาบเรียนที่เรียนแล้ว
                     </li>
-                    {/* <li
-                        className={`border px-4 py-1 rounded-full transition-all delay-75 ${filter === 'all' ? ' bg-accent font-medium text-white shadow' : 'border-gray-300'
-                            }`}
-                        onClick={() => handleFilterOnChange('all')}
-                    >
-                        ทั้งหมด
-                    </li> */}
                     <li
                         className={`border px-4 py-1 rounded-full transition-all delay-75 ${filter === 'not-in' ? ' bg-accent font-medium text-white shadow' : 'border-gray-300'
                             }`}
