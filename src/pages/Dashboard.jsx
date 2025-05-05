@@ -15,6 +15,7 @@ function Dashboard() {
     permission: null,
     location: null,
   });
+  const [isCheckedIn, setIsCheckedIn] = useState(false);
 
   // Format time for display (HH:MM)
   const formatTime = (timeString) => {
@@ -202,14 +203,14 @@ function Dashboard() {
         `${HOSTNAME}/s/attendence/isEnrollment`, 
         { enrollmentInfo: enrollmentInfo }
       );
-      
       if (response.status === 200) {
-        return parseInt(response.data.isFound) === 1;
+        setIsCheckedIn(response.data.isFound === 1);
+      } else {
+        setIsCheckedIn(false);
       }
-      return false;
     } catch (error) {
-      console.error("Error checking enrollment status:", error);
-      return false;
+      console.error("Error checking attendance status:", error);
+      setIsCheckedIn(false);
     }
   };
 
@@ -232,6 +233,14 @@ function Dashboard() {
       fetchTimetable();
     }
   }, [locationStatus.location]);
+
+  // Check if the user has already checked in for the current class
+  useEffect(() => {
+    if (currentClasses.length > 0) {
+      const currentClass = currentClasses[0]; // Assuming the first class is the current one
+      isAlreadyCheckedIn(currentClass);
+    }
+  }, [currentClasses]);
 
   return (
     <div className="p-4 md:p-6 max-w-4xl mx-auto">
@@ -360,13 +369,16 @@ function Dashboard() {
                       <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
                     </svg>
                     <span className="text-gray-700">
-                      อาจารย์ {classItem.timetable.subject.teacher.fName} {classItem.timetable.subject.teacher.lName}
+                      คุณครู {classItem.timetable.subject.teacher.fName} {classItem.timetable.subject.teacher.lName}
                     </span>
                   </div>
 
                   <button
                     onClick={() => handleAttendance(classItem)}
-                    className="mt-4 w-full py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors flex items-center justify-center shadow-sm"
+                    disabled={isCheckedIn}
+                    className={`mt-4 w-full py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors flex items-center justify-center shadow-sm ${
+                      isCheckedIn ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                      }`}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -376,7 +388,7 @@ function Dashboard() {
                     >
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    เช็คชื่อเข้าเรียน
+                    {isCheckedIn ? "เช็คชื่อเรียบร้อยแล้ว" : "เช็คชื่อ"}
                   </button>
                 </div>
               </div>
