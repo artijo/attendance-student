@@ -2,10 +2,10 @@ import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
-import { BrowserRouter, Routes, Route } from "react-router";
-import AttendenceHistory from './pages/AttendenceHistory/AttendenceHistory.jsx';
-import AttendenceByDaySummarizeDetail from './pages/AttendenceHistory/Page/AttendenceByDaySummarizeDetail.jsx';
-import AttendenceBySubjectSumarizeDetail from './pages/AttendenceHistory/Page/AttendenceBySubjectSumarizeDetail.jsx';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+// import AttendenceHistory from './pages/AttendenceHistory/AttendenceHistory.jsx';
+// import AttendenceByDaySummarizeDetail from './pages/AttendenceHistory/Page/AttendenceByDaySummarizeDetail.jsx';
+// import AttendenceBySubjectSumarizeDetail from './pages/AttendenceHistory/Page/AttendenceBySubjectSumarizeDetail.jsx';
 import ActivityMainPage from './pages/activity/ActivityMainPage.jsx';
 
 // Lazy load components
