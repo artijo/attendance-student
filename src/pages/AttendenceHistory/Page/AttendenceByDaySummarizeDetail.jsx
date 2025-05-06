@@ -12,6 +12,30 @@ function AttendenceByDaySummarizeDetail() {
     console.log(date);
     console.log(termId);
 
+    const formatAttStatus = (status) => {
+        switch (status) {
+            case 'present': {
+                return 'เข้าเรียน';
+            }
+            case 'absent': {
+                return 'ไม่เข้าเรียน';
+            }
+            case 'late': {
+                return 'มาสาย';
+            }
+            case 'activity': {
+
+                return 'เข้าเรียนกิจกรรม';
+            }
+            case 'leave': {
+
+                return 'ลา';
+            }
+            default:
+                return status;
+        }
+    };
+
     const callApiSummarizeDetail = async () => {
         try {
             const response = await axios.get(`${HOSTNAME}/s/attendence/history/${termId}/${date}`);
@@ -75,17 +99,26 @@ function AttendenceByDaySummarizeDetail() {
                                 </div>
                             </div>
                             <div className="px-4 py-2 items-center text-sm">
-                                <div className="flex">
+                                <div className="flex items-center text-sm">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5 text-gray-500 mr-2">
                                         <path fillRule="evenodd" d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 1 0 3 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 0 0 2.273 1.765 11.842 11.842 0 0 0 .976.544l.062.029.018.008.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" clipRule="evenodd" />
                                     </svg>
                                     <p className="text-gray-500">
                                         { st.attendance.length > 0 ? `ลองจิจูด: ${st.attendance[0].longitute} ละติจูด: ${st.attendance[0].latitute}` : '-'}
                                     </p>
+                                </div>
+                            </div>
+                            <div className="px-4 py-2 items-center text-sm">
+                                <div className="flex items-center text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="h-5 w-5 text-gray-500 mr-2">
+                                        <path fillRule="evenodd" d="M4.5 2A2.5 2.5 0 0 0 2 4.5v3.879a2.5 2.5 0 0 0 .732 1.767l7.5 7.5a2.5 2.5 0 0 0 3.536 0l3.878-3.878a2.5 2.5 0 0 0 0-3.536l-7.5-7.5A2.5 2.5 0 0 0 8.38 2H4.5ZM5 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clipRule="evenodd" />
+                                    </svg>
+
+                                    <p className="text-gray-500">
+                                        { st.attendance.length > 0 ? `${formatAttStatus(st.attendance[0].attStatus.toLowerCase())}` : '-'}
+                                    </p>
                                     
                                 </div>
-                                
-                                
                             </div>
                         </div>
                     </div>
