@@ -62,7 +62,7 @@ function AttendenceByDaySummarizeDetail() {
 
     return (
         <div className="sm:max-w-md md:max-w-lg mx-auto p-2">
-            <h1 className="text-2xl font-bold">การเข้าเรียนตามคาบ</h1>
+            <h1 className="text-2xl font-bold text-accent">การเข้าเรียนตามคาบ</h1>
             <div className="mt-2 mb-3 h-1 w-16 bg-secondary rounded-full"></div>
             <div className="mb-3">
                 <div className="bg-gray-50 border border-line rounded-lg p-4">

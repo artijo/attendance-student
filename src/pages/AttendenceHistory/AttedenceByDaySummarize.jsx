@@ -61,7 +61,6 @@ function AttedenceByDaySummarize({ term }) {
                     <h3 className="font-heading text-base text-[#007BFF]">ยังไม่มีรายการแสดงการเข้าเรียน</h3>
                 </div>
                 <p className="text-sm text-[#4F4F4F] indent-10 font-body">เนื่องจากยังไม่มีข้อมูลการเข้าเรียนตามคาบเรียนในขณะนี้ อาจเป็นเพราะยังไม่ถึงวันที่มีการเรียนการสอนในระบบ กรุณาตรวจสอบอีกครั้งเมื่อถึงวันที่มีคาบเรียน</p>
-                
             </div>
         );
     };
