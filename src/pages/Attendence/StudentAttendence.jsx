@@ -7,6 +7,7 @@ import EnrollmentCard from "../../components/Attendence/EnrollmentCard";
 
 function StudentAttendence() {
     const dtNow = DateTime.now().setZone(TIME_ZONE);
+    
     const [studingTime, setStudingTime] = useState([]);
     const [loading, setLoading] = useState(false);
     const [notPermission, setNotPermission] = useState(false);
@@ -82,11 +83,10 @@ function StudentAttendence() {
 
 
     if (notPermission) {
-        // console.log('not permission render');
         return (
             <div className="m-4">
                 <div className="mb-4">
-                    <h1 className="text-lg font-medium">เช็คชื่อเข้าเรียน</h1>
+                    <h1 className="text-lg font-medium text-accent">เช็คชื่อเข้าเรียน</h1>
                     <h4 className="text-3xl font-medium">{weekDayToThaiString(dtNow.weekday)}, {getThaiMonth(dtNow.month)} {dtNow.day} </h4>
                 </div>
                 <div className="grid grid-cols-1 gap-4 border border-gray-200 rounded-xl shadow-md p-5">
@@ -111,7 +111,6 @@ function StudentAttendence() {
     };
 
     if (loading) {
-        // console.log('loading rendering');
         return (
             <div className="flex justify-center items-center p-12">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
@@ -122,7 +121,7 @@ function StudentAttendence() {
     return (
         <div className="sm:max-w-md md:max-w-lg mx-auto p-2">
             <div className="mb-4">
-                <h1 className="text-lg font-medium">เช็คชื่อเข้าเรียน</h1>
+                <h1 className="text-lg font-medium text-accent">เช็คชื่อเข้าเรียน</h1>
                 <h4 className="text-3xl font-medium">{weekDayToThaiString(dtNow.weekday)}, {getThaiMonth(dtNow.month)} {dtNow.day} </h4>
             </div>
             {location.latitude && location.longitude && (
