@@ -1,19 +1,28 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function AttendenceBySubjectSumarize({ subjectList }) {
+function AttendenceBySubjectSumarize({ subjectList, term }) {
+    const navigate = useNavigate();
     // console.log(subjectList);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
     const totalPages = Math.ceil(subjectList.length / itemsPerPage);
     const sliceSubjectList = subjectList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
 
+    const navigateToDetailPage = (subject, term) => {
+        navigate('/history/subjectdetail', { state: { subject: subject, term: term } })
+    }
+
     return (
         <div>
             {subjectList.length > 0 && sliceSubjectList.map((subject, index) => (
-                <div key={subject.subId} className="bg-white shadow-md rounded-lg p-4 mb-4 border border-gray-200">
+                <div key={subject.subId} className="bg-white shadow-md rounded-lg p-4 mb-4 border border-gray-200"
+                    onClick={() => navigateToDetailPage(subject, term)}
+                >
                     <div className="flex justify-between items-center mb-2">
                         <h3 className="text-lg font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-xl w-fit">{subject.subCode} - {subject.subNameThai}</h3>
                         <span className="text-gray-500">{subject.subNameEng}</span>

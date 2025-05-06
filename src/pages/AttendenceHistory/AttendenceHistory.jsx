@@ -114,6 +114,7 @@ function AttendenceHistory() {
                 >
                     <AttendenceBySubjectSumarize
                         subjectList={subjectlist}
+                        term={selectTerm}
                     />
                 </TapAttendenceSummaryOpen>
             </div>

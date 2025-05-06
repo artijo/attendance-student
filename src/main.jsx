@@ -5,6 +5,7 @@ import App from './App.jsx'
 import { BrowserRouter, Routes, Route } from "react-router";
 import AttendenceHistory from './pages/AttendenceHistory/AttendenceHistory.jsx';
 import AttendenceByDaySummarizeDetail from './pages/AttendenceHistory/Page/AttendenceByDaySummarizeDetail.jsx';
+import AttendenceBySubjectSumarizeDetail from './pages/AttendenceHistory/Page/AttendenceBySubjectSumarizeDetail.jsx';
 
 // Lazy load components
 const Login = lazy(() => import('./pages/Login.jsx'))
@@ -39,6 +40,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='activity/qr/:token' element={<JoinActivityWithLink />} />
           <Route path='history' element={<AttendenceHistory/>}/>
           <Route path='history/datedetail' element={<AttendenceByDaySummarizeDetail/>}/>
+          <Route path='history/subjectdetail' element={<AttendenceBySubjectSumarizeDetail/>}/>
           <Route path='leavereq' element={<LeaveRequest />}/>
           <Route path='leavereq/create' element={<CreateLeaveRequest />}/>
           <Route path='leavereq/:id' element={<LeaveRequestDetail />}/>
