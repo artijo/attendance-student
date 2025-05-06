@@ -1,8 +1,10 @@
 import axios from "axios";
 import { DateTime } from "luxon";
 import { HOSTNAME, TIME_ZONE } from "../../config";
+import { useEffect, useState } from "react";
 
 function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
+    const [status, setStatus] = useState(false);
     const teacher = enrollmentInfo.timetable.subject.teacher;
     const timetable = enrollmentInfo.timetable;
     const subject = enrollmentInfo.timetable.subject;
@@ -11,11 +13,7 @@ function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
         try{
             const response = await axios.post(`${HOSTNAME}/s/attendence/isEnrollment`, {enrollmentInfo : enrollmentInfo})
             if(response.status === 200) {
-                if(parseInt(response.data.isFound) === 1) {
-                    return true;
-                }else if(parseInt(response.data.isFound) === 0){
-                    return false;
-                };
+                return response.data.isFound;
             }else{
                 throw new Error(response.data.message);
             };
@@ -70,10 +68,17 @@ function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
         }
     };
 
-    // useEffect(() => {
-    //     isEnrollmentCheck()
-    // },[])
-
+    useEffect(() => {
+        const fetchEnrollmentStatus = async () => {
+            const result = await isEnrollmentCheck();
+            if(result === 1) {
+                setStatus(true);
+            }else if(result === 0){
+                setStatus(false);
+            };
+        };
+        fetchEnrollmentStatus();
+    }, []);
 
     return (
         <div className="grid grid-cols-1 border border-gray-200 rounded-lg bg-white shadow">
@@ -101,15 +106,15 @@ function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
                 </div>
                 {compareTime() && (
                     <button
-                        disabled={isEnrollmentCheck()}
+                        disabled={status}
                         onClick={() => callEnrollmentApi()}
                         className={`text-sm font-semibold tracking-wide px-4 py-2 rounded-md shadow-sm transition-all duration-200 ease-in-out transform focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${
-                            isEnrollmentCheck() 
+                            status
                             ? 'bg-gray-400 cursor-not-allowed opacity-50' 
-                            : 'bg-blue-600 hover:bg-blue-700 hover:scale-105 text-white'
+                            :  'bg-blue-600 hover:bg-blue-700 hover:scale-105 text-white'
                         }`}
                     >
-                        { isEnrollmentCheck() ?  'เช็คชื่อแล้ว' : 'เช็คชื่อ'}
+                        { status ?  'เช็คชื่อแล้ว' : 'เช็คชื่อ'}
                     </button>
                 )}
             </div>
