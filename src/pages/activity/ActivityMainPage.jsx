@@ -7,36 +7,40 @@ import { useNavigate } from "react-router-dom";
 
 function ActivityMainPage() {
     const navigate = useNavigate();
-    const dtNow = DateTime.now().setZone('Asia/Bangkok');    
+    const dtNow = DateTime.now().setZone('Asia/Bangkok');
     const [activityInThisDay, setActivityInThisDay] = useState([]);
     const [isCheckedIn, setIsCheckedIn] = useState([]);
     const [activity, setActivity] = useState([]);
 
+    const navigateToDetailPage = (activityObject) => {
+        navigate('/activity/detail', { state: { activity: activityObject } });
+    };
+
     const isCheckedInActivity = async (activityId) => {
-        try{
+        try {
             const respone = await axios.get(`${HOSTNAME}/s/activity/isCheckin/${activityId}`);
-            if(respone.status === 200) {
+            if (respone.status === 200) {
                 return respone.data.isFound;
-            }else{
-                throw new Error(respone.data.message);                
+            } else {
+                throw new Error(respone.data.message);
             };
-        }catch(error) {
+        } catch (error) {
             console.error(error);
         };
     };
 
     const checkInActivity = async (activity) => {
-        try{
+        try {
             const respone = await axios.post(`${HOSTNAME}/s/activity`, { activity: activity });
-            if(respone.status === 200) {
-                if(parseInt(respone.data.status) === 1) {
+            if (respone.status === 200) {
+                if (parseInt(respone.data.status) === 1) {
                     alert('บันทึกการเข้าเรียนสำเร็จ');
                     window.location.reload();
                 };
-            }else{
+            } else {
                 throw new Error(respone.data.message);
             }
-        }catch(error) {
+        } catch (error) {
             console.error(error);
         };
     };
@@ -57,7 +61,7 @@ function ActivityMainPage() {
             return accumulator;
         }, []);
 
-        const createButtonStatus = Promise.all(activityAttendanceStatus.map( async (act) => {
+        const createButtonStatus = Promise.all(activityAttendanceStatus.map(async (act) => {
             const isFound = await isCheckedInActivity(act.actId);
             return isFound;
         }));
@@ -123,7 +127,7 @@ function ActivityMainPage() {
                                             <span>{act.actStartTime}น. - {act.actEndTime}น.</span>
                                         </p>
                                     </div>
-                                    <button 
+                                    <button
                                         className={`bg-primary text-white font-medium py-1.5 px-2.5 mx-4 mb-4 rounded hover:bg-primary-dark transition duration-300 ${isCheckedIn[index] ? 'opacity-50 cursor-not-allowed' : ''}`}
                                         onClick={() => checkInActivity(act)}
                                         disabled={isCheckedIn[index]}
@@ -174,9 +178,16 @@ function ActivityMainPage() {
                                             {act.actLocation}
                                         </p>
                                     </div>
-                                   
-                                    <button className="w-full bg-primary text-white font-medium text-xs py-1.5 px-2.5 mt-1.5 rounded hover:bg-primary-dark transition duration-300">
-                                        รายละเอียด
+
+                                    <button 
+                                        className="flex justify-center gap-1 w-full bg-primary text-white font-medium text-xs py-1.5 px-2.5 mt-1.5 rounded hover:bg-primary-dark transition duration-300"
+                                        onClick={() => navigateToDetailPage(act)}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
+                                            <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
+                                            <path fillRule="evenodd" d="M1.38 8.28a.87.87 0 0 1 0-.566 7.003 7.003 0 0 1 13.238.006.87.87 0 0 1 0 .566A7.003 7.003 0 0 1 1.379 8.28ZM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" clipRule="evenodd" />
+                                        </svg>
+                                        รายละเอียด/ประวัติ
                                     </button>
                                 </div>
                             ))}

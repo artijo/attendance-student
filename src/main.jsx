@@ -3,11 +3,6 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
-// import AttendenceHistory from './pages/AttendenceHistory/AttendenceHistory.jsx';
-// import AttendenceByDaySummarizeDetail from './pages/AttendenceHistory/Page/AttendenceByDaySummarizeDetail.jsx';
-// import AttendenceBySubjectSumarizeDetail from './pages/AttendenceHistory/Page/AttendenceBySubjectSumarizeDetail.jsx';
-import ActivityMainPage from './pages/activity/ActivityMainPage.jsx';
-
 // Lazy load components
 const Login = lazy(() => import('./pages/Login.jsx'))
 const Dashboard = lazy(() => import('./pages/Dashboard.jsx'))
@@ -27,6 +22,8 @@ const JoinActivityWithLink = lazy(() => import('./pages/activity/JoinActivityWit
 const AttendenceHistory = lazy(() => import('./pages/AttendenceHistory/AttendenceHistory.jsx'));
 const AttendenceByDaySummarizeDetail = lazy(() => import('./pages/AttendenceHistory/Page/AttendenceByDaySummarizeDetail.jsx'));
 const AttendenceBySubjectSumarizeDetail = lazy(() => import('./pages/AttendenceHistory/Page/AttendenceBySubjectSumarizeDetail.jsx'));
+const ActivityMainPage = lazy(() => import('./pages/activity/ActivityMainPage.jsx'));
+const ActivityInfo = lazy(() => import('./pages/activity/ActivityInfo.jsx'));
 
 const LoadingSpinner = () => (
   <div className="loading-spinner">
@@ -46,6 +43,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='attendence' element={<StudentAttendence/>}/>
           <Route path='attendance/qr/:token' element={<AttendanceWithLink />} />
           <Route path='activity' element={<ActivityMainPage/>}/>
+          <Route path='activity/detail' element={<ActivityInfo/>}/>
           <Route path='activity/qr/:token' element={<JoinActivityWithLink />} />
           <Route path='history' element={<AttendenceHistory/>}/>
           <Route path='history/datedetail' element={<AttendenceByDaySummarizeDetail/>}/>
