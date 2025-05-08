@@ -11,6 +11,12 @@ function AttendenceHistory() {
     const [selectTerm, setSelectTerm] = useState(null);
     const [isTabOpen, setIsTabOpen] = useState(new Array(3).fill(false));
 
+    const handleSelectTerm = (value) => {
+        const termlists = termList;
+        const findTerm = termlists.find((term) => term.termId === value);
+        setSelectTerm(findTerm);
+    };
+
     const handleIsTabOpen = (index) => {
         let newIsTabOpen = isTabOpen.slice();
         newIsTabOpen[index] = !newIsTabOpen[index];
@@ -37,7 +43,6 @@ function AttendenceHistory() {
             const termId = term.termId
             const response = await axios.get(`${HOSTNAME}/s/attendecne/subjectlist/${termId}`)
             if (response.status === 200) {
-                console.log(response.data);
                 setSubjectList(response.data);
             } else {
                 throw new Error(response.data.message);
@@ -77,9 +82,12 @@ function AttendenceHistory() {
             </div>
             <div>
                 <p className="text-sm text-text-color-alt ml-1 mb-0.5">ปีและเทอมการศึกษา</p>
-                <select className="border border-gray-300 rounded-md px-1.5 bg-white text-base" onChange={(e) => setSelectTerm(e.target.value)}>
+                <select 
+                    className="border border-gray-300 rounded-md px-1.5 bg-white text-base" 
+                    onChange={(e) => handleSelectTerm(e.target.value)}
+                >
                     {termList.map((term, index) => (
-                        <option key={index} value={term}>ปีการศึกษา {term.academicYear + 543} เทอม {term.semester}</option>
+                        <option key={index} value={term.termId}>ปีการศึกษา {term.academicYear + 543} เทอม {term.semester}</option>
                     ))}
                 </select>
             </div>

@@ -29,6 +29,7 @@ function daybetween(Start, End) {
 }
 
 function AttedenceByDaySummarize({ term }) {
+    // console.log(term);
     const navigate = useNavigate();
     const termStart = DateTime.fromISO(term.termStart).setZone('Asia/Bangkok').toString().split("T")[0];
     const termEnd = DateTime.fromISO(term.termEnd).setZone('Asia/Bangkok').toString().split("T")[0];
