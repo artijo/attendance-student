@@ -154,9 +154,9 @@ function ActivityInfo() {
                         <p className="font-bold">ประเภทกิจกรรม</p>
                         <p className="text-text-color-alt">{activity.activityType.actTypeName}</p>
                     </div>
-                    <div className="flex justify-between text-xs pb-1">
-                        <p className="font-bold">รายละเอียดกิจกรรม</p>
-                        <p className="text-text-color-alt">{activity.actDesc}</p>
+                    <div className="flex justify-between text-xs pb-1 ">
+                        <p className="font-bold w-3/4">รายละเอียดกิจกรรม</p>
+                        <p className="text-text-color-alt text-right">{activity.actDesc}</p>
                     </div>
                 </div>
             </div>
