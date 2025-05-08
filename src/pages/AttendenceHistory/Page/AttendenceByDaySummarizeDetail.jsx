@@ -80,7 +80,7 @@ function AttendenceByDaySummarizeDetail() {
                 </div>
             </div>
             <div className="grid grid-cols-1 gap-3">
-                {studingTime.map((st, key) => (
+                {studingTime.length > 0 ? studingTime.map((st, key) => (
                     <div key={key}>
                         <h1 className="text-base font-bold text-gray-800 font-heading mb-1">คาบที่ {key + 1} เวลา {formatTimeThai(st.timetable.timeStart)}</h1>
                         <div className="grid grid-cols-1 border border-gray-200 shadow rounded-md w-full">
@@ -94,7 +94,7 @@ function AttendenceByDaySummarizeDetail() {
                                         <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z" clipRule="evenodd" />
                                     </svg>
                                     <p className="text-gray-500">
-                                        { st.attendance.length > 0 ?   `ลงชื่อตอน ${formatTimeLocalTh(st.attendance[0].attTimestamp)}`: "-"}
+                                        {st.attendance.length > 0 ? `ลงชื่อตอน ${formatTimeLocalTh(st.attendance[0].attTimestamp)}` : "-"}
                                     </p>
                                 </div>
                             </div>
@@ -104,7 +104,7 @@ function AttendenceByDaySummarizeDetail() {
                                         <path fillRule="evenodd" d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 1 0 3 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 0 0 2.273 1.765 11.842 11.842 0 0 0 .976.544l.062.029.018.008.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z" clipRule="evenodd" />
                                     </svg>
                                     <p className="text-gray-500">
-                                        { st.attendance.length > 0 ? `ลองจิจูด: ${st.attendance[0].longitute} ละติจูด: ${st.attendance[0].latitute}` : '-'}
+                                        {st.attendance.length > 0 ? `ลองจิจูด: ${st.attendance[0].longitute} ละติจูด: ${st.attendance[0].latitute}` : '-'}
                                     </p>
                                 </div>
                             </div>
@@ -115,14 +115,21 @@ function AttendenceByDaySummarizeDetail() {
                                     </svg>
 
                                     <p className="text-gray-500">
-                                        { st.attendance.length > 0 ? `${formatAttStatus(st.attendance[0].attStatus.toLowerCase())}` : '-'}
+                                        {st.attendance.length > 0 ? `${formatAttStatus(st.attendance[0].attStatus.toLowerCase())}` : '-'}
                                     </p>
-                                    
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                ))}
+                )) : (
+                    <div className="bg-gray-50 rounded-lg p-8 text-center border border-gray-200 shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-12 w-12 mx-auto text-gray-400 mb-4">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z" />
+                        </svg>
+                        <h3 className="text-base font-medium text-gray-900">ไม่มีคาบเรียน</h3>
+                    </div>
+                )}
             </div>
 
         </div>
