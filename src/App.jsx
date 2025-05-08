@@ -1,5 +1,5 @@
 import { Outlet, Link, NavLink } from "react-router";
-import { Navigate } from "react-router";
+import { Navigate, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { HOSTNAME } from "./config";
@@ -23,6 +23,10 @@ axios.interceptors.response.use(
       if (!isRefreshing) {
         isRefreshing = true;
         try {
+          // Save current path before redirecting to login
+          if (window.location.pathname !== '/login') {
+            localStorage.setItem('redirectPath', window.location.pathname);
+          }
           const refreshToken = cookie.get("refreshToken");
           const res = await axios.post(
             `${HOSTNAME}/auth/s/refresh`,
@@ -53,13 +57,22 @@ axios.interceptors.response.use(
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const User = userStore((state) => state.user);
-  const navLinks = [
-    { name: "แดชบอร์ด", path: "/dashboard", icon:"home.svg" },
-    // { name: "ห้องเรียน", path: "/classroom", icon:"classroom.svg" },
+  
+  // Create navLinks based on user role
+  const baseNavLinks = [
+    { name: "แดชบอร์ด", path: "/dashboard", icon: "home.svg" },
+    { name: "เช็คชื่อเข้าเรียน", path: "/attendence", icon: "attendance.svg" },
+    { name: "ประวัติ", path: "/history", icon: "history.svg"},
+    { name: "กิจกรรม", path: "/activity", icon: "activity.svg"},
     // { name: "วิชาที่สอน", path: "/subjects", icon:"subject.svg" },
     // { name: "กิจกรรม", path: "/activities", icon:"activity.svg" },
     { name: "คำร้อง", path: "/leavereq", icon: "leave.svg" },
   ];
+  
+  // Add the leader link only if the user is a leader
+  const navLinks = User && User.isLeader 
+    ? [...baseNavLinks, { name: "สำหรับหัวหน้าห้อง", path: "/leader/classrooms", icon: "classroom.svg" }] 
+    : baseNavLinks;
 
   function openMenu() {
     setIsMenuOpen(!isMenuOpen);
@@ -73,6 +86,8 @@ function App() {
   const Logout = async () => {
     cookie.remove("accessToken");
     cookie.remove("refreshToken");
+    // Don't save path on logout as it's an intentional action
+    localStorage.removeItem('redirectPath');
     window.location.href = "/login";
   }
 
@@ -113,16 +128,28 @@ function App() {
         },
       });
       if (res.status !== 200) {
+        // Save current path before redirecting to login
+        if (window.location.pathname !== '/login') {
+          localStorage.setItem('redirectPath', window.location.pathname);
+        }
         refreshTokens();
       }
     } catch (error) {
+      // Save current path before redirecting to login
+      if (window.location.pathname !== '/login') {
+        localStorage.setItem('redirectPath', window.location.pathname);
+      }
       refreshTokens();
     }
-};
+  };
 
 
 
     if (!cookie.get("refreshToken") || !cookie.get("accessToken")) {
+      // Save current path before redirecting to login
+      if (window.location.pathname !== '/login' && window.location.pathname !== '/') {
+        localStorage.setItem('redirectPath', window.location.pathname);
+      }
       return <Navigate to="/login" />;
     }
     useEffect(() => {
@@ -182,7 +209,7 @@ function App() {
           <h1 className="md:hidden text-center text-xl md:text-left font-bold">
             ระบบบันทึกการเข้าเรียนและกิจกรรม
           </h1>
-          <div className="sm:hidden">
+          <div className="sm:hidden" onClick={Logout}>
             <svg
               width={25}
               fill="#ffffff"

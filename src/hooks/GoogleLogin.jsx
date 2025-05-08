@@ -34,9 +34,17 @@ const GoogleLoginButton = ({studentId}) => {
       if (res.status == 200) {
         console.log(res.data)
           cookie.set("accessToken", res.data.jwtToken, { secure: true, expires: 1 });
-            cookie.set("refreshToken", res.data.refreshToken, { secure: true, expires: 24 * 60 * 60 });
-            setUser(res.data);
-            window.location.href = "/dashboard";
+          cookie.set("refreshToken", res.data.refreshToken, { secure: true, expires: 24 * 60 * 60 });
+          setUser(res.data);
+          
+          // Check for saved redirect path in localStorage
+          const redirectPath = localStorage.getItem('redirectPath');
+          if (redirectPath) {
+            localStorage.removeItem('redirectPath'); // Clear it after use
+            window.location.href = redirectPath;
+          } else {
+            window.location.href = "/dashboard"; // Default redirection
+          }
       }else if (res.status == 401) {
         alert("บัญชีนี้ไม่สามารถเข้าสู่ระบบได้ โปรดใช้บัญชีที่ลงทะเบียนไว้ครั้งแรกเท่านั้น");
       } else {

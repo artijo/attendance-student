@@ -3,9 +3,12 @@ import { DateTime } from "luxon";
 import axios from "axios";
 import { HOSTNAME } from "../../config";
 import { useNavigate } from "react-router";
+import { userStore } from "../../store";
 
 function CreateLeaveRequest() {
   const navigate = useNavigate();
+  const user = userStore((state) => state.user);
+  console.log("User data:", user);
   
   const [formData, setFormData] = useState({
     leaveTypeId: "",
@@ -13,12 +16,14 @@ function CreateLeaveRequest() {
     leaveReason: "",
     leaveFile: null,
     selectedStudyTimes: [],
+    tel: user?.tel || "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [leaveType, setLeaveType] = useState(null);
   const [error, setError] = useState("");
   const [availableStudyTimes, setAvailableStudyTimes] = useState([]);
+  const [studentData, setStudentData] = useState(null);
 
   async function fetchLeaveTypes() {
     try {
@@ -88,6 +93,11 @@ function CreateLeaveRequest() {
       return false;
     }
     
+    if (!formData.tel.trim()) {
+      setError("กรุณากรอกเบอร์โทรศัพท์ที่สามารถติดต่อได้");
+      return false;
+    }
+    
     if (formData.selectedStudyTimes.length === 0) {
       setError("กรุณาเลือกอย่างน้อยหนึ่งคาบเรียนที่ต้องการลา");
       return false;
@@ -118,6 +128,7 @@ function CreateLeaveRequest() {
       submitData.append("leaveTypeId", formData.leaveTypeId);
       submitData.append("leaveDate", formData.leaveDate);
       submitData.append("leaveReason", formData.leaveReason);
+      submitData.append("tel", formData.tel);
       
       // Append each study time ID
       formData.selectedStudyTimes.forEach(studyTimeId => {
@@ -236,6 +247,26 @@ function CreateLeaveRequest() {
                     value={formData.leaveDate}
                     onChange={handleChange}
                     className={`w-full rounded-lg border ${error && !formData.leaveDate ? 'border-red-400 ring-1 ring-red-400' : 'border-line'} p-2.5 transition-colors focus:ring-2 focus:ring-primary focus:border-primary`}
+                    disabled={isSubmitting}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-text-color mb-2 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1.5 text-text-color-alt" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                    </svg>
+                    เบอร์โทรศัพท์
+                    <span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    name="tel"
+                    value={formData.tel}
+                    onChange={handleChange}
+                    className={`w-full rounded-lg border ${error && !formData.tel ? 'border-red-400 ring-1 ring-red-400' : 'border-line'} p-2.5 transition-colors focus:ring-2 focus:ring-primary focus:border-primary`}
+                    placeholder="เบอร์โทรศัพท์ที่สามารถติดต่อได้"
                     disabled={isSubmitting}
                     required
                   />
