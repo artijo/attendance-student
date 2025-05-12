@@ -7,7 +7,6 @@ import EnrollmentCard from "../../components/Attendence/EnrollmentCard";
 
 function StudentAttendence() {
     const dtNow = DateTime.now().setZone(TIME_ZONE);
-    
     const [studingTime, setStudingTime] = useState([]);
     const [loading, setLoading] = useState(false);
     const [notPermission, setNotPermission] = useState(false);
@@ -21,6 +20,7 @@ function StudentAttendence() {
             const response = await axios.post(`${HOSTNAME}/s/attendence/enrollment`, { enrollmentInfo: enrollmentInfo, location: location });
             if (response.status === 200) {
                 console.log(response.data);
+                window.location.reload();
             } else {
                 throw new Error(response.data.message);
             };
