@@ -14,18 +14,22 @@ function StudentAttendence() {
         latitude: null,
         longitude: null
     });
+    const [error, setError] = useState(false);
+    const [message, setMessage] = useState(null);
 
     const callEnrollmentApi = async (enrollmentInfo, location) => {
         try {
             const response = await axios.post(`${HOSTNAME}/s/attendence/enrollment`, { enrollmentInfo: enrollmentInfo, location: location });
-            if (response.status === 200) {
-                console.log(response.data);
-                window.location.reload();
-            } else {
-                throw new Error(response.data.message);
-            };
+            window.location.reload();
         } catch (error) {
-            console.error("Error calling enrollment API:", error);
+            const message = error.response.data.message;
+            // console.error("Error calling enrollment API:", error.response.data);
+            setError(true);
+            setMessage(message);
+            setTimeout(() => {
+                setError(false);
+                setMessage(null);
+            },5000);
         };
     };
 
@@ -49,7 +53,7 @@ function StudentAttendence() {
     const getLocation = () => {
         navigator.geolocation.getCurrentPosition((position) => {
             if (position.coords) {
-                console.log(position.coords);
+                // console.log(position.coords);
                 setLocation({
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude
@@ -60,13 +64,13 @@ function StudentAttendence() {
 
     const handleLocationPermission = async () => {
         const permission = await navigator.permissions.query({ name: "geolocation" });
-        if(permission.state === "granted"){
+        if (permission.state === "granted") {
             getLocation();
             setNotPermission(false);
-        }else if (permission.state === "prompt") {
+        } else if (permission.state === "prompt") {
             getLocation();
             setNotPermission(false);
-        }else if (permission.state === "denied") {
+        } else if (permission.state === "denied") {
             setNotPermission(true);
         }
     }
@@ -76,10 +80,31 @@ function StudentAttendence() {
     }, [])
 
     useEffect(() => {
-        if(location.latitude && location.longitude) {
+        if (location.latitude && location.longitude) {
             getTimetable();
         };
-    },[location.latitude, location.longitude])
+    }, [location.latitude, location.longitude])
+
+    const ErrorAlertDialog = ({ message }) => {
+        return (
+             <div role="alert" className=" rounded-md border border-red-100 bg-red-100 p-4 animate-fade-in">
+                <div className="flex flex-col items-start relative">
+                    <div className="flex  items-start gap-4 mt-2">
+                        <span className="text-red-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
+                                <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clipRule="evenodd" />
+                            </svg>
+                        </span>
+                        <div className="flex-1">
+                            <strong className="block font-medium text-red-600">เกิดข้อผิดพลาด</strong>
+                        </div>
+
+                    </div>
+                    <p className="mt-2 ml-1 text-xs text-red-600 ">{message}</p>
+                </div>
+            </div>
+        );
+    }
 
 
     if (notPermission) {
@@ -107,7 +132,7 @@ function StudentAttendence() {
                     </div>
                 </div>
             </div>
-        ) ;
+        );
     };
 
     if (loading) {
@@ -119,40 +144,44 @@ function StudentAttendence() {
     }
 
     return (
-        <div className="sm:max-w-md md:max-w-lg mx-auto p-2">
-            {/* <div className="mb-4">
-                <h1 className="text-lg font-medium text-accent">เช็คชื่อเข้าเรียน</h1>
-                <h4 className="text-3xl font-medium">{weekDayToThaiString(dtNow.weekday)}, {getThaiMonth(dtNow.month)} {dtNow.day}</h4>
-            </div> */}
-            <div className="mb-6">
-                <h1 className="text-2xl md:text-3xl font-bold text-primary font-heading">
-                    เช็คชื่อเข้าเรียน
-                </h1>
-                <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
-                <p className="mt-3 text-gray-600">
-                {weekDayToThaiString(dtNow.weekday)}, {dtNow.day} {getThaiMonth(dtNow.month)} {dtNow.year + 543}
-                </p>
-            </div>
-            {location.latitude && location.longitude && (
-                <div>
-                    {studingTime.length > 0 ? (
-                        <div>
-                            <div className="mb-4 grid grid-cols-1 gap-4">
-                                {studingTime.map((item, index) => (
-                                    <EnrollmentCard key={index} index={index + 1} enrollmentInfo={item} callEnrollmentApi={() => callEnrollmentApi(item, location)} />
-                                ))}
-                            </div>
-                        </div>
-                    ) : (
-                        <div>
-                            <div className="mb-4 grid grid-cols-1 gap-4">
-                                <p className="text-center text-gray-500">ไม่มีข้อมูลการเรียนในวันนี้</p>
-                            </div>
-                        </div>
-                    )}
+        <div>
+            {error && (
+                <div className="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-3/4">
+                    <ErrorAlertDialog message={message}/>
                 </div>
             )}
+            <div className="sm:max-w-md md:max-w-lg mx-auto p-2">
+                <div className="mb-6">
+                    <h1 className="text-2xl md:text-3xl font-bold text-primary font-heading">
+                        เช็คชื่อเข้าเรียน
+                    </h1>
+                    <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
+                    <p className="mt-3 text-gray-600">
+                        {weekDayToThaiString(dtNow.weekday)}, {dtNow.day} {getThaiMonth(dtNow.month)} {dtNow.year + 543}
+                    </p>
+                </div>
+                {location.latitude && location.longitude && (
+                    <div>
+                        {studingTime.length > 0 ? (
+                            <div>
+                                <div className="mb-4 grid grid-cols-1 gap-4">
+                                    {studingTime.map((item, index) => (
+                                        <EnrollmentCard key={index} index={index + 1} enrollmentInfo={item} callEnrollmentApi={() => callEnrollmentApi(item, location)}  isError = {error}/>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <div className="mb-4 grid grid-cols-1 gap-4">
+                                    <p className="text-center text-gray-500">ไม่มีข้อมูลการเรียนในวันนี้</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
+
     );
 };
 

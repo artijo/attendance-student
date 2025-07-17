@@ -3,7 +3,7 @@ import { DateTime } from "luxon";
 import { HOSTNAME, TIME_ZONE } from "../../config";
 import { useEffect, useState } from "react";
 
-function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
+function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi,isError }) {
     const [status, setStatus] = useState(false);
     const teacher = enrollmentInfo.timetable.subject.teacher;
     const timetable = enrollmentInfo.timetable;
@@ -107,16 +107,29 @@ function EnrollmentCard({ enrollmentInfo, index, callEnrollmentApi }) {
                     </div>
                 </div>
                 {compareTime() && (
-                    <button
-                        disabled={status}
-                        onClick={() => callEnrollmentApi()}
-                        className={`text-sm font-semibold tracking-wide mt-4 w-full px-4 py-2 rounded-lg shadow-sm transition-all duration-200 ease-in-out transform focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${status
-                                ? 'bg-gray-400 cursor-not-allowed opacity-50'
-                                : 'bg-blue-600 hover:bg-blue-700 hover:scale-105 text-white'
-                            }`}
-                    >
-                        {status ? 'เช็คชื่อแล้ว' : 'เช็คชื่อ'}
-                    </button>
+                    isError ? (
+                        <button
+                            // disabled={status}
+                            // onClick={() => callEnrollmentApi()}
+                            className={`text-sm font-semibold tracking-wide mt-4 w-full px-4 py-2 rounded-lg shadow-sm transition-all duration-200 ease-in-out transform focus:outline-none focus:ring-opacity-50 bg-gray-400 cursor-not-allowed opacity-50 `}
+                        >
+                            {/* {status ? 'เช็คชื่อแล้ว' : 'เช็คชื่อ'} */}
+                            เช็คชื่อ
+                        </button>
+                    ) :
+                    (
+                        <button
+                            disabled={status}
+                            onClick={() => callEnrollmentApi()}
+                            className={`text-sm font-semibold tracking-wide mt-4 w-full px-4 py-2 rounded-lg shadow-sm transition-all duration-200 ease-in-out transform focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${status
+                                    ? 'bg-gray-400 cursor-not-allowed opacity-50'
+                                    : 'bg-blue-600 hover:bg-blue-700 hover:scale-105 text-white'
+                                }`}
+                        >
+                            {status ? 'เช็คชื่อแล้ว' : 'เช็คชื่อ'}
+                        </button>
+                    )
+                    
                 )}
             </div>
         </div>
