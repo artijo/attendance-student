@@ -14,22 +14,32 @@ function StudentAttendence() {
         latitude: null,
         longitude: null
     });
+    const [isLoading, setIsLoading] = useState(false); // for loading state of the enrollment button waiting for API response
     const [error, setError] = useState(false);
     const [message, setMessage] = useState(null);
-
+    const [successful, setSuccessful] = useState(false);
     const callEnrollmentApi = async (enrollmentInfo, location) => {
         try {
+            setIsLoading(true);
             const response = await axios.post(`${HOSTNAME}/s/attendence/enrollment`, { enrollmentInfo: enrollmentInfo, location: location });
-            window.location.reload();
+            if(response.status === 200) {
+                setSuccessful(true);
+                setMessage(response.data.message);
+                setTimeout(() => {
+                    setSuccessful(false);
+                    setMessage(null);
+                    window.location.reload();
+                }, 3000);
+            }
         } catch (error) {
             const message = error.response.data.message;
-            // console.error("Error calling enrollment API:", error.response.data);
+            setIsLoading(false);
             setError(true);
             setMessage(message);
             setTimeout(() => {
                 setError(false);
                 setMessage(null);
-            },5000);
+            },3000);
         };
     };
 
@@ -39,12 +49,9 @@ function StudentAttendence() {
             const response = await axios.get(`${HOSTNAME}/s/timetable`);
             if (response.status === 200) {
                 setStudingTime(response.data);
-            } else {
-                // throw new Error("Failed to fetch timetable data");
-            };
+            }
         } catch (error) {
             setLoading(false);
-            // console.error("Error fetching timetable:", error);
         } finally {
             setLoading(false);
         };
@@ -87,7 +94,7 @@ function StudentAttendence() {
 
     const ErrorAlertDialog = ({ message }) => {
         return (
-             <div role="alert" className=" rounded-md border border-red-100 bg-red-100 p-4 animate-fade-in">
+             <div role="alert" className=" rounded-md border border-red-100 bg-red-100 p-4">
                 <div className="flex flex-col items-start relative">
                     <div className="flex  items-start gap-4 mt-2">
                         <span className="text-red-600">
@@ -106,6 +113,25 @@ function StudentAttendence() {
         );
     }
 
+    const SucessfullAlertDialog = ({ message }) => {
+        return (
+            <div role="alert" className="rounded-md border border-green-100 bg-green-100 p-4">
+            <div className="flex flex-col items-start relative">
+                <div className="flex items-start gap-4 mt-2">
+                <span className="text-green-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
+                    <path fillRule="evenodd" d="M12 2.25c5.385 0 9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12 6.615 2.25 12 2.25zm4.03 6.97a.75.75 0 0 0-1.06-1.06l-4.22 4.22-1.72-1.72a.75.75 0 1 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.06 0l4.75-4.75z" clipRule="evenodd" />
+                    </svg>
+                </span>
+                <div className="flex-1">
+                    <strong className="block font-medium text-green-600">สำเร็จ</strong>
+                </div>
+                </div>
+                <p className="mt-2 ml-1 text-xs text-green-600">{message}</p>
+            </div>
+            </div>
+        );
+    }
 
     if (notPermission) {
         return (
@@ -146,8 +172,13 @@ function StudentAttendence() {
     return (
         <div>
             {error && (
-                <div className="fixed top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 w-3/4">
+                <div className="fixed top-1/2 left-1/2 p-5 -translate-y-1/2 -translate-x-1/2 w-4/4 z-20">
                     <ErrorAlertDialog message={message}/>
+                </div>
+            )}
+            {successful && (
+                <div className="fixed top-1/2 left-1/2 p-5 -translate-y-1/2 -translate-x-1/2 w-4/4 z-20">
+                    <SucessfullAlertDialog message={message}/>
                 </div>
             )}
             <div className="sm:max-w-md md:max-w-lg mx-auto p-2">
@@ -166,7 +197,7 @@ function StudentAttendence() {
                             <div>
                                 <div className="mb-4 grid grid-cols-1 gap-4">
                                     {studingTime.map((item, index) => (
-                                        <EnrollmentCard key={index} index={index + 1} enrollmentInfo={item} callEnrollmentApi={() => callEnrollmentApi(item, location)}  isError = {error}/>
+                                        <EnrollmentCard key={index} index={index + 1} enrollmentInfo={item} callEnrollmentApi={() => callEnrollmentApi(item, location)}  isError = {error} isLoading={isLoading}/>
                                     ))}
                                 </div>
                             </div>
