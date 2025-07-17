@@ -8,7 +8,7 @@ import EnrollmentCard from "../../components/Attendence/EnrollmentCard";
 function StudentAttendence() {
     const dtNow = DateTime.now().setZone(TIME_ZONE);
     const [studingTime, setStudingTime] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [notPermission, setNotPermission] = useState(false);
     const [location, setLocation] = useState({
         latitude: null,
@@ -31,7 +31,7 @@ function StudentAttendence() {
 
     const getTimetable = async () => {
         try {
-            setLoading(true);
+            // setLoading(true);
             const response = await axios.get(`${HOSTNAME}/s/timetable`);
             if (response.status === 200) {
                 setStudingTime(response.data);

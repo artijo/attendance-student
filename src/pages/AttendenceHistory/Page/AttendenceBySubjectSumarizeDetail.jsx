@@ -125,25 +125,30 @@ function AttendenceBySubjectSumarizeDetail() {
             <h1 className="text-2xl font-bold text-accent">การเข้าเรียนตามคาบ</h1>
             <div className="mt-2 mb-3 h-1 w-16 bg-secondary rounded-full"></div>
             <div>
-                <h5 className="text-gray-500 font-medium">เมนูฟีลเตอร์</h5>
-                <ul className="flex flex-row gap-1.5 text-sm mt-1">
-                    <li
-                        className={`border px-4 py-1 rounded-full transition-all delay-75 ${filter === 'in' ? ' bg-accent font-medium text-white shadow' : 'border-gray-300'
-                            }`}
-                        onClick={() => handleFilterOnChange('in')}
-                    >
-                        คาบเรียนที่เรียนแล้ว
-                    </li>
-                    <li
-                        className={`border px-4 py-1 rounded-full transition-all delay-75 ${filter === 'not-in' ? ' bg-accent font-medium text-white shadow' : 'border-gray-300'
-                            }`}
-                        onClick={() => handleFilterOnChange('not-in')}
-                    >
-                        คาบเรียนที่ยังไม่ถึง
-                    </li>
+                <div>
+                    <h5 className="text-gray-500 font-medium">เมนูฟีลเตอร์</h5>
+                    <ul className="flex flex-row gap-1.5 text-sm mt-1">
+                        <li
+                            className={`border px-4 py-1 rounded-full transition-all delay-75 ${filter === 'in' ? ' bg-accent font-medium text-white shadow' : 'border-gray-300'
+                                }`}
+                            onClick={() => handleFilterOnChange('in')}
+                        >
+                            คาบเรียนที่เรียนแล้ว
+                        </li>
+                        <li
+                            className={`border px-4 py-1 rounded-full transition-all delay-75 ${filter === 'not-in' ? ' bg-accent font-medium text-white shadow' : 'border-gray-300'
+                                }`}
+                            onClick={() => handleFilterOnChange('not-in')}
+                        >
+                            คาบเรียนที่ยังไม่ถึง
+                        </li>
+                    </ul>
+                </div>
+                <div>
                     
-                </ul>
+                </div>
             </div>
+            
             <div className="space-y-4 mt-4">
                 {filterStudyTime.length > 0 &&
                     filterStudyTime.map((studytime, index) => (
@@ -172,7 +177,6 @@ function AttendenceBySubjectSumarizeDetail() {
                                 }
                             </div>
                         </TapAttendenceSummaryOpen>
-
                     ))}
             </div>
 
