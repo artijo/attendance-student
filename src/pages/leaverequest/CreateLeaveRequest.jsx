@@ -170,7 +170,7 @@ function CreateLeaveRequest() {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="sm:max-w-md md:max-w-lg  mx-auto">
       <div className="flex items-center mb-6">
         <button
           onClick={() => navigate("/leavereq")}
