@@ -120,9 +120,18 @@ function StudentAttendence() {
 
     return (
         <div className="sm:max-w-md md:max-w-lg mx-auto p-2">
-            <div className="mb-4">
+            {/* <div className="mb-4">
                 <h1 className="text-lg font-medium text-accent">เช็คชื่อเข้าเรียน</h1>
                 <h4 className="text-3xl font-medium">{weekDayToThaiString(dtNow.weekday)}, {getThaiMonth(dtNow.month)} {dtNow.day}</h4>
+            </div> */}
+            <div className="mb-6">
+                <h1 className="text-2xl md:text-3xl font-bold text-primary font-heading">
+                    เช็คชื่อเข้าเรียน
+                </h1>
+                <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
+                <p className="mt-3 text-gray-600">
+                {weekDayToThaiString(dtNow.weekday)}, {dtNow.day} {getThaiMonth(dtNow.month)} {dtNow.year + 543}
+                </p>
             </div>
             {location.latitude && location.longitude && (
                 <div>
