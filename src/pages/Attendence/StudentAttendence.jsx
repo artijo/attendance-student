@@ -40,11 +40,11 @@ function StudentAttendence() {
             if (response.status === 200) {
                 setStudingTime(response.data);
             } else {
-                throw new Error("Failed to fetch timetable data");
+                // throw new Error("Failed to fetch timetable data");
             };
         } catch (error) {
             setLoading(false);
-            console.error("Error fetching timetable:", error);
+            // console.error("Error fetching timetable:", error);
         } finally {
             setLoading(false);
         };
