@@ -83,6 +83,22 @@ function ActivityMainPage() {
         };
     };
 
+    const isActivityTimeCanEnrollment = (activity) => {
+        const startTime = activity.actStartTime.split(':');
+        const endTime = activity.actEndTime.split(':');
+        const now = DateTime.now();
+        const startAct = DateTime.fromISO(`${now.toFormat('yyyy-MM-dd')}T${startTime[0]}:${startTime[1]}:00`)
+        const endAct = DateTime.fromISO(`${now.toFormat('yyyy-MM-dd')}T${endTime[0]}:${endTime[1]}:00`)
+        if(now >= startAct && now <= endAct) {
+            return false;
+        }else if(now < startAct && now < endAct) {
+            return true;
+        }else if(now > startAct && now > endAct) {
+            return true;
+        }
+        // return false;
+    };
+
     useEffect(() => {
         callActivity();
     }, []);
@@ -127,13 +143,23 @@ function ActivityMainPage() {
                                             <span>{act.actStartTime}น. - {act.actEndTime}น.</span>
                                         </p>
                                     </div>
-                                    <button
-                                        className={`bg-primary text-white font-medium py-1.5 px-2.5 mx-4 mb-4 rounded hover:bg-primary-dark transition duration-300 ${isCheckedIn[index] ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                        onClick={() => checkInActivity(act)}
-                                        disabled={isCheckedIn[index]}
-                                    >
-                                        เข้าร่วมกิจกรรม
-                                    </button>
+                                    { isActivityTimeCanEnrollment(act) ? 
+                                        <button
+                                            className={`bg-primary text-white font-medium py-1.5 px-2.5 mx-4 mb-4 rounded hover:bg-primary-dark transition duration-300 opacity-50 cursor-not-allowed`}
+                                            onClick={() => checkInActivity(act)}
+                                            disabled={true}
+                                        >
+                                            ยังไม่ถึงเวลาเข้าร่วมหรือเลยเวลาไปแล้ว
+                                        </button>
+                                        :
+                                        <button
+                                            className={`bg-primary text-white font-medium py-1.5 px-2.5 mx-4 mb-4 rounded hover:bg-primary-dark transition duration-300 ${isCheckedIn[index] ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                            onClick={() => checkInActivity(act)}
+                                            disabled={isCheckedIn[index]}
+                                        >
+                                            { isCheckedIn[index] ? 'เช็คชื่อเข้าร่วมกิจกรรมแล้ว': 'เข้าร่วมกิจกรรม' }
+                                        </button>
+                                    }
                                 </div>
                             ))}
                         </div>
