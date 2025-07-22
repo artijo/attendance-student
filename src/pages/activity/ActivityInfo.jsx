@@ -116,6 +116,18 @@ function ActivityInfo() {
         );
     };
 
+    // if (!activityHistoryProcessed || activityHistoryProcessed.length === 0) {
+    //     return (
+    //         <div className="grid grid-cols-1 gap-2 sm:max-w-md md:max-w-lg mx-auto p-4">
+    //             <div>
+    //                 <h2 className="text-2xl font-semibold text-left text-primary font-heading">รายละเอียดกิจกรรม</h2>
+    //                 <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
+    //             </div>
+    //             <p className="text-center text-text-color-alt">ไม่มีประวัติการเข้าร่วมกิจกรรม</p>
+    //         </div>
+    //     );
+    // }
+
     return (
         <div className="grid grid-cols-1 gap-3 sm:max-w-md md:max-w-lg mx-auto p-4">
             <div>
@@ -187,7 +199,14 @@ function ActivityInfo() {
                             </tr>
                         </thead>
                         <tbody>
-                            {sliceActivityHistoryProcessedList.map((act) => (
+                            {sliceActivityHistoryProcessedList.length === 0 && (
+                                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                    <td colSpan="5" className="px-6 py-4 text-center text-text-color-alt">
+                                        ไม่มีประวัติการเข้าร่วมกิจกรรม
+                                    </td>
+                                </tr>
+                            )}
+                            {sliceActivityHistoryProcessedList.length > 0 && sliceActivityHistoryProcessedList.map((act) => (
                                 <tr key={act.date} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
 
                                     <th scope="row" className="px-6 py-4 font-bold text-gray-900 whitespace-nowrap dark:text-white">
@@ -215,7 +234,7 @@ function ActivityInfo() {
                         </tbody>
                     </table>
                 </div>
-                {activityHistoryProcessed.length > 0 && (
+                {sliceActivityHistoryProcessedList.length > 0 && (
                     <div className="border-t border-line px-6 py-4">
                         <div className="flex items-center justify-between">
                             <p className="text-sm text-text-color-alt">
