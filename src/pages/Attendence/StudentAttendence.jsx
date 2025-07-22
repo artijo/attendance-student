@@ -43,12 +43,34 @@ function StudentAttendence() {
         };
     };
 
+    const sortStudyTime = (studyTime) => { // => ฟังก์ชั่นสำหรับ sort ตารางเรียนที่ผ่านไปแล้วให้อยู่หลังสุด 
+        const now = DateTime.now();
+        const passedStudyTimeArr = studyTime.filter((st) => {
+            const stDate = DateTime.fromISO(`${now.toFormat('yyyy-MM-dd')}T${st.timetable.timeStart}`).setZone('Asia/Bangkok');
+            const endDate = DateTime.fromISO(`${now.toFormat('yyyy-MM-dd')}T${st.timetable.timeEnd}`).setZone('Asia/Bangkok');
+            return now > stDate && now > endDate;
+        })
+        const notPassedStudtyTimeArr = studyTime.filter((st) => {
+            const stDate = DateTime.fromISO(`${now.toFormat('yyyy-MM-dd')}T${st.timetable.timeStart}`).setZone('Asia/Bangkok');
+            const endDate = DateTime.fromISO(`${now.toFormat('yyyy-MM-dd')}T${st.timetable.timeEnd}`).setZone('Asia/Bangkok');
+            // console.log(stDate);
+            return now >= stDate && now <= endDate;
+        });
+        // console.log(notPassedStudtyTimeArr);
+        return [...notPassedStudtyTimeArr, ...passedStudyTimeArr];
+    };
+
     const getTimetable = async () => {
         try {
             // setLoading(true);
             const response = await axios.get(`${HOSTNAME}/s/timetable`);
             if (response.status === 200) {
-                setStudingTime(response.data);
+                // console.log(response.data);
+                setStudingTime(
+                    sortStudyTime(response.data)
+                );
+                // setStudingTime(response.data);
+                // sortStudyTime(response.data);
             }
         } catch (error) {
             setLoading(false);
