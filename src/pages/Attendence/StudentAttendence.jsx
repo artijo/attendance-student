@@ -62,15 +62,12 @@ function StudentAttendence() {
 
     const getTimetable = async () => {
         try {
-            // setLoading(true);
+            setLoading(true);
             const response = await axios.get(`${HOSTNAME}/s/timetable`);
             if (response.status === 200) {
-                // console.log(response.data);
                 setStudingTime(
                     sortStudyTime(response.data)
                 );
-                // setStudingTime(response.data);
-                // sortStudyTime(response.data);
             }
         } catch (error) {
             setLoading(false);

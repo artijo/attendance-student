@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import React, { useState } from "react";
 import { formatDateToThai, formatDayOfWeeks } from "../../helper";
 import { useNavigate } from "react-router-dom";
+import Calendar from "../../components/AttendenceHistory/Calendar";
 
 function daybetween(Start, End) {
     const dates = [];
@@ -69,7 +70,10 @@ function AttedenceByDaySummarize({ term }) {
 
     return (
         <div>
-            {termday.length > 0 && (
+            <Calendar
+                term={term}
+            />
+            {/* {termday.length > 0 && (
                 <div className="grid grid-cols-1 gap-5 py-4">
                     {sliceDayList.map((day, index) => (
                         <div
@@ -107,10 +111,10 @@ function AttedenceByDaySummarize({ term }) {
                     ))}
                 </div>
 
-            )}
+            )} */}
 
 
-            {termday.length > 0 && (
+            {/* {termday.length > 0 && (
                 <div className="border-t border-line px-6 py-4">
                     <div className="flex items-center justify-between">
                         <p className="text-sm text-text-color-alt">
@@ -171,7 +175,7 @@ function AttedenceByDaySummarize({ term }) {
                         </div>
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 };
