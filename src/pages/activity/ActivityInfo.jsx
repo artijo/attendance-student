@@ -200,7 +200,7 @@ function ActivityInfo() {
                         </thead>
                         <tbody>
                             {sliceActivityHistoryProcessedList.length === 0 && (
-                                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                                <tr className="bg-white border-b  border-gray-200">
                                     <td colSpan="5" className="px-6 py-4 text-center text-text-color-alt">
                                         ไม่มีประวัติการเข้าร่วมกิจกรรม
                                     </td>

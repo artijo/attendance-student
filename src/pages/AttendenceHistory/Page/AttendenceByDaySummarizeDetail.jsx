@@ -2,18 +2,15 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { HOSTNAME } from "../../../config";
-import { formatDateToThai, formatTimeThai } from "../../../helper";
+import { formatDateToThai, formatTimeThai, formatTitle } from "../../../helper";
 import { DateTime } from "luxon";
 
 function AttendenceByDaySummarizeDetail() {
     const [studingTime, setStudingTime] = useState([]);
     const location = useLocation();
     const { date, termId } = location.state;
-    // console.log(date);
-    // console.log(termId);
-
     const formatAttStatus = (status) => {
-        switch (status) {
+        switch (status.toLowerCase()) {
             case 'present': {
                 return 'เข้าเรียน';
             }
@@ -36,12 +33,30 @@ function AttendenceByDaySummarizeDetail() {
         }
     };
 
+    const getAttStatusColor = (status) => {
+        switch (status.toLowerCase()) {
+            case 'present':
+                return 'text-green-600 bg-green-100 border border-green-200';
+            case 'absent':
+                return 'text-red-600 bg-red-100 border border-red-200';
+            case 'late':
+                return 'text-yellow-700 bg-yellow-100 border border-yellow-200';
+            case 'activity':
+                return 'text-blue-600 bg-blue-100 border border-blue-200';
+            case 'leave':
+                return 'text-purple-600 bg-purple-100 border border-purple-200';
+            default:
+                return 'text-gray-600 bg-gray-100 border border-gray-200';
+        }
+    };
+
+
     const callApiSummarizeDetail = async () => {
         try {
             const response = await axios.get(`${HOSTNAME}/s/attendence/history/${termId}/${date}`);
             if (response.status === 200) {
                 setStudingTime(response.data);
-                console.log(response.data);
+                // console.log(response.data);
             } else {
                 throw new Error(response.data.message);
             }
@@ -51,10 +66,21 @@ function AttendenceByDaySummarizeDetail() {
     };
 
     const formatTimeLocalTh = (datetime) => {
-        console.log(datetime);
+        // console.log(datetime);
         const date = DateTime.fromISO(datetime).setLocale('th').toFormat("d LLLL yyyy HH:mm 'น.'")
         return date;
     };
+
+    // const OperatedBy = ({st}) => {
+    //     if(st.attendance[0].teacher) {
+    //         return (
+    //             <p>
+                    
+    //             </p>
+    //         );
+    //     }
+        
+    // };
 
     useEffect(() => {
         callApiSummarizeDetail();
@@ -79,7 +105,92 @@ function AttendenceByDaySummarizeDetail() {
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-1 gap-3">
+            
+            <div className="relative overflow-x-auto border border-gray-200 rounded-lg">
+                <table className="w-full text-sm text-left rtl:text-right">
+                    <thead className="text-xs text-gray-700 uppercase bg-gray-50 ">
+                        <tr>
+                            <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                                คาบ/เวลา
+                            </th>
+                            <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                                สถานะการเข้าร่วม
+                            </th>
+                            <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                                จัดการโดย
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {!studingTime.length > 0 && (
+                            <tr className="bg-white border-b border-gray-200 text-xs">
+                                <td className="px-6 py-4 whitespace-nowrap" colSpan={3}>
+                                    ไม่มีคาบเรียนในวันนี้
+                                </td>
+                            </tr>
+                        )}
+                        {studingTime.length > 0 && studingTime.map((st, index) => {
+                            const isTeacherOpereted = st.attendance?.[0]?.teacher;
+                            const isLeaderOpereted = st.attendance?.[0]?.leader;
+                            return (
+                                <tr key={index} className="bg-white border-b border-gray-200 text-xs">
+                                    <th
+                                        scope="row" className="px-6 py-4 font-bold text-gray-900 whitespace-nowrap "
+                                    >
+                                        คาบที่ {index + 1}  {formatTimeThai(st.timetable.timeStart)} - {formatTimeThai(st.timetable.timeEnd)}
+                                    </th>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        { st.attendance.length > 0 ? (
+                                            <div
+                                                className={`${getAttStatusColor(st.attendance[0].attStatus)} px-1 py-0.5 rounded-xl text-[10px]`}
+                                            >
+                                                {formatAttStatus(st.attendance[0].attStatus)} ({formatTimeLocalTh(st.attendance[0].attTimestamp)})
+                                            </div>
+                                        ) : (
+                                            <div
+                                                className={`${getAttStatusColor('absent')} px-1 py-0.5 rounded-xl text-[10px]`}
+                                            >
+                                                ไม่มีบันทึกการเข้าเรียน
+                                            </div>
+                                        )}
+                                    </td>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        { isTeacherOpereted != undefined && `คุณครู ${isTeacherOpereted?.fName} ${isTeacherOpereted?.lName}`}
+                                        { isLeaderOpereted != undefined && `${formatTitle(isLeaderOpereted?.student.title)} ${isLeaderOpereted?.student.fName} ${isLeaderOpereted?.student.lName}`}
+                                        { isLeaderOpereted == undefined && isTeacherOpereted == undefined && st.attendance.length > 0 &&'ตนเอง'}
+                                    </td>
+                                </tr>
+                            )
+                        })}
+                        {/* {studingTime.length > 0 && studingTime.map((st, index) => (
+                            <tr key={act.date} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+
+                                <th scope="row" className="px-6 py-4 font-bold text-gray-900 whitespace-nowrap dark:text-white">
+                                    {act.date}
+                                </th>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="flex flex-row justify-start gap-1.5">
+                                        <p
+                                            className={act.joinTimestamp != null ? 'text-xs bg-green-100 text-green-800 rounded-full px-1.5' : 'text-xs bg-red-200 text-red-800 rounded-full px-1.5'}
+                                        >{act.joinTimestamp != null ? 'เข้าร่วม' : 'ไม่เข้าร่วม'}</p>
+                                        <p className="text-xs">{act.joinTimestamp != null ? formatDate(act.joinTimestamp) : ''}</p>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    {act.operateBy != '-' ? act.operateBy : '-'}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    {act.teacher != null ? `${act.teacher.fName} ${act.teacher.lName}` : `-`}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    {act.leader != null ? `${act.leader.student.fName} ${act.leader.student.lName}` : '-'}
+                                </td>
+                            </tr>
+                        ))} */}
+                    </tbody>
+                </table>
+            </div>
+            {/* <div className="grid grid-cols-1 gap-3">
                 {studingTime.length > 0 ? studingTime.map((st, key) => (
                     <div key={key}>
                         <h1 className="text-base font-bold text-gray-800 font-heading mb-1">คาบที่ {key + 1} เวลา {formatTimeThai(st.timetable.timeStart)}</h1>
@@ -130,7 +241,7 @@ function AttendenceByDaySummarizeDetail() {
                         <h3 className="text-base font-medium text-gray-900">ไม่มีคาบเรียน</h3>
                     </div>
                 )}
-            </div>
+            </div> */}
 
         </div>
     );
