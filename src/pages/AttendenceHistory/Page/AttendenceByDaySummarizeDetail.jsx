@@ -71,17 +71,6 @@ function AttendenceByDaySummarizeDetail() {
         return date;
     };
 
-    // const OperatedBy = ({st}) => {
-    //     if(st.attendance[0].teacher) {
-    //         return (
-    //             <p>
-                    
-    //             </p>
-    //         );
-    //     }
-        
-    // };
-
     useEffect(() => {
         callApiSummarizeDetail();
     }, []);
@@ -142,13 +131,13 @@ function AttendenceByDaySummarizeDetail() {
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         { st.attendance.length > 0 ? (
                                             <div
-                                                className={`${getAttStatusColor(st.attendance[0].attStatus)} px-1 py-0.5 rounded-xl text-[10px]`}
+                                                className={`${getAttStatusColor(st.attendance[0].attStatus)} w-fit px-1 py-0.5 rounded-xl text-[10px]`}
                                             >
                                                 {formatAttStatus(st.attendance[0].attStatus)} ({formatTimeLocalTh(st.attendance[0].attTimestamp)})
                                             </div>
                                         ) : (
                                             <div
-                                                className={`${getAttStatusColor('absent')} px-1 py-0.5 rounded-xl text-[10px]`}
+                                                className={`${getAttStatusColor('absent')} w-fit px-1 py-0.5 rounded-xl text-[10px]`}
                                             >
                                                 ไม่มีบันทึกการเข้าเรียน
                                             </div>
