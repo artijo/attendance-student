@@ -219,9 +219,9 @@ function AttendenceBySubjectSumarizeDetail() {
                                 </td>
                             </tr>
                         )}
-                        {slicefilterStudyTimeList.length > 0 && slicefilterStudyTimeList.map((st) => {
-                            const isTeacherOpereted = st.attendance?.[0]?.teacher;
-                            const isLeaderOpereted = st.attendance?.[0]?.leader;
+                        {slicefilterStudyTimeList.length > 0 && slicefilterStudyTimeList.map((st,index) => {
+                            const isTeacherOpereted = st.attendance?.[index]?.teacher;
+                            const isLeaderOpereted = st.attendance?.[index]?.leader;
                             let startIndex = studytime.findIndex((value) => value.studyTimeId == st.studyTimeId) + 1;
                             return (
                                 <tr key={`คาบที่ ${startIndex}`} className="bg-white border-b border-gray-200 text-xs">

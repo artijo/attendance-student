@@ -157,7 +157,9 @@ function StudentAttendence() {
             <div className="m-4">
                 <div className="mb-4">
                     <h1 className="text-lg font-medium text-accent">เช็คชื่อเข้าเรียน</h1>
-                    <h4 className="text-3xl font-medium">{weekDayToThaiString(dtNow.weekday)}, {getThaiMonth(dtNow.month)} {dtNow.day} </h4>
+                    <p className="mt-3 text-gray-600">
+                        {weekDayToThaiString(dtNow.weekday)}, {dtNow.day} {getThaiMonth(dtNow.month)} {dtNow.year + 543}
+                    </p>
                 </div>
                 <div className="grid grid-cols-1 gap-4 border border-gray-200 rounded-xl shadow-md p-5">
                     <div className="flex gap-2 items-center">

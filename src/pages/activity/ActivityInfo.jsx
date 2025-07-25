@@ -1,6 +1,6 @@
 import { DateTime } from "luxon";
 import { useLocation } from "react-router-dom";
-import { getThaiMonth } from "../../helper";
+import { formatTitle, getThaiMonth } from "../../helper";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { HOSTNAME } from "../../config";
@@ -89,6 +89,12 @@ function ActivityInfo() {
         return `${sDate.day} ${getThaiMonth(sDate.month)} ${sDate.year + 543} ถึง ${eDate.day} ${getThaiMonth(eDate.month)} ${eDate.year + 543}`;
     };
 
+    const formatTimeLocalTh = (datetime) => {
+        // console.log(datetime);
+        const date = DateTime.fromISO(datetime).setLocale('th').toFormat("d LLLL yyyy HH:mm 'น.'")
+        return date;
+    };
+
     const formatDate = (date) => {
         const dateformat = DateTime.fromISO(date).setZone('Asia/Bangkok');
         return `${dateformat.day} ${getThaiMonth(dateformat.month)} ${dateformat.year}`;
@@ -115,18 +121,6 @@ function ActivityInfo() {
             </div>
         );
     };
-
-    // if (!activityHistoryProcessed || activityHistoryProcessed.length === 0) {
-    //     return (
-    //         <div className="grid grid-cols-1 gap-2 sm:max-w-md md:max-w-lg mx-auto p-4">
-    //             <div>
-    //                 <h2 className="text-2xl font-semibold text-left text-primary font-heading">รายละเอียดกิจกรรม</h2>
-    //                 <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
-    //             </div>
-    //             <p className="text-center text-text-color-alt">ไม่มีประวัติการเข้าร่วมกิจกรรม</p>
-    //         </div>
-    //     );
-    // }
 
     return (
         <div className="grid grid-cols-1 gap-3 sm:max-w-md md:max-w-lg mx-auto p-4">
@@ -172,29 +166,23 @@ function ActivityInfo() {
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 gap-5">
                 <div>
                     <h2 className="text-2xl font-semibold text-left text-primary font-heading">ประวัติการเข้าร่วมกิจกรรม</h2>
                     <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
                 </div>
-                <div className="relative overflow-x-auto">
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <div className="overflow-auto h-[400px]">
+                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
+                        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                             <tr>
-                                <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                                <th scope="col" className="bg-gray-50 px-6 py-3 whitespace-nowrap sticky">
                                     วันที่
                                 </th>
-                                <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                                <th scope="col" className="bg-gray-50 px-6 py-3 whitespace-nowrap sticky">
                                     สถานะการเข้าร่วม
                                 </th>
-                                <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                                <th scope="col" className="bg-gray-50 px-6 py-3 whitespace-nowrap sticky">
                                     จัดการโดย
-                                </th>
-                                <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                                    จัดการโดยอาจารย์
-                                </th>
-                                <th scope="col" className="px-6 py-3 whitespace-nowrap">
-                                    จัดการโดยหัวหน้าห้อง
                                 </th>
                             </tr>
                         </thead>
@@ -206,31 +194,46 @@ function ActivityInfo() {
                                     </td>
                                 </tr>
                             )}
-                            {sliceActivityHistoryProcessedList.length > 0 && sliceActivityHistoryProcessedList.map((act) => (
-                                <tr key={act.date} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200">
+                            {sliceActivityHistoryProcessedList.length > 0 && sliceActivityHistoryProcessedList.map((act, index) => {
+                                const isTeacherOpereted = act?.teacher;
+                                const isLeaderOpereted = act?.leader;
+                                return (
+                                    <tr key={act.date} className="bg-white border-b  border-gray-200">
+                                        <th scope="row" className="px-6 py-4 font-bold text-gray-900 whitespace-nowrap ">
+                                            {act.date}
+                                        </th>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="flex flex-row justify-start gap-1.5">
+                                                <p
+                                                    className={act.joinTimestamp != null ? 'text-xs bg-green-100 text-green-800 rounded-full px-1.5' : 'text-xs bg-red-200 text-red-800 rounded-full px-1.5'}
+                                                >{act.joinTimestamp != null ? 'เข้าร่วม' : 'ไม่เข้าร่วม'}</p>
+                                                <p className="text-xs">{act.joinTimestamp != null ? formatTimeLocalTh(act.joinTimestamp) : ''}</p>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            {act.operateBy === 'teacher' ? (
+                                                `คุณครู ${isTeacherOpereted.fName} ${isTeacherOpereted.lName}`
+                                            ) : act.operateBy === 'leader' ?(
+                                                `คุณครู ${isLeaderOpereted.fName} ${isLeaderOpereted.lName}`
+                                            ) : act.operateBy === 'student' &&(
+                                                `ตนเอง`
+                                            )
 
-                                    <th scope="row" className="px-6 py-4 font-bold text-gray-900 whitespace-nowrap dark:text-white">
-                                        {act.date}
-                                    </th>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex flex-row justify-start gap-1.5">
-                                            <p
-                                                className={act.joinTimestamp != null ? 'text-xs bg-green-100 text-green-800 rounded-full px-1.5' : 'text-xs bg-red-200 text-red-800 rounded-full px-1.5'}
-                                            >{act.joinTimestamp != null ? 'เข้าร่วม' : 'ไม่เข้าร่วม'}</p>
-                                            <p className="text-xs">{act.joinTimestamp != null ? formatDate(act.joinTimestamp) : ''}</p>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        {act.operateBy != '-' ? act.operateBy : '-'}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        {act.teacher != null ? `${act.teacher.fName} ${act.teacher.lName}` : `-`}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        {act.leader != null ? `${act.leader.student.fName} ${act.leader.student.lName}` : '-'}
-                                    </td>
-                                </tr>
-                            ))}
+                                            }
+                                            {/* {(() => {
+                                                if (isTeacherOpereted !== null) {
+                                                    return `คุณครู ${isTeacherOpereted.fName} ${isTeacherOpereted.lName}`;
+                                                }
+                                                if (isLeaderOpereted !== null) {
+                                                    return `${formatTitle(isLeaderOpereted.student.title)} ${isLeaderOpereted.student.fName} ${isLeaderOpereted.student.lName}`;
+                                                }
+                                                // return 'ตนเอง';
+                                            })()} */}
+                                        </td>
+                                    </tr>
+                                )
+
+                            })}
                         </tbody>
                     </table>
                 </div>

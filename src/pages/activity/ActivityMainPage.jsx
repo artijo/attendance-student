@@ -110,19 +110,27 @@ function ActivityMainPage() {
                 <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
             </div>
             <div className="grid grid-cols-1 gap-2">
-                <h4 className="text-3xl font-medium text-slate-800">{weekDayToThaiString(dtNow.weekday)}, {getThaiMonth(dtNow.month)} {dtNow.day} </h4>
+                <p className=" text-gray-600">
+                    {weekDayToThaiString(dtNow.weekday)}, {dtNow.day} {getThaiMonth(dtNow.month)} {dtNow.year + 543}
+                </p>
                 <div className="flex flex-col">
-                    <h5 className="flex gap-1 items-center mb-1 font-bold">
+                    <h5 className="flex gap-1 items-center mb-1 font-bold text-gray-800">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
                         </svg>
-                        เช็คชื่อกิจกรรม (กำลังดำเนินการขณะนี้)
+                        เช็คชื่อกิจกรรม
                     </h5>
                     {activityInThisDay.length > 0 ? (
-                        <div>
+                        <div className="grid gap-2">
                             {activityInThisDay.map((act, index) => (
                                 <div key={index} className="grid grid-cols-1 border border-gray-200 rounded-lg bg-white shadow-lg overflow-hidden">
-                                    <h5 className="text-xl font-semibold text-white bg-accent px-4 py-2">{act.actName}</h5>
+                                    <div className="flex justify-between items-center bg-accent px-4 py-2">
+                                        <h5 className="text-xl font-semibold text-white ">{act.actName} </h5>
+                                        <p className="text-xs text-accent font-bold bg-white px-2 py-1 rounded-xl">
+                                            {isActivityTimeCanEnrollment(act) ? 'ผ่านไปแล้ว' : 'กำลังดำเนินการ'}
+                                            {/* ผ่านไปแล้ว */}
+                                        </p>
+                                    </div>
                                     <div className="grid grid-cols-1 gap-2 px-4 py-3">
                                         <p className="flex items-center gap-2 text-xs text-gray-600">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-secondary">
@@ -149,7 +157,7 @@ function ActivityMainPage() {
                                             onClick={() => checkInActivity(act)}
                                             disabled={true}
                                         >
-                                            ยังไม่ถึงเวลาเข้าร่วมหรือเลยเวลาไปแล้ว
+                                            เข้าร่วมกิจกรรม
                                         </button>
                                         :
                                         <button
@@ -178,18 +186,18 @@ function ActivityMainPage() {
                 </div>
             </div>
             <div>
-                <h5 className="flex gap-1 items-center mb-1 font-bold">
+                <h5 className="flex gap-1 items-center mb-1 font-bold text-gray-800">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 text-primary">
                         <path fillRule="evenodd" d="M2.625 6.75a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875 0A.75.75 0 0 1 8.25 6h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75ZM2.625 12a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0ZM7.5 12a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12A.75.75 0 0 1 7.5 12Zm-4.875 5.25a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Zm4.875 0a.75.75 0 0 1 .75-.75h12a.75.75 0 0 1 0 1.5h-12a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
                     </svg>
-                    รายการกิจกรรม(เก่า-ล่าสุด)
+                    รายการกิจกรรม
                 </h5>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2">
                     {activity.length > 0 ? (
                         <React.Fragment>
                             {activity.map((act, index) => (
                                 <div key={index} className="border border-gray-200 rounded-lg bg-white shadow-md p-4">
-                                    <h5 className="text-sm font-semibold text-primary">{act.actName}</h5>
+                                    <h5 className="text-sm font-semibold text-primary mb-2">{act.actName}</h5>
                                     <div className="grid grid-cols-1 gap-2 my-1">
                                         <p className="flex items-center gap-1 text-xs text-gray-600">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-secondary">
@@ -206,14 +214,10 @@ function ActivityMainPage() {
                                     </div>
 
                                     <button 
-                                        className="flex justify-center gap-1 w-full bg-primary text-white font-medium text-xs py-1.5 px-2.5 mt-1.5 rounded hover:bg-primary-dark transition duration-300"
+                                        className="flex justify-center gap-1 w-full bg-primary text-white font-medium text-xs py-1.5 px-2.5 mt-3 rounded hover:bg-primary-dark transition duration-300"
                                         onClick={() => navigateToDetailPage(act)}
                                     >
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-4">
-                                            <path d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" />
-                                            <path fillRule="evenodd" d="M1.38 8.28a.87.87 0 0 1 0-.566 7.003 7.003 0 0 1 13.238.006.87.87 0 0 1 0 .566A7.003 7.003 0 0 1 1.379 8.28ZM11 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" clipRule="evenodd" />
-                                        </svg>
-                                        รายละเอียด/ประวัติ
+                                        ประวัติการเข้าร่วม
                                     </button>
                                 </div>
                             ))}
