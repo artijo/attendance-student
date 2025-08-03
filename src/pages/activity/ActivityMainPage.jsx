@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { HOSTNAME } from "../../config";
 import { DateTime } from "luxon";
-import { getThaiMonth, weekDayToThaiString } from "../../helper";
+import { getThaiMonth, getThaiMonthAbbreviation, weekDayToThaiString } from "../../helper";
 import { useNavigate } from "react-router-dom";
 
 function ActivityMainPage() {
@@ -47,7 +47,8 @@ function ActivityMainPage() {
 
     const formatDate = (date) => {
         const dateformat = DateTime.fromISO(date).setZone('Asia/Bangkok');
-        const thMonth = getThaiMonth(dateformat.month);
+        // getThaiMonthAbbreviation
+        const thMonth = getThaiMonthAbbreviation(dateformat.month);
         return `${dateformat.day} ${thMonth} ${dateformat.year + 543}`
     }
 
@@ -203,7 +204,7 @@ function ActivityMainPage() {
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-secondary">
                                                 <path fillRule="evenodd" d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z" clipRule="evenodd" />
                                             </svg>
-                                            {formatDate(act.actDate)}
+                                            {formatDate(act.actDate)} - {formatDate(act.actDateEnd)}
                                         </p>
                                         <p className="flex items-center gap-1 text-xs text-gray-600">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4 text-secondary">
