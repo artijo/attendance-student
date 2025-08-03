@@ -196,7 +196,7 @@ function AttendenceBySubjectSumarizeDetail() {
                     </ul>
                 </div>
             </div>
-            <div className="mt-5 overflow-auto h-[350px]">
+            <div className="mt-4 overflow-auto h-[350px]">
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead className="rel text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
