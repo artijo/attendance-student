@@ -71,6 +71,19 @@ function BehaviorTransaction({ term }) {
     return status === "INCREMENT" ? "เพิ่ม" : "หัก";
   };
 
+  const getDeductionReason = (status, score) => {
+    if (status === "DECREMENT") {
+      if (score === 0.5) {
+        return "มาเรียนสาย";
+      } else if (score === 1) {
+        return "ขาดเรียน";
+      } else {
+        return "หักคะแนน";
+      }
+    }
+    return "";
+  };
+
   const getStatusIcon = (status) => {
     if (status === "INCREMENT") {
       return (
@@ -147,6 +160,16 @@ function BehaviorTransaction({ term }) {
                     <span>
                       {getStatusText(transaction.Status)} {transaction.score}{" "}
                       คะแนน
+                      {transaction.Status === "DECREMENT" && (
+                        <span className="ml-1 text-xs font-normal text-gray-600">
+                          (
+                          {getDeductionReason(
+                            transaction.Status,
+                            transaction.score
+                          )}
+                          )
+                        </span>
+                      )}
                     </span>
                   </span>
                 </div>
