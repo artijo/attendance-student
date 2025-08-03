@@ -266,7 +266,7 @@ function Dashboard() {
   }, []);
 
   return (
-    <div className="p-4 md:p-6 max-w-4xl mx-auto">
+    <div className="sm:max-w-md md:max-w-lg mx-auto p-2">
       {/* Date and time header */}
       <div className="mb-6">
         <h1 className="text-2xl md:text-3xl font-bold text-primary font-heading">
