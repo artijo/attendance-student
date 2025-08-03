@@ -25,8 +25,7 @@ function AttendenceActivityHistory() {
 
     const formatDate = (date) => {
         const dateformat = DateTime.fromISO(date).setZone("Asia/Bangkok");
-        return `${dateformat.day} ${getThaiMonth(dateformat.month)} ${dateformat.year
-            }`;
+        return `${dateformat.day} ${getThaiMonth(dateformat.month)} ${dateformat.year + 543}`;
     };
 
     const filterActivity = (text) => {
