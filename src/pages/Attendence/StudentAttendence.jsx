@@ -7,7 +7,9 @@ import EnrollmentCard from "../../components/Attendence/EnrollmentCard";
 
 function StudentAttendence() {
     const dtNow = DateTime.now().setZone(TIME_ZONE);
-    const [studingTime, setStudingTime] = useState([]);
+    // const [studingTime, setStudingTime] = useState([]);
+    const [currentStudingTime, setCurrentStudingTime] = useState([]);
+    const [passedOrNotPassStudingTime, setPassedOrNotPassStudingTime] = useState([]);
     const [loading, setLoading] = useState(true);
     const [notPermission, setNotPermission] = useState(false);
     const [location, setLocation] = useState({
@@ -45,19 +47,26 @@ function StudentAttendence() {
 
     const sortStudyTime = (studyTime) => { // => ฟังก์ชั่นสำหรับ sort ตารางเรียนที่ผ่านไปแล้วให้อยู่หลังสุด 
         const now = DateTime.now();
-        const passedStudyTimeArr = studyTime.filter((st) => {
+        const passedOrNotPassStudingTimeArr = studyTime.filter((st) => {
             const stDate = DateTime.fromISO(`${now.toFormat('yyyy-MM-dd')}T${st.timetable.timeStart}`).setZone('Asia/Bangkok');
             const endDate = DateTime.fromISO(`${now.toFormat('yyyy-MM-dd')}T${st.timetable.timeEnd}`).setZone('Asia/Bangkok');
-            return now > stDate && now > endDate;
-        })
-        const notPassedStudtyTimeArr = studyTime.filter((st) => {
+            return now > stDate && now > endDate || stDate > now && endDate > now;
+        }).sort((a, b) => {
+            const aTime = DateTime.fromISO(a.studingTimeDate).setZone('Asia/Bangkok');
+            const bTime = DateTime.fromISO(b.studingTimeDate).setZone('Asia/Bangkok');
+            // console.log(bTime - aTime);
+            return bTime - aTime;
+        });
+        const currentStudyTimeArr = studyTime.filter((st) => {
             const stDate = DateTime.fromISO(`${now.toFormat('yyyy-MM-dd')}T${st.timetable.timeStart}`).setZone('Asia/Bangkok');
             const endDate = DateTime.fromISO(`${now.toFormat('yyyy-MM-dd')}T${st.timetable.timeEnd}`).setZone('Asia/Bangkok');
-            // console.log(stDate);
             return now >= stDate && now <= endDate;
         });
-        // console.log(notPassedStudtyTimeArr);
-        return [...notPassedStudtyTimeArr, ...passedStudyTimeArr];
+        // console.log(passedOrNotPassStudingTimeArr);
+        setCurrentStudingTime(currentStudyTimeArr);
+        setPassedOrNotPassStudingTime(passedOrNotPassStudingTimeArr);
+        // return [...notPassedStudtyTimeArr, ...passedStudyTimeArr];
+        return;
     };
 
     const getTimetable = async () => {
@@ -65,9 +74,10 @@ function StudentAttendence() {
             setLoading(true);
             const response = await axios.get(`${HOSTNAME}/s/timetable`);
             if (response.status === 200) {
-                setStudingTime(
-                    sortStudyTime(response.data)
-                );
+                // setStudingTime(
+                //     sortStudyTime(response.data)
+                // );
+                sortStudyTime(response.data);
             }
         } catch (error) {
             setLoading(false);
@@ -213,45 +223,38 @@ function StudentAttendence() {
                     </p>
                 </div>
                 {location.latitude && location.longitude && (
-                    <div>
-                        {studingTime.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-4">
+                        {currentStudingTime.length > 0 ? (
                             <div>
-                                <div className="mb-4 grid grid-cols-1 gap-4">
-                                    {studingTime.map((item, index) => {
-                                        if (index === 0) {
-                                            return (
-                                                <React.Fragment key={index}>
-                                                    <div className="flex gap-2 items-center">
+                                <div className="flex gap-2 items-center mb-2.5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-primary">
+                                        <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z" clipRule="evenodd" />
+                                    </svg>
 
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-primary">
-                                                            <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6c0 .414.336.75.75.75h4.5a.75.75 0 0 0 0-1.5h-3.75V6Z" clipRule="evenodd" />
-                                                        </svg>
-
-                                                        <h5 className="font-bold text-lg text-slate-900">คาบเรียนที่กำลังดำเนินการ</h5>
-                                                    </div>
-                                                    <EnrollmentCard key={index} index={index + 1} enrollmentInfo={item} callEnrollmentApi={() => callEnrollmentApi(item, location)} isError={error} isLoading={isLoading} />
-                                                    <div className="flex gap-2 items-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-red-500">
-                                                            <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
-                                                        </svg>
-                                                        <h5 className="font-bold text-lg text-slate-900">คาบเรียนทีผ่านไปแล้ว</h5>
-                                                    </div>
-                                                </React.Fragment>
-                                            )
-                                        } else {
-                                            return (
-                                                <EnrollmentCard key={index} index={index + 1} enrollmentInfo={item} callEnrollmentApi={() => callEnrollmentApi(item, location)} isError={error} isLoading={isLoading} />
-                                            )
-                                        }
-
-                                    })}
+                                    <h5 className="font-bold text-lg text-slate-900">คาบเรียนที่กำลังดำเนินการ</h5>
                                 </div>
+                                {currentStudingTime.map((item, index) => (
+                                    <EnrollmentCard key={index} index={index + 1} enrollmentInfo={item} callEnrollmentApi={() => callEnrollmentApi(item, location)} isError={error} isLoading={isLoading} />
+                                ))}
                             </div>
                         ) : (
                             <div>
                                 <div className="mb-4 grid grid-cols-1 gap-4">
                                     <p className="text-center text-gray-500">ไม่มีข้อมูลการเรียนในวันนี้</p>
                                 </div>
+                            </div>
+                        )}
+                        {passedOrNotPassStudingTime.length > 0 && (
+                            <div>
+                                <div className="flex gap-2 items-center mb-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-yellow-400">
+                                        <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
+                                    </svg>
+                                    <h5 className="font-bold text-lg text-slate-900">คาบเรียนทีผ่านไปแล้วและยังไม่ถึง</h5>
+                                </div>
+                                {passedOrNotPassStudingTime.map((item,index) => (
+                                    <EnrollmentCard key={index} index={index + 1} enrollmentInfo={item} callEnrollmentApi={() => callEnrollmentApi(item, location)} isError={error} isLoading={isLoading} />
+                                ))}
                             </div>
                         )}
                     </div>
