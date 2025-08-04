@@ -400,7 +400,11 @@ function Dashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold text-green-600">
-                  {dashboardData.behaviorScore || "95"}
+                  {dashboardData.classroomMembers &&
+                  dashboardData.classroomMembers.length > 0
+                    ? dashboardData.classroomMembers[0].behaviourScore ||
+                      "ไม่มีคะแนน"
+                    : "ไม่มีคะแนน"}
                 </p>
                 <p className="text-sm text-gray-600">คะแนนความประพฤติ</p>
               </div>
