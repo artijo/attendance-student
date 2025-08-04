@@ -2,7 +2,7 @@ import { DateTime } from "luxon";
 import { getThaiMonth, weekDayToThaiString } from "../../helper";
 import axios from "axios";
 import { HOSTNAME, TIME_ZONE } from "../../config";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import EnrollmentCard from "../../components/Attendence/EnrollmentCard";
 
 function StudentAttendence() {
@@ -22,7 +22,7 @@ function StudentAttendence() {
         try {
             setIsLoading(true);
             const response = await axios.post(`${HOSTNAME}/s/attendence/enrollment`, { enrollmentInfo: enrollmentInfo, location: location });
-            if(response.status === 200) {
+            if (response.status === 200) {
                 setSuccessful(true);
                 setMessage(response.data.message);
                 setTimeout(() => {
@@ -39,7 +39,7 @@ function StudentAttendence() {
             setTimeout(() => {
                 setError(false);
                 setMessage(null);
-            },3000);
+            }, 3000);
         };
     };
 
@@ -113,7 +113,7 @@ function StudentAttendence() {
 
     const ErrorAlertDialog = ({ message }) => {
         return (
-             <div role="alert" className=" rounded-md border border-red-100 bg-red-100 p-4">
+            <div role="alert" className=" rounded-md border border-red-100 bg-red-100 p-4">
                 <div className="flex flex-col items-start relative">
                     <div className="flex  items-start gap-4 mt-2">
                         <span className="text-red-600">
@@ -135,19 +135,19 @@ function StudentAttendence() {
     const SucessfullAlertDialog = ({ message }) => {
         return (
             <div role="alert" className="rounded-md border border-green-100 bg-green-100 p-4">
-            <div className="flex flex-col items-start relative">
-                <div className="flex items-start gap-4 mt-2">
-                <span className="text-green-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
-                    <path fillRule="evenodd" d="M12 2.25c5.385 0 9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12 6.615 2.25 12 2.25zm4.03 6.97a.75.75 0 0 0-1.06-1.06l-4.22 4.22-1.72-1.72a.75.75 0 1 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.06 0l4.75-4.75z" clipRule="evenodd" />
-                    </svg>
-                </span>
-                <div className="flex-1">
-                    <strong className="block font-medium text-green-600">สำเร็จ</strong>
+                <div className="flex flex-col items-start relative">
+                    <div className="flex items-start gap-4 mt-2">
+                        <span className="text-green-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
+                                <path fillRule="evenodd" d="M12 2.25c5.385 0 9.75 4.365 9.75 9.75s-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12 6.615 2.25 12 2.25zm4.03 6.97a.75.75 0 0 0-1.06-1.06l-4.22 4.22-1.72-1.72a.75.75 0 1 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.06 0l4.75-4.75z" clipRule="evenodd" />
+                            </svg>
+                        </span>
+                        <div className="flex-1">
+                            <strong className="block font-medium text-green-600">สำเร็จ</strong>
+                        </div>
+                    </div>
+                    <p className="mt-2 ml-1 text-xs text-green-600">{message}</p>
                 </div>
-                </div>
-                <p className="mt-2 ml-1 text-xs text-green-600">{message}</p>
-            </div>
             </div>
         );
     }
@@ -194,12 +194,12 @@ function StudentAttendence() {
         <div>
             {error && (
                 <div className="fixed top-1/2 left-1/2 p-5 -translate-y-1/2 -translate-x-1/2 w-4/4 z-20">
-                    <ErrorAlertDialog message={message}/>
+                    <ErrorAlertDialog message={message} />
                 </div>
             )}
             {successful && (
                 <div className="fixed top-1/2 left-1/2 p-5 -translate-y-1/2 -translate-x-1/2 w-4/4 z-20">
-                    <SucessfullAlertDialog message={message}/>
+                    <SucessfullAlertDialog message={message} />
                 </div>
             )}
             <div className="sm:max-w-md md:max-w-lg mx-auto p-2">
@@ -217,9 +217,34 @@ function StudentAttendence() {
                         {studingTime.length > 0 ? (
                             <div>
                                 <div className="mb-4 grid grid-cols-1 gap-4">
-                                    {studingTime.map((item, index) => (
-                                        <EnrollmentCard key={index} index={index + 1} enrollmentInfo={item} callEnrollmentApi={() => callEnrollmentApi(item, location)}  isError = {error} isLoading={isLoading}/>
-                                    ))}
+                                    {studingTime.map((item, index) => {
+                                        if (index === 0) {
+                                            return (
+                                                <React.Fragment key={index}>
+                                                    <div className="flex gap-2 items-center">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-primary">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                        </svg>
+
+                                                        <h5 className="font-bold text-lg text-slate-900">คาบเรียนที่กำลังดำเนินการ</h5>
+                                                    </div>
+                                                    <EnrollmentCard key={index} index={index + 1} enrollmentInfo={item} callEnrollmentApi={() => callEnrollmentApi(item, location)} isError={error} isLoading={isLoading} />
+                                                    <div className="flex gap-2 items-center">
+                                                    
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-red-500">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                                        </svg>
+                                                        <h5 className="font-bold text-lg text-slate-900">คาบเรียนทีผ่านไปแล้ว</h5>
+                                                    </div>
+                                                </React.Fragment>
+                                            )
+                                        } else {
+                                            return (
+                                                <EnrollmentCard key={index} index={index + 1} enrollmentInfo={item} callEnrollmentApi={() => callEnrollmentApi(item, location)} isError={error} isLoading={isLoading} />
+                                            )
+                                        }
+
+                                    })}
                                 </div>
                             </div>
                         ) : (
