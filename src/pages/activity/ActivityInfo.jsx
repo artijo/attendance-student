@@ -397,7 +397,7 @@ function ActivityInfo() {
                         <td className="px-4 md:px-6 py-4">
                           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                             <span
-                              className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                              className={`inline-flex w-fit px-2 py-1 text-xs font-medium rounded-full ${
                                 act.joinTimestamp != null
                                   ? "bg-green-100 text-green-800"
                                   : "bg-red-100 text-red-800"
