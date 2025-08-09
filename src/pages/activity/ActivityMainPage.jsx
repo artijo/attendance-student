@@ -12,11 +12,31 @@ import { useNavigate } from "react-router-dom";
 function ActivityMainPage() {
   const navigate = useNavigate();
   const dtNow = DateTime.now().setZone("Asia/Bangkok");
-  const [activityInThisDay, setActivityInThisDay] = useState([]);
+  // const [activityInThisDay, setActivityInThisDay] = useState([]);
+  const [currentActivity, setCurrentActivity] = useState([]);
+  const [passedActivity, setPassedActivity] = useState([]);
   const [isCheckedIn, setIsCheckedIn] = useState([]);
-  const [activity, setActivity] = useState([]);
+  // const [activity, setActivity] = useState([]);
 
-  
+  const isActivityTimeCanEnrollment = (activity) => {
+    const startTime = activity.actStartTime.split(":");
+    const endTime = activity.actEndTime.split(":");
+    const now = DateTime.now();
+    const startAct = DateTime.fromISO(
+      `${now.toFormat("yyyy-MM-dd")}T${startTime[0]}:${startTime[1]}:00`
+    );
+    const endAct = DateTime.fromISO(
+      `${now.toFormat("yyyy-MM-dd")}T${endTime[0]}:${endTime[1]}:00`
+    );
+    if (now >= startAct && now <= endAct) {
+      return false;
+    } else if (now < startAct && now < endAct) {
+      return true;
+    } else if (now > startAct && now > endAct) {
+      return true;
+    }
+    // return false;
+  };
 
   const isCheckedInActivity = async (activityId) => {
     try {
@@ -65,21 +85,31 @@ function ActivityMainPage() {
       return accumulator;
     }, []);
 
-    const createButtonStatus = Promise.all(
+    const createButtonStatus = await Promise.all(
       activityAttendanceStatus.map(async (act) => {
         const isFound = await isCheckedInActivity(act.actId);
         return isFound;
       })
     );
-    setActivityInThisDay(activityAttendanceStatus);
-    setIsCheckedIn(await createButtonStatus);
+
+    const addIsActivityCheckInArr = await Promise.all(activityAttendanceStatus.map(async (act, index) => {
+      return {
+        ...act,
+        isCheckedIn: await createButtonStatus[index],
+      };
+    }));
+
+    const currentActivityFilter = addIsActivityCheckInArr.filter((act) => !isActivityTimeCanEnrollment(act) && act);
+    const passedActivityFilter = addIsActivityCheckInArr.filter((act) => isActivityTimeCanEnrollment(act) && act);
+    setCurrentActivity(currentActivityFilter);
+    setPassedActivity(passedActivityFilter);
   };
 
   const callActivity = async () => {
     try {
       const respone = await axios.get(`${HOSTNAME}/s/activity`);
       if (respone.status === 200) {
-        setActivity(respone.data);
+        // setActivity(respone.data);
         isCurrentDateInRange(respone.data);
       } else {
         throw new Error(respone.data.message);
@@ -89,25 +119,7 @@ function ActivityMainPage() {
     }
   };
 
-  const isActivityTimeCanEnrollment = (activity) => {
-    const startTime = activity.actStartTime.split(":");
-    const endTime = activity.actEndTime.split(":");
-    const now = DateTime.now();
-    const startAct = DateTime.fromISO(
-      `${now.toFormat("yyyy-MM-dd")}T${startTime[0]}:${startTime[1]}:00`
-    );
-    const endAct = DateTime.fromISO(
-      `${now.toFormat("yyyy-MM-dd")}T${endTime[0]}:${endTime[1]}:00`
-    );
-    if (now >= startAct && now <= endAct) {
-      return false;
-    } else if (now < startAct && now < endAct) {
-      return true;
-    } else if (now > startAct && now > endAct) {
-      return true;
-    }
-    // return false;
-  };
+
 
   useEffect(() => {
     callActivity();
@@ -145,28 +157,26 @@ function ActivityMainPage() {
           เช็คชื่อกิจกรรม (กำลังดำเนินการ)
         </h2>
 
-        {activityInThisDay.length > 0 ? (
+        {currentActivity.length > 0 || passedActivity.length > 0 ? (
           <div className="grid grid-cols-1 gap-4">
-            {activityInThisDay.map((act, index) => (
+            {currentActivity.length > 0 ? currentActivity.map((act, index) => (
               <div
                 key={index}
                 className="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-l-primary border border-gray-200"
               >
                 <div
-                  className={`p-4 text-white ${
-                    isActivityTimeCanEnrollment(act)
-                      ? "bg-gray-500"
-                      : "bg-primary"
-                  }`}
+                  className={`p-4 text-white ${isActivityTimeCanEnrollment(act)
+                    ? "bg-gray-500"
+                    : "bg-primary"
+                    }`}
                 >
                   <div className="flex justify-between items-center">
                     <h2 className="text-lg font-bold">{act.actName}</h2>
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm ${
-                        isActivityTimeCanEnrollment(act)
-                          ? "bg-white text-gray-600"
-                          : "bg-white text-primary"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm ${isActivityTimeCanEnrollment(act)
+                        ? "bg-white text-gray-600"
+                        : "bg-white text-primary"
+                        }`}
                     >
                       {isActivityTimeCanEnrollment(act)
                         ? "ผ่านไปแล้ว"
@@ -229,16 +239,15 @@ function ActivityMainPage() {
                   </div>
 
                   <button
-                    className={`mt-4 w-full py-2 rounded-md font-medium transition-colors flex items-center justify-center shadow-sm ${
-                      isActivityTimeCanEnrollment(act)
-                        ? "bg-gray-400 text-white opacity-50 cursor-not-allowed"
-                        : isCheckedIn[index]
+                    className={`mt-4 w-full py-2 rounded-md font-medium transition-colors flex items-center justify-center shadow-sm ${isActivityTimeCanEnrollment(act)
+                      ? "bg-gray-400 text-white opacity-50 cursor-not-allowed"
+                      : act.isCheckedIn
                         ? "bg-gray-400 text-white opacity-50 cursor-not-allowed"
                         : "bg-primary text-white hover:bg-primary/90"
-                    }`}
+                      }`}
                     onClick={() => checkInActivity(act)}
                     disabled={
-                      isActivityTimeCanEnrollment(act) || isCheckedIn[index]
+                      isActivityTimeCanEnrollment(act) || act.isCheckedIn
                     }
                   >
                     <svg
@@ -255,13 +264,139 @@ function ActivityMainPage() {
                     </svg>
                     {isActivityTimeCanEnrollment(act)
                       ? "กิจกรรมสิ้นสุดแล้ว"
-                      : isCheckedIn[index]
-                      ? "เช็คชื่อเข้าร่วมกิจกรรมแล้ว"
-                      : "เข้าร่วมกิจกรรม"}
+                      : act.isCheckedIn
+                        ? "เช็คชื่อเข้าร่วมกิจกรรมแล้ว"
+                        : "เข้าร่วมกิจกรรม"}
                   </button>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="bg-gray-50 rounded-lg p-8 text-center border border-gray-200 shadow-sm">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12 w-12 mx-auto text-gray-400 mb-4"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <h3 className="text-lg font-medium text-gray-900">
+                  ไม่มีกิจกรรมที่กำลังดำเนินการในขณะนี้
+                </h3>
+                <p className="mt-2 text-gray-500">
+                  ไม่มีกิจกรรมอยู่ในช่วงเวลาปัจจุบัน
+                </p>
+              </div>
+            )}
+
+            <h2 className="text-xl font-semibold mt-4 mb-4 flex items-center text-gray-900">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 text-yellow-400  mr-2">
+                <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clipRule="evenodd" />
+              </svg>
+              กิจกรรมที่สิ้นสุดเวลาแล้ว
+            </h2>
+
+            {passedActivity.length > 0 ? (
+              <div className="grid grid-cols-1 gap-4">
+                {passedActivity.map((act, index) => (
+                  <div
+                    key={index}
+                    className="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-l-primary border border-gray-200"
+                  >
+                    <div
+                      className={`p-4 text-white ${isActivityTimeCanEnrollment(act)
+                        ? "bg-gray-500"
+                        : "bg-primary"
+                        }`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <h2 className="text-lg font-bold">{act.actName}</h2>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm ${isActivityTimeCanEnrollment(act)
+                            ? "bg-white text-gray-600"
+                            : "bg-white text-primary"
+                            }`}
+                        >
+                          {isActivityTimeCanEnrollment(act)
+                            ? "ผ่านไปแล้ว"
+                            : "กำลังดำเนินการ"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-4">
+                      <div className="flex items-center mb-3">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 text-gray-500 mr-2"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M5.75 2a.75.75 0 0 1 .75.75V4h7V2.75a.75.75 0 0 1 1.5 0V4h.25A2.75 2.75 0 0 1 18 6.75v8.5A2.75 2.75 0 0 1 15.25 18H4.75A2.75 2.75 0 0 1 2 15.25v-8.5A2.75 2.75 0 0 1 4.75 4H5V2.75A.75.75 0 0 1 5.75 2Zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span className="text-gray-700">
+                          {dtNow.day} {getThaiMonth(dtNow.month)} {dtNow.year + 543}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center mb-3">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 text-gray-500 mr-2"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="m9.69 18.933.003.001C9.89 19.02 10 19 10 19s.11.02.308-.066l.002-.001.006-.003.018-.008a5.741 5.741 0 0 0 .281-.14c.186-.096.446-.24.757-.433.62-.384 1.445-.966 2.274-1.765C15.302 14.988 17 12.493 17 9A7 7 0 1 0 3 9c0 3.492 1.698 5.988 3.355 7.584a13.731 13.731 0 0 0 2.273 1.765 11.842 11.842 0 0 0 .976.544l.062.029.018.008.006.003ZM10 11.25a2.25 2.25 0 1 0 0-4.5 2.25 2.25 0 0 0 0 4.5Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span className="text-gray-700">{act.actLocation}</span>
+                      </div>
+
+                      <div className="flex items-center mb-3">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 text-gray-500 mr-2"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm.75-13a.75.75 0 0 0-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 0 0 0-1.5h-3.25V5Z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                        <span className="text-gray-700">
+                          {act.actStartTime}น. - {act.actEndTime}น.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="bg-gray-50 rounded-lg p-8 text-center border border-gray-200 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-12 w-12 mx-auto text-gray-400 mb-4">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+
+                <h3 className="text-lg font-medium text-gray-900">
+                  ไม่มีกิจกรรมที่ผ่านไปแล้ว
+                </h3>
+              </div>
+            )}
           </div>
         ) : (
           <div className="bg-gray-50 rounded-lg p-8 text-center border border-gray-200 shadow-sm">
@@ -287,6 +422,7 @@ function ActivityMainPage() {
             </p>
           </div>
         )}
+
       </div>
     </div>
   );
