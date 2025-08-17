@@ -7,7 +7,7 @@ import { getThaiMonth, weekDayToThaiString, formatTitle } from "../helper";
 
 function Dashboard() {
   const [currentDateTime, setCurrentDateTime] = useState(
-    DateTime.now().setZone(TIME_ZONE)
+    DateTime.now().setZone(TIME_ZONE),
   );
   const [currentClasses, setCurrentClasses] = useState([]);
   const [upcomingClasses, setUpcomingClasses] = useState([]);
@@ -62,7 +62,7 @@ function Dashboard() {
               location: null,
               error: error.message,
             });
-          }
+          },
         );
       } else {
         setLocationStatus({
@@ -99,7 +99,7 @@ function Dashboard() {
           location: null,
           error: error.message,
         });
-      }
+      },
     );
   };
 
@@ -206,7 +206,7 @@ function Dashboard() {
     try {
       const response = await axios.post(
         `${HOSTNAME}/s/attendence/isEnrollment`,
-        { enrollmentInfo: enrollmentInfo }
+        { enrollmentInfo: enrollmentInfo },
       );
       if (response.status === 200) {
         setIsCheckedIn(response.data.isFound === 1);
@@ -453,6 +453,70 @@ function Dashboard() {
         </div>
       )}
 
+      {/* Satisfaction Survey Section */}
+      <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4 md:p-6 shadow-sm">
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 pt-1">
+            <div className="bg-blue-100 rounded-full p-2">
+              <svg
+                className="w-6 h-6 text-blue-600"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+          </div>
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-semibold text-blue-800 mb-2">
+              แบบประเมินความพึงพอใจ
+            </h3>
+            <p className="text-blue-700 text-sm mb-4">
+              ขอความอนุเคราะห์ในการประเมินความพึงพอใจต่อการใช้งานระบบ
+              เพื่อนำมาพัฒนาและปรับปรุงระบบให้ดียิ่งขึ้น
+            </p>
+            <a
+              href="https://forms.gle/h1djPQjY2Lh7Y7ZU8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md"
+            >
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              ทำแบบประเมิน
+              <svg
+                className="w-4 h-4 ml-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Location permission status */}
       {locationStatus.permission !== "granted" && (
         <div className="mb-6 bg-amber-50 border border-amber-200 rounded-lg p-4 shadow-sm">
@@ -696,7 +760,7 @@ function Dashboard() {
               const isPast = isClassPassed(classItem.timetable.timeEnd);
               const isCurrent = isCurrentlyInClass(
                 classItem.timetable.timeStart,
-                classItem.timetable.timeEnd
+                classItem.timetable.timeEnd,
               );
               const isUpcoming = isClassUpcoming(classItem.timetable.timeStart);
 
@@ -750,8 +814,8 @@ function Dashboard() {
                           isPast
                             ? "text-gray-400"
                             : isCurrent
-                            ? "text-primary"
-                            : "text-secondary"
+                              ? "text-primary"
+                              : "text-secondary"
                         } mr-1 flex-shrink-0`}
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -779,8 +843,8 @@ function Dashboard() {
                           isPast
                             ? "text-gray-400"
                             : isCurrent
-                            ? "text-primary"
-                            : "text-secondary"
+                              ? "text-primary"
+                              : "text-secondary"
                         } mr-1 flex-shrink-0`}
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -804,8 +868,8 @@ function Dashboard() {
                           isPast
                             ? "text-gray-400"
                             : isCurrent
-                            ? "text-primary"
-                            : "text-secondary"
+                              ? "text-primary"
+                              : "text-secondary"
                         } mr-1 flex-shrink-0`}
                         viewBox="0 0 20 20"
                         fill="currentColor"
