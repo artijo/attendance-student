@@ -80,7 +80,7 @@ function LeaveRequest() {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="sm:max-w-md md:max-w-lg  mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-primary">คำร้องขอลา</h1>

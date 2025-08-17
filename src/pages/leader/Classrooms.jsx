@@ -28,36 +28,48 @@ function Classrooms() {
 
   const formatTerm = (termData) => {
     if (!termData) return "-";
-    
+
     const year = termData.academicYear + 543;
     const semester = termData.semester;
-    
+
     return `${year}/${semester}`;
   };
 
   const formatDateThai = (dateString) => {
     if (!dateString) return "-";
-    
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+    const options = { year: "numeric", month: "long", day: "numeric" };
     const date = new Date(dateString);
-    
+
     // Add 543 to convert to Buddhist Era (BE)
     const thaiYear = date.getFullYear() + 543;
-    
-    return date.toLocaleDateString('th-TH', { ...options, year: 'numeric' })
+
+    return date
+      .toLocaleDateString("th-TH", { ...options, year: "numeric" })
       .replace(date.getFullYear(), thaiYear);
   };
 
   return (
     <div className="p-4 md:p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-primary">ห้องเรียนที่เป็นหัวหน้า</h1>
-        <button 
+        <h1 className="text-2xl font-bold text-primary">
+          ห้องเรียนที่เป็นหัวหน้า
+        </h1>
+        <button
           onClick={fetchClassrooms}
           className="px-3 py-1 bg-secondary text-white rounded-md hover:bg-secondary/80 transition-colors flex items-center gap-2"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+              clipRule="evenodd"
+            />
           </svg>
           รีเฟรช
         </button>
@@ -70,10 +82,7 @@ function Classrooms() {
       ) : error ? (
         <div className="bg-red-50 p-4 rounded-lg text-center">
           <p className="text-red-500">{error}</p>
-          <button
-            onClick={fetchClassrooms}
-            className="mt-2 text-sm underline"
-          >
+          <button onClick={fetchClassrooms} className="mt-2 text-sm underline">
             ลองอีกครั้ง
           </button>
         </div>
@@ -93,7 +102,9 @@ function Classrooms() {
               d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
             />
           </svg>
-          <h3 className="mt-4 text-lg font-medium text-gray-900">ไม่พบห้องเรียน</h3>
+          <h3 className="mt-4 text-lg font-medium text-gray-900">
+            ไม่พบห้องเรียน
+          </h3>
           <p className="mt-2 text-gray-500">
             คุณไม่มีห้องเรียนที่เป็นหัวหน้าในขณะนี้
           </p>
@@ -106,9 +117,12 @@ function Classrooms() {
               className="bg-white rounded-lg shadow-md overflow-hidden border border-line hover:shadow-lg transition-shadow"
             >
               <div className="bg-primary p-4">
-                <h2 className="text-lg font-bold text-white">ม.{classroom.classLevel}/{classroom.classRoom}</h2>
+                <h2 className="text-lg font-bold text-white">
+                  ม.{classroom.classLevel}/{classroom.classRoom}
+                </h2>
                 <p className="text-sm text-white/80">
-                  {classroom.classroomType?.classTypeNameThai || "-"} • {formatTerm(classroom.term)}
+                  {classroom.classroomType?.classTypeNameThai || "-"} •{" "}
+                  {formatTerm(classroom.term)}
                 </p>
               </div>
               <div className="p-4">
@@ -125,7 +139,7 @@ function Classrooms() {
                     จำนวนนักเรียน: {classroom.classroomMembers?.length || 0} คน
                   </span>
                 </div>
-                
+
                 <div className="flex items-center mb-3">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -133,12 +147,24 @@ function Classrooms() {
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
-                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 005 10a6 6 0 0012 0c0-.35-.035-.691-.1-1.02A4.978 4.978 0 0010 11z" clipRule="evenodd" />
+                    <path
+                      fillRule="evenodd"
+                      d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 005 10a6 6 0 0012 0c0-.35-.035-.691-.1-1.02A4.978 4.978 0 0010 11z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   <span className="text-gray-700">
-                    ครูประจำชั้น: {classroom.teacher && classroom.teacher[0] 
-                      ? `${classroom.teacher[0].fName} ${classroom.teacher[0].lName}` 
-                      : "ไม่ระบุ"}
+                    ครูประจำชั้น:{" "}
+                    {classroom.classTeacher
+                      ? classroom.classTeacher.map((teacher, index) => (
+                          <span key={index}>
+                            {teacher.teacher.fName} {teacher.teacher.lName}{" "}
+                            {index < classroom.classTeacher.length - 1
+                              ? ", "
+                              : ""}
+                          </span>
+                        ))
+                      : "-"}
                   </span>
                 </div>
 
@@ -149,14 +175,19 @@ function Classrooms() {
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
-                    <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                    <path
+                      fillRule="evenodd"
+                      d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   <span className="text-gray-700">
-                    ภาคเรียน: {formatDateThai(classroom.term?.termStart)} - {formatDateThai(classroom.term?.termEnd)}
+                    ภาคเรียน: {formatDateThai(classroom.term?.termStart)} -{" "}
+                    {formatDateThai(classroom.term?.termEnd)}
                   </span>
                 </div>
 
-                <div className="mt-5 grid grid-cols-1 gap-2">   
+                <div className="mt-5 grid grid-cols-1 gap-2">
                   <Link
                     to={`/leader/activities?classId=${classroom.classId}`}
                     className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-center flex items-center justify-center"
@@ -167,7 +198,11 @@ function Classrooms() {
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
-                      <path fillRule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                     กิจกรรมของห้องเรียน
                   </Link>
@@ -182,11 +217,15 @@ function Classrooms() {
                       viewBox="0 0 20 20"
                       fill="currentColor"
                     >
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                        clipRule="evenodd"
+                      />
                     </svg>
-                    ดูตารางเรียนทั้งหมด
+                    ดูตารางเรียนวันนี้
                   </Link>
-                  
+
                   <Link
                     to={`/leader/classrooms/${classroom.classId}/members`}
                     className="w-full py-2 bg-secondary text-white rounded-md hover:bg-secondary/80 transition-colors text-center flex items-center justify-center"

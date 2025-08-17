@@ -40,9 +40,9 @@ export function formatDateToThai(date) { // YYYY-MM-DD
 export function formatDayOfWeeks(dayOfWeek) {
     const dayOfWeeksThai = ["จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์"];
     for (let i = 0; i <= dayOfWeeksThai.length; i++) {
-      if ((dayOfWeek-1) === i) {
-        return dayOfWeeksThai[i];
-      }
+        if ((dayOfWeek - 1) === i) {
+            return dayOfWeeksThai[i];
+        }
     }
 }
 
@@ -93,6 +93,26 @@ export const getThaiMonth = (month) => {
     }
 }
 
+export const getThaiMonthAbbreviation = (monthNumber) => {
+  switch (monthNumber) {
+    case 1: return 'ม.ค.';
+    case 2: return 'ก.พ.';
+    case 3: return 'มี.ค.';
+    case 4: return 'เม.ย.';
+    case 5: return 'พ.ค.';
+    case 6: return 'มิ.ย.';
+    case 7: return 'ก.ค.';
+    case 8: return 'ส.ค.';
+    case 9: return 'ก.ย.';
+    case 10: return 'ต.ค.';
+    case 11: return 'พ.ย.';
+    case 12: return 'ธ.ค.';
+    default: return 'เดือนผิดพลาด';
+  }
+};
+
+
+
 export const weekDayToThaiString = (day) => {
     switch (day) {
         case 1:
@@ -132,3 +152,19 @@ export const formatTimeThai = (timeString) => {
     const [hours, minutes] = timeString.split(':');
     return `${hours}:${minutes} น.`;
 };
+
+export function daybetween(Start, End) {
+    const dates = [];
+    if (Start !== "" && End !== "") {
+        const startDate = DateTime.fromISO(Start).setZone('Asia/Bangkok');
+        const endDate = DateTime.fromISO(End).setZone('Asia/Bangkok');
+        let currentDate = startDate;
+        while (currentDate <= endDate) {
+            dates.push(currentDate.toISODate().split("-").join("-")); // เพิ่มวันที่ในรูปแบบ YYYY-MM-DD
+            currentDate = currentDate.plus({ days: 1 }); // เพิ่มวันทีละ 1
+        }
+    } else {
+        console.error("termStart or termEnd is not set!");
+    }
+    return dates;
+}

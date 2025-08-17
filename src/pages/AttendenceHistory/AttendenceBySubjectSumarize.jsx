@@ -27,13 +27,16 @@ function AttendenceBySubjectSumarize({ subjectList, term }) {
                         <h3 className="text-lg font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-xl w-fit">{subject.subCode} - {subject.subNameThai}</h3>
                         <span className="text-gray-500">{subject.subNameEng}</span>
                     </div>
-                    <div className="text-gray-600">
-                        <p>อาจารย์ผู้สอน: {subject.teacher.fName} {subject.teacher.lName}</p>
-                        <p>หน่วยกิต: {subject.subCredit}</p>
+                    <div className="ml-3">
+                        <div className="text-gray-600">
+                            <p>อาจารย์ผู้สอน: {subject.teacher.fName} {subject.teacher.lName}</p>
+                            <p>หน่วยกิต: {subject.subCredit}</p>
+                        </div>
+                        <div className="mt-2 text-sm text-gray-500">
+                            รหัสวิชา: {subject.subCode}
+                        </div>
                     </div>
-                    <div className="mt-2 text-sm text-gray-500">
-                        รหัสวิชา: {subject.subId}
-                    </div>
+                    
                 </div>
             ))}
             {subjectList.length > 0 && (
