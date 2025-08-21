@@ -159,13 +159,9 @@ function AttendenceBySubjectSumarizeDetail() {
             <div className="mb-3">
                 <div className="bg-gray-50 border border-line rounded-lg p-4">
                     <div className="flex items-center gap-3">
-                        {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg> */}
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6 text-primary">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                         </svg>
-
                         <div>
                             <h4 className="font-medium text-sm text-text-color font-body">วิชา {subject.subNameThai} - {subject.subNameEng}({subject.subCode})</h4>
                             <p className="text-sm text-text-color-alt font-body mt-1">

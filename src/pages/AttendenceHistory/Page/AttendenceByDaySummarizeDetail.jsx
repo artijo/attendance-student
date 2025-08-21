@@ -103,6 +103,9 @@ function AttendenceByDaySummarizeDetail() {
                                 คาบ/เวลา
                             </th>
                             <th scope="col" className="px-6 py-3 whitespace-nowrap">
+                                วิชา
+                            </th>
+                            <th scope="col" className="px-6 py-3 whitespace-nowrap">
                                 สถานะการเข้าร่วม
                             </th>
                             <th scope="col" className="px-6 py-3 whitespace-nowrap">
@@ -121,6 +124,7 @@ function AttendenceByDaySummarizeDetail() {
                         {studingTime.length > 0 && studingTime.map((st, index) => {
                             const isTeacherOpereted = st.attendance?.[0]?.teacher;
                             const isLeaderOpereted = st.attendance?.[0]?.leader;
+                            console.log(st);
                             return (
                                 <tr key={index} className="bg-white border-b border-gray-200 text-xs">
                                     <th
@@ -128,6 +132,9 @@ function AttendenceByDaySummarizeDetail() {
                                     >
                                         คาบที่ {index + 1}  {formatTimeThai(st.timetable.timeStart)} - {formatTimeThai(st.timetable.timeEnd)}
                                     </th>
+                                    <td className="px-6 py-4 whitespace-nowrap">
+                                        {st.timetable.subject.subNameThai}({st.timetable.subject.subNameEng} - {st.timetable.subject.subCode})
+                                    </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         { st.attendance.length > 0 ? (
                                             <div
