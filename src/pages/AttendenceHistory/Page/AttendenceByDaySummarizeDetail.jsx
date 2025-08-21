@@ -186,6 +186,7 @@ function AttendenceByDaySummarizeDetail() {
                     </tbody>
                 </table>
             </div>
+            
             {/* <div className="grid grid-cols-1 gap-3">
                 {studingTime.length > 0 ? studingTime.map((st, key) => (
                     <div key={key}>
