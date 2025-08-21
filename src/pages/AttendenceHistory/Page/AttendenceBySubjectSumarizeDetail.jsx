@@ -264,8 +264,8 @@ function AttendenceBySubjectSumarizeDetail() {
                     <tbody>
                         {slicefilterStudyTimeList.length === 0 && (
                             <tr className="bg-white border-b border-gray-200 text-xs">
-                                <td className="px-6 py-4 whitespace-nowrap" colSpan={3}>
-                                    วิชานี้ไม่มีคาบเรียน
+                                <td className="px-6 py-4 whitespace-nowrap text-center" colSpan={3}>
+                                    ไม่พบข้อมูลคาบเรียน
                                 </td>
                             </tr>
                         )}
@@ -357,7 +357,7 @@ function AttendenceBySubjectSumarizeDetail() {
                                         d="M15 19l-7-7 7-7"
                                     />
                                 </svg>
-                                <span className="ml-1 hidden sm:inline">ก่อนหน้า</span>
+                                <span className="ml-1 hidden sm:inline text-nowrap">ก่อนหน้า</span>
                             </button>
 
                             <div className="hidden sm:flex space-x-1">
@@ -395,7 +395,7 @@ function AttendenceBySubjectSumarizeDetail() {
                                     : "border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
                                     }`}
                             >
-                                <span className="mr-1 hidden sm:inline">ถัดไป</span>
+                                <span className="mr-1 hidden sm:inline text-nowrap">ถัดไป</span>
                                 <svg
                                     className="h-4 w-4"
                                     fill="none"
