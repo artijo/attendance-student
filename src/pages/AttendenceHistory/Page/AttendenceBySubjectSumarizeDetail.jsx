@@ -68,7 +68,7 @@ function AttendenceBySubjectSumarizeDetail() {
             console.log('delete filter');
             setFilter({startDate:'',endDate:''});
             setFilterStudyTime(studytime);
-            console.log(studytime);
+            // console.log(studytime);
             return;
         };
         const startDate = DateTime.fromISO(`${filter.startDate}T00:00:00`).setZone('Asia/Bangkok');
@@ -246,7 +246,7 @@ function AttendenceBySubjectSumarizeDetail() {
                     </button>
                 </div>
             </div>
-            <div className="mt-4 overflow-auto h-[350px] border border-gray-200 rounded-lg ">
+            <div className="mt-4 overflow-auto h-[350px] bg-white    border border-gray-200 rounded-lg ">
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead className="rel text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
