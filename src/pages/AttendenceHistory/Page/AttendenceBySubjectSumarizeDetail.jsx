@@ -47,8 +47,17 @@ function AttendenceBySubjectSumarizeDetail() {
 
     const [filter, setFilter] = useState({
         startDate: '',
-        endDate: ''
+        endDate: '',
+        isEnrollAttendence: 'default',
     })
+    /* 
+        isEnrollAttendence have 3 value
+        
+        "default" is noting filter
+        "enroll" is filter enroll already
+        "not-enroll" is filter not enroll already
+        
+    */
     const [studytime, setStudyTime] = useState([]);
     const [filterStudyTime, setFilterStudyTime] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -63,23 +72,58 @@ function AttendenceBySubjectSumarizeDetail() {
         setFilter(values => ({ ...values, [name]: value }))
     }
 
-    const handleOnClickAddFilter = (buttonType) => {
-        if(buttonType == 'delete') {
-            console.log('delete filter');
-            setFilter({startDate:'',endDate:''});
-            setFilterStudyTime(studytime);
-            // console.log(studytime);
-            return;
-        };
-        const startDate = DateTime.fromISO(`${filter.startDate}T00:00:00`).setZone('Asia/Bangkok');
-        const endDate = DateTime.fromISO(`${filter.endDate}T23:59:00`).setZone('Asia/Bangkok');
-        const filterByDate = studytime.filter((value) => {
-            const stDate = DateTime.fromISO(value.studingTimeDate).setZone('Asia/Bangkok');
-            if(stDate >= startDate && stDate <= endDate){
-                return value;
-            };
-        });
-        setFilterStudyTime(filterByDate);
+    const filterByIsEnrollAttendence = (filterType, arr) => { //filterType is a status of isEnrollmentAttendence
+        let filterArr;
+        // console.log(arr);
+        if (filterType === 'enroll') {
+            filterArr = arr.filter((value) => {
+                if(value.attendance.length > 0) {
+                    return value
+                }
+            })
+            console.log('is-enroll')
+        } else if (filterType === 'not-enroll') {
+            filterArr = arr.filter((value) => {
+                if(!value.attendance.length > 0) {
+                    return value
+                }
+            })
+            console.log('not-enroll')
+        }
+        return filterArr;
+    };
+
+    const handleOnClickDeleteFilter = () => {
+        // console.log('delete filter');
+        setFilter({ startDate: '', endDate: '', isEnrollAttendence: 'default' });
+        setFilterStudyTime(studytime);
+        // console.log(studytime);
+        return;
+    }
+
+    const handleOnClickAddFilter = () => {
+        let filterArray;
+        if (
+            filter.startDate != '' &&
+            filter.endDate != '' &&
+            (filter.isEnrollAttendence == 'default' || filter.isEnrollAttendence != 'default')
+        ) {
+            const startDate = DateTime.fromISO(`${filter.startDate}T00:00:00`).setZone('Asia/Bangkok');
+            const endDate = DateTime.fromISO(`${filter.endDate}T23:59:00`).setZone('Asia/Bangkok');
+            const filterByDate = studytime.filter((value) => {
+                const stDate = DateTime.fromISO(value.studingTimeDate).setZone('Asia/Bangkok');
+                if (stDate >= startDate && stDate <= endDate) {
+                    return value;
+                };
+            });
+            filterArray = filterByIsEnrollAttendence(filter.isEnrollAttendence, filterByDate);
+        }
+
+        if (filter.startDate == '' && filter.endDate == '') {
+            filterArray = filterByIsEnrollAttendence(filter.isEnrollAttendence, studytime);
+        }
+
+        setFilterStudyTime(filterArray);
     };
 
     const formatAttStatus = (status) => {
@@ -177,20 +221,22 @@ function AttendenceBySubjectSumarizeDetail() {
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-1 gap-2 bg-gray-50 border border-line rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6 text-primary">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
-                    </svg>
-                    <h4 className="font-medium text-sm text-text-color font-body">ตัวกรอง</h4>
-                </div>
-                <div className="ml-1">
-                    <h4 className="font-medium text-xs text-text-color font-body ">วันที่</h4>
-                    {studytime.length > 0 && (
+            {studytime.length > 0 && (
+                <div className="grid grid-cols-1 gap-4 bg-gray-50 border border-line rounded-lg p-4">
+                    <div className="flex items-center gap-2">
+                        <div className="bg-primary p-1 w-fit rounded-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6 text-white">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                            </svg>
+                        </div>
+                        <h4 className="font-bold text-sm text-text-color font-body">ตัวกรอง</h4>
+                    </div>
+                    <div className="ml-1">
+                        <h4 className="font-medium text-xs text-text-color font-body ">วันที่</h4>
                         <div className="flex items-center gap-2 mt-1">
                             <input
                                 type="date"
-                                className="text-xs p-0.5 border border-gray-200 rounded-md"
+                                className="text-xs px-2 py-2.5 border border-gray-200 rounded-md"
                                 min={
                                     getDateFormat(studytime[0].studingTimeDate)
                                 }
@@ -201,10 +247,10 @@ function AttendenceBySubjectSumarizeDetail() {
                                 value={filter.startDate}
                                 onChange={(e) => handleFilterDate(e)}
                             />
-                            <span className="text-xs">ถึง</span>
+                            <span className="w-4 h-0.5 bg-primary"></span>
                             <input
                                 type="date"
-                                className="text-xs p-0.5 border border-gray-200 rounded-md"
+                                className="text-xs px-2 py-2.5 border border-gray-200 rounded-md"
                                 disabled={filter.startDate == '' ? true : false}
                                 name="endDate"
                                 value={filter.endDate}
@@ -217,35 +263,122 @@ function AttendenceBySubjectSumarizeDetail() {
                                 onChange={(e) => handleFilterDate(e)}
                             />
                         </div>
-                    )}
-                </div>
-                <div className="w-fit ml-auto flex gap-2 items-center">
-                    <button
-                        className="mt-4 md:mt-0 px-2 py-1 text-xs bg-white border border-gray-200 text-black rounded-lg hover:bg-gray-200 transition-colors flex items-center"
-                        onClick={() => handleOnClickAddFilter('delete')}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 mr-1">
-                            <path fillRule="evenodd" d="M4.25 12a.75.75 0 0 1 .75-.75h14a.75.75 0 0 1 0 1.5H5a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
-                        </svg>
-                        ลบตัวกรอง
-                    </button>
-                    <button
-                        className="mt-4 md:mt-0 px-2 py-1 text-xs bg-primary text-white rounded-lg hover:bg-accent transition-colors flex items-center disabled:bg-blue-300 disabled:hover:bg-blue-300"
-                        disabled={filter.startDate != '' && filter.endDate != '' ? false : true}
-                        onClick={() => handleOnClickAddFilter('add')}
-                    >
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5 mr-1"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
+                    </div>
+                    <div className="ml-1">
+                        <h4 className="font-medium text-xs text-text-color font-body ">การลงชื่อเข้าเรียน</h4>
+                        <div className="flex gap-2 text-xs mt-1">
+                            {/* Enroll */}
+                            <div className="border border-gray-200 rounded-md">
+                                <label className="flex items-center gap-2 px-2 py-2.5">
+                                    <input
+                                        type="radio"
+                                        name="isEnrollAttendence"
+                                        value="enroll"
+                                        checked={filter.isEnrollAttendence === "enroll"}
+                                        onChange={(e) => handleFilterDate(e)}
+                                    />
+                                    <span className="text-nowrap">ลงชื่อแล้ว</span>
+                                </label>
+                            </div>
+
+
+                            {/* Not Enroll */}
+                            <div className="border border-gray-200 rounded-md">
+                                <label className="flex items-center gap-2 px-2 py-2.5">
+                                    <input
+                                        type="radio"
+                                        name="isEnrollAttendence"
+                                        value="not-enroll"
+                                        checked={filter.isEnrollAttendence === "not-enroll"}
+                                        onChange={(e) => handleFilterDate(e)}
+                                    />
+                                    <span className="text-nowrap">ยังไม่ลงชื่อ</span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div className="w-fit ml-auto flex gap-3 items-center">
+                        {/* ปุ่มลบตัวกรอง */}
+                        <button
+                            className="mt-4 md:mt-0 px-3 py-2 text-sm bg-white border border-gray-300 text-gray-700 
+               rounded-xl hover:bg-red-50 hover:border-red-400 hover:text-red-600 
+               transition-all duration-200 flex items-center shadow-sm"
+                            onClick={() => handleOnClickDeleteFilter()}
                         >
-                            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-                        </svg>
-                        ใส่ตัวกรอง
-                    </button>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="h-5 w-5 mr-2"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M4.25 12a.75.75 0 0 1 .75-.75h14a.75.75 0 0 1 0 1.5H5a.75.75 0 0 1-.75-.75Z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+                            ลบตัวกรอง
+                        </button>
+
+                        {/* ปุ่มใส่ตัวกรอง */}
+                        <button
+                            className="mt-4 md:mt-0 px-3 py-2 text-sm rounded-xl 
+                            bg-primary text-white shadow-sm 
+                            hover:bg-accent focus:ring-2 focus:ring-accent/50 
+                            transition-all duration-200 flex items-center
+                            disabled:bg-gray-300 disabled:hover:bg-gray-300"
+                            disabled={
+                                filter.startDate !== "" && filter.endDate !== "" || filter.isEnrollAttendence !== "default"
+                                    ? false
+                                    : true
+                            }
+                            onClick={() => handleOnClickAddFilter()}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 mr-2"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+                            ใส่ตัวกรอง
+                        </button>
+                    </div>
+
+                    {/* <div className="w-fit ml-auto flex gap-2 items-center">
+                        <button
+                            className="mt-4 md:mt-0 px-2 py-1 text-xs bg-white border border-gray-200 text-black rounded-lg hover:bg-gray-200 transition-colors flex items-center"
+                            onClick={() => handleOnClickDeleteFilter()}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 mr-1">
+                                <path fillRule="evenodd" d="M4.25 12a.75.75 0 0 1 .75-.75h14a.75.75 0 0 1 0 1.5H5a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
+                            </svg>
+                            ลบตัวกรอง
+                        </button>
+                        <button
+                            className="mt-4 md:mt-0 px-2 py-1 text-xs bg-primary text-white rounded-lg hover:bg-accent transition-colors flex items-center disabled:bg-blue-300 disabled:hover:bg-blue-300"
+                            disabled={(filter.startDate != '' && filter.endDate != '') || filter.isEnrollAttendence != 'default' ? false : true}
+                            onClick={() => handleOnClickAddFilter()}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 mr-1"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+                            </svg>
+                            ใส่ตัวกรอง
+                        </button>
+                    </div> */}
                 </div>
-            </div>
+            )}
             <div className="mt-4 overflow-auto h-[350px] bg-white    border border-gray-200 rounded-lg ">
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead className="rel text-xs text-gray-700 uppercase bg-gray-50">
@@ -308,7 +441,7 @@ function AttendenceBySubjectSumarizeDetail() {
                     </tbody>
                 </table>
             </div>
-            
+
             {slicefilterStudyTimeList.length > 0 && (
                 <div className="mt-2 ml-2">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
