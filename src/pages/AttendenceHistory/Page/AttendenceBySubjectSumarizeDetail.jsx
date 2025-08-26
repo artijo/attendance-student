@@ -44,15 +44,88 @@ const TapAttendenceSummaryOpen = ({ children, title, icon }) => {
 
 function AttendenceBySubjectSumarizeDetail() {
     const location = useLocation();
+
+    const [filter, setFilter] = useState({
+        startDate: '',
+        endDate: '',
+        isEnrollAttendence: 'default',
+    })
+    /* 
+        isEnrollAttendence have 3 value
+        
+        "default" is noting filter
+        "enroll" is filter enroll already
+        "not-enroll" is filter not enroll already
+        
+    */
     const [studytime, setStudyTime] = useState([]);
-    // const subject = studytime[0]?.timetable?.subject;
     const [filterStudyTime, setFilterStudyTime] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
     const totalPages = Math.ceil(filterStudyTime.length / itemsPerPage);
     const slicefilterStudyTimeList = filterStudyTime.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
     const { subject, term } = location.state;
-    const [filter, setFilter] = useState('in');
+
+    const handleFilterDate = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setFilter(values => ({ ...values, [name]: value }))
+    }
+
+    const filterByIsEnrollAttendence = (filterType, arr) => { //filterType is a status of isEnrollmentAttendence
+        let filterArr;
+        // console.log(arr);
+        if (filterType === 'enroll') {
+            filterArr = arr.filter((value) => {
+                if(value.attendance.length > 0) {
+                    return value
+                }
+            })
+            console.log('is-enroll')
+        } else if (filterType === 'not-enroll') {
+            filterArr = arr.filter((value) => {
+                if(!value.attendance.length > 0) {
+                    return value
+                }
+            })
+            console.log('not-enroll')
+        }
+        return filterArr;
+    };
+
+    const handleOnClickDeleteFilter = () => {
+        // console.log('delete filter');
+        setFilter({ startDate: '', endDate: '', isEnrollAttendence: 'default' });
+        setFilterStudyTime(studytime);
+        // console.log(studytime);
+        return;
+    }
+
+    const handleOnClickAddFilter = () => {
+        let filterArray;
+        if (
+            filter.startDate != '' &&
+            filter.endDate != '' &&
+            (filter.isEnrollAttendence == 'default' || filter.isEnrollAttendence != 'default')
+        ) {
+            const startDate = DateTime.fromISO(`${filter.startDate}T00:00:00`).setZone('Asia/Bangkok');
+            const endDate = DateTime.fromISO(`${filter.endDate}T23:59:00`).setZone('Asia/Bangkok');
+            const filterByDate = studytime.filter((value) => {
+                const stDate = DateTime.fromISO(value.studingTimeDate).setZone('Asia/Bangkok');
+                if (stDate >= startDate && stDate <= endDate) {
+                    return value;
+                };
+            });
+            filterArray = filterByIsEnrollAttendence(filter.isEnrollAttendence, filterByDate);
+        }
+
+        if (filter.startDate == '' && filter.endDate == '') {
+            filterArray = filterByIsEnrollAttendence(filter.isEnrollAttendence, studytime);
+        }
+
+        setFilterStudyTime(filterArray);
+    };
+
     const formatAttStatus = (status) => {
         switch (status.toLowerCase()) {
             case 'present': {
@@ -74,7 +147,7 @@ function AttendenceBySubjectSumarizeDetail() {
             }
             default:
                 return status;
-        }
+        };
     };
 
     const getAttStatusColor = (status) => {
@@ -99,7 +172,6 @@ function AttendenceBySubjectSumarizeDetail() {
     };
 
     const formatTimeLocalTh = (datetime) => {
-        // console.log(datetime);
         const date = DateTime.fromISO(datetime).setLocale('th').toFormat("d LLLL yyyy HH:mm 'น.'")
         return date;
     };
@@ -109,6 +181,7 @@ function AttendenceBySubjectSumarizeDetail() {
             const response = await axios.get(`${HOSTNAME}/s/attendence/history/subjectdetail/${term.termId}/${subject.subId}`);
             if (response.status === 200) {
                 setStudyTime(response.data);
+                setFilterStudyTime(response.data);
             } else {
                 throw new Error(response.data.message);
             }
@@ -117,40 +190,17 @@ function AttendenceBySubjectSumarizeDetail() {
         };
     };
 
-    const handleFilterList = (filter) => {
-        const studytimeClone = [...studytime];
-        const dtNow = DateTime.now().setZone('Asia/Bangkok');
-        if (filter === 'not-in') {
-            const filterNotin = studytimeClone.filter((studytime) => {
-                const dtStudytime = DateTime.fromISO(studytime.studingTimeDate).setZone('Asia/Bangkok');
-                return dtStudytime > dtNow;
-            });
-
-            setFilterStudyTime(filterNotin);
-        } else if (filter === 'in') {
-            const filterIn = studytimeClone.filter((studytime) => {
-                const dtStudytime = DateTime.fromISO(studytime.studingTimeDate).setZone('Asia/Bangkok');
-                // console.log(`${dtStudytime < dtNow} ${studytime.studyTimeId}`);
-                return dtStudytime < dtNow;
-            });
-            // console.log(filterIn)
-            setFilterStudyTime(filterIn);
-        };
+    const getDateFormat = (date) => {
+        date = DateTime.fromISO(date).setZone('Asia/Bangkok').toFormat('yyyy-MM-dd');
+        // console.log(date);
+        return date;
     };
 
-
-    const handleFilterOnChange = (value) => {
-        setFilter(value);
-        handleFilterList(value);
-    };
 
     useEffect(() => {
         callSummarizeStuingTime();
     }, []);
 
-    useEffect(() => {
-        handleFilterList(filter);
-    }, [studytime])
 
     return (
         <div className="sm:max-w-md md:max-w-lg mx-auto p-2">
@@ -159,44 +209,177 @@ function AttendenceBySubjectSumarizeDetail() {
             <div className="mb-3">
                 <div className="bg-gray-50 border border-line rounded-lg p-4">
                     <div className="flex items-center gap-3">
-                        {/* <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg> */}
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6 text-primary">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
                         </svg>
-
                         <div>
                             <h4 className="font-medium text-sm text-text-color font-body">วิชา {subject.subNameThai} - {subject.subNameEng}({subject.subCode})</h4>
                             <p className="text-sm text-text-color-alt font-body mt-1">
-                                คุณครู {subject.teacher.fName} {subject.teacher.lName}<br/>
+                                คุณครู {subject.teacher.fName} {subject.teacher.lName}<br />
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div>
-                <div>
-                    <h5 className="text-gray-500 font-medium">ฟีลเตอร์</h5>
-                    <ul className="flex flex-row gap-1.5 text-sm mt-1">
-                        <li
-                            className={`cursor-pointer border px-4 py-1 rounded-full transition-all delay-75 ${filter === 'in' ? ' bg-accent border-accent font-medium text-white shadow' : 'border-gray-300'
-                                }`}
-                            onClick={() => handleFilterOnChange('in')}
+            {studytime.length > 0 && (
+                <div className="grid grid-cols-1 gap-4 bg-gray-50 border border-line rounded-lg p-4">
+                    <div className="flex items-center gap-2">
+                        <div className="bg-primary p-1 w-fit rounded-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6 text-white">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 0 1-.659 1.591l-5.432 5.432a2.25 2.25 0 0 0-.659 1.591v2.927a2.25 2.25 0 0 1-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 0 0-.659-1.591L3.659 7.409A2.25 2.25 0 0 1 3 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0 1 12 3Z" />
+                            </svg>
+                        </div>
+                        <h4 className="font-bold text-sm text-text-color font-body">ตัวกรอง</h4>
+                    </div>
+                    <div className="ml-1">
+                        <h4 className="font-medium text-xs text-text-color font-body ">วันที่</h4>
+                        <div className="flex items-center gap-2 mt-1">
+                            <input
+                                type="date"
+                                className="text-xs px-2 py-2.5 border border-gray-200 rounded-md"
+                                min={
+                                    getDateFormat(studytime[0].studingTimeDate)
+                                }
+                                max={
+                                    getDateFormat(studytime[studytime.length - 1].studingTimeDate)
+                                }
+                                name="startDate"
+                                value={filter.startDate}
+                                onChange={(e) => handleFilterDate(e)}
+                            />
+                            <span className="w-4 h-0.5 bg-primary"></span>
+                            <input
+                                type="date"
+                                className="text-xs px-2 py-2.5 border border-gray-200 rounded-md"
+                                disabled={filter.startDate == '' ? true : false}
+                                name="endDate"
+                                value={filter.endDate}
+                                min={
+                                    filter.startDate
+                                }
+                                max={
+                                    getDateFormat(studytime[studytime.length - 1].studingTimeDate)
+                                }
+                                onChange={(e) => handleFilterDate(e)}
+                            />
+                        </div>
+                    </div>
+                    <div className="ml-1">
+                        <h4 className="font-medium text-xs text-text-color font-body ">การลงชื่อเข้าเรียน</h4>
+                        <div className="flex gap-2 text-xs mt-1">
+                            {/* Enroll */}
+                            <div className="border border-gray-200 rounded-md">
+                                <label className="flex items-center gap-2 px-2 py-2.5">
+                                    <input
+                                        type="radio"
+                                        name="isEnrollAttendence"
+                                        value="enroll"
+                                        checked={filter.isEnrollAttendence === "enroll"}
+                                        onChange={(e) => handleFilterDate(e)}
+                                    />
+                                    <span className="text-nowrap">ลงชื่อแล้ว</span>
+                                </label>
+                            </div>
+
+
+                            {/* Not Enroll */}
+                            <div className="border border-gray-200 rounded-md">
+                                <label className="flex items-center gap-2 px-2 py-2.5">
+                                    <input
+                                        type="radio"
+                                        name="isEnrollAttendence"
+                                        value="not-enroll"
+                                        checked={filter.isEnrollAttendence === "not-enroll"}
+                                        onChange={(e) => handleFilterDate(e)}
+                                    />
+                                    <span className="text-nowrap">ยังไม่ลงชื่อ</span>
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div className="w-fit ml-auto flex gap-3 items-center">
+                        {/* ปุ่มลบตัวกรอง */}
+                        <button
+                            className="mt-4 md:mt-0 px-3 py-2 text-sm bg-white border border-gray-300 text-gray-700 
+               rounded-xl hover:bg-red-50 hover:border-red-400 hover:text-red-600 
+               transition-all duration-200 flex items-center shadow-sm"
+                            onClick={() => handleOnClickDeleteFilter()}
                         >
-                            คาบเรียนที่เรียนแล้ว
-                        </li>
-                        <li
-                            className={`cursor-pointer border px-4 py-1 rounded-full transition-all delay-75 ${filter === 'not-in' ? ' bg-accent border-accent font-medium text-white shadow' : 'border-gray-300'
-                                }`}
-                            onClick={() => handleFilterOnChange('not-in')}
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="h-5 w-5 mr-2"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M4.25 12a.75.75 0 0 1 .75-.75h14a.75.75 0 0 1 0 1.5H5a.75.75 0 0 1-.75-.75Z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+                            ลบตัวกรอง
+                        </button>
+
+                        {/* ปุ่มใส่ตัวกรอง */}
+                        <button
+                            className="mt-4 md:mt-0 px-3 py-2 text-sm rounded-xl 
+                            bg-primary text-white shadow-sm 
+                            hover:bg-accent focus:ring-2 focus:ring-accent/50 
+                            transition-all duration-200 flex items-center
+                            disabled:bg-gray-300 disabled:hover:bg-gray-300"
+                            disabled={
+                                filter.startDate !== "" && filter.endDate !== "" || filter.isEnrollAttendence !== "default"
+                                    ? false
+                                    : true
+                            }
+                            onClick={() => handleOnClickAddFilter()}
                         >
-                            คาบเรียนที่ยังไม่ถึง
-                        </li>
-                    </ul>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 mr-2"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path
+                                    fillRule="evenodd"
+                                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                                    clipRule="evenodd"
+                                />
+                            </svg>
+                            ใส่ตัวกรอง
+                        </button>
+                    </div>
+
+                    {/* <div className="w-fit ml-auto flex gap-2 items-center">
+                        <button
+                            className="mt-4 md:mt-0 px-2 py-1 text-xs bg-white border border-gray-200 text-black rounded-lg hover:bg-gray-200 transition-colors flex items-center"
+                            onClick={() => handleOnClickDeleteFilter()}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 mr-1">
+                                <path fillRule="evenodd" d="M4.25 12a.75.75 0 0 1 .75-.75h14a.75.75 0 0 1 0 1.5H5a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
+                            </svg>
+                            ลบตัวกรอง
+                        </button>
+                        <button
+                            className="mt-4 md:mt-0 px-2 py-1 text-xs bg-primary text-white rounded-lg hover:bg-accent transition-colors flex items-center disabled:bg-blue-300 disabled:hover:bg-blue-300"
+                            disabled={(filter.startDate != '' && filter.endDate != '') || filter.isEnrollAttendence != 'default' ? false : true}
+                            onClick={() => handleOnClickAddFilter()}
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5 mr-1"
+                                viewBox="0 0 20 20"
+                                fill="currentColor"
+                            >
+                                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+                            </svg>
+                            ใส่ตัวกรอง
+                        </button>
+                    </div> */}
                 </div>
-            </div>
-            <div className="mt-4 overflow-auto h-[350px]">
+            )}
+            <div className="mt-4 overflow-auto h-[350px] bg-white    border border-gray-200 rounded-lg ">
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500">
                     <thead className="rel text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
@@ -214,12 +397,12 @@ function AttendenceBySubjectSumarizeDetail() {
                     <tbody>
                         {slicefilterStudyTimeList.length === 0 && (
                             <tr className="bg-white border-b border-gray-200 text-xs">
-                                <td className="px-6 py-4 whitespace-nowrap" colSpan={3}>
-                                    วิชานี้ไม่มีคาบเรียน
+                                <td className="px-6 py-4 whitespace-nowrap text-center" colSpan={3}>
+                                    ไม่พบข้อมูลคาบเรียน
                                 </td>
                             </tr>
                         )}
-                        {slicefilterStudyTimeList.length > 0 && slicefilterStudyTimeList.map((st,index) => {
+                        {slicefilterStudyTimeList.length > 0 && slicefilterStudyTimeList.map((st, index) => {
                             const isTeacherOpereted = st.attendance?.[index]?.teacher;
                             const isLeaderOpereted = st.attendance?.[index]?.leader;
                             let startIndex = studytime.findIndex((value) => value.studyTimeId == st.studyTimeId) + 1;
@@ -250,6 +433,7 @@ function AttendenceBySubjectSumarizeDetail() {
                                         {isTeacherOpereted != undefined && `คุณครู ${isTeacherOpereted?.fName} ${isTeacherOpereted?.lName}`}
                                         {isLeaderOpereted != undefined && `${formatTitle(isLeaderOpereted?.student.title)} ${isLeaderOpereted?.student.fName} ${isLeaderOpereted?.student.lName}`}
                                         {isLeaderOpereted == undefined && isTeacherOpereted == undefined && st.attendance.length > 0 && 'ตนเอง'}
+                                        {st.attendance.length == 0 && '-'}
                                     </td>
                                 </tr>
                             )
@@ -257,62 +441,106 @@ function AttendenceBySubjectSumarizeDetail() {
                     </tbody>
                 </table>
             </div>
-            {slicefilterStudyTimeList.length > 0 && (
-                <div className="border-t border-line px-6 py-4">
-                    <div className="flex items-center justify-between">
-                        <p className="text-sm text-text-color-alt">
-                            แสดง <span className="font-medium text-text-color">{slicefilterStudyTimeList.length}</span> จาก <span className="font-medium text-text-color">{slicefilterStudyTimeList.length}</span> รายการ
-                        </p>
 
-                        <div className="flex items-center justify-end gap-1">
+            {slicefilterStudyTimeList.length > 0 && (
+                <div className="mt-2 ml-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                        <div className="text-sm text-gray-700">
+                            แสดง{" "}
+                            <span className="font-medium">
+                                {(currentPage - 1) * itemsPerPage + 1}
+                            </span>{" "}
+                            ถึง{" "}
+                            <span className="font-medium">
+                                {Math.min(
+                                    currentPage * itemsPerPage,
+                                    filterStudyTime.length
+                                )}
+                            </span>{" "}
+                            จาก{" "}
+                            <span className="font-medium">
+                                {/* {Math.max(
+                                    currentPage * itemsPerPage,
+                                    studytime.length
+                                )} */}
+                                {filterStudyTime.length}
+                            </span>{" "}
+                            รายการ
+                        </div>
+
+                        <div className="flex items-center space-x-1">
                             <button
                                 onClick={() => handlePageChange(currentPage - 1)}
                                 disabled={currentPage === 1}
-                                className={`flex items-center justify-center px-3 py-1 rounded border ${currentPage === 1
-                                    ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
-                                    : 'border-gray-200 bg-white text-text-color hover:bg-gray-50 transition-colors'
+                                className={`inline-flex items-center px-3 py-2 border text-sm font-medium rounded-md ${currentPage === 1
+                                    ? "border-gray-300 text-gray-500 bg-white cursor-not-allowed"
+                                    : "border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
                                     }`}
                             >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                <svg
+                                    className="h-4 w-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M15 19l-7-7 7-7"
+                                    />
                                 </svg>
+                                <span className="ml-1 hidden sm:inline text-nowrap">ก่อนหน้า</span>
                             </button>
 
-                            {Array.from({ length: totalPages }, (_, i) => i + 1)
-                                .filter(page => {
-                                    // Show current page, first, last, and pages near current
-                                    return page === 1 ||
-                                        page === totalPages ||
-                                        (page >= currentPage - 1 && page <= currentPage + 1);
-                                })
-                                .map((page, index, array) => (
-                                    <React.Fragment key={page}>
-                                        {index > 0 && array[index - 1] !== page - 1 && (
-                                            <span className="px-2 text-text-color-alt">...</span>
-                                        )}
-                                        <button
-                                            onClick={() => handlePageChange(page)}
-                                            className={`px-3 py-1 rounded ${currentPage === page
-                                                ? 'bg-primary text-white'
-                                                : 'bg-white text-text-color hover:bg-gray-50 border border-gray-200 transition-colors'
-                                                }`}
-                                        >
-                                            {page}
-                                        </button>
-                                    </React.Fragment>
-                                ))
-                            }
+                            <div className="hidden sm:flex space-x-1">
+                                {Array.from({ length: totalPages }, (_, i) => i + 1)
+                                    .filter((page) => {
+                                        return (
+                                            page === 1 ||
+                                            page === totalPages ||
+                                            (page >= currentPage - 1 && page <= currentPage + 1)
+                                        );
+                                    })
+                                    .map((page, index, array) => (
+                                        <React.Fragment key={page}>
+                                            {index > 0 && array[index - 1] !== page - 1 && (
+                                                <span className="px-2 py-2 text-gray-500">...</span>
+                                            )}
+                                            <button
+                                                onClick={() => handlePageChange(page)}
+                                                className={`inline-flex items-center px-3 py-2 border text-sm font-medium rounded-md ${currentPage === page
+                                                    ? "bg-primary border-primary text-white"
+                                                    : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+                                                    }`}
+                                            >
+                                                {page}
+                                            </button>
+                                        </React.Fragment>
+                                    ))}
+                            </div>
 
                             <button
                                 onClick={() => handlePageChange(currentPage + 1)}
                                 disabled={currentPage === totalPages}
-                                className={`flex items-center justify-center px-3 py-1 rounded border ${currentPage === totalPages
-                                    ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
-                                    : 'border-gray-200 bg-white text-text-color hover:bg-gray-50 transition-colors'
+                                className={`inline-flex items-center px-3 py-2 border text-sm font-medium rounded-md ${currentPage === totalPages
+                                    ? "border-gray-300 text-gray-500 bg-white cursor-not-allowed"
+                                    : "border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
                                     }`}
                             >
-                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                <span className="mr-1 hidden sm:inline text-nowrap">ถัดไป</span>
+                                <svg
+                                    className="h-4 w-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M9 5l7 7-7 7"
+                                    />
                                 </svg>
                             </button>
                         </div>
