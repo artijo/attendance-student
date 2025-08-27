@@ -14,19 +14,19 @@ function BehaviorTransaction({ term }) {
     setLoading(true);
     try {
       const response = await axios.get(
-        `${HOSTNAME}/s/behavior/score/transaction`
+        `${HOSTNAME}/s/behavior/score/transaction`,
       );
       if (response.status === 200) {
         // Filter transactions by term
         const filteredTransactions = response.data.filter(
           (transaction) =>
             transaction.studingTime?.timetable?.classroom?.termId ===
-            term.termId
+            term.termId,
         );
 
         // Sort by creation date (newest first)
         const sortedTransactions = filteredTransactions.sort(
-          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
         );
 
         setTransactions(sortedTransactions);
@@ -79,6 +79,19 @@ function BehaviorTransaction({ term }) {
         return "ขาดเรียน";
       } else {
         return "หักคะแนน";
+      }
+    }
+    return "";
+  };
+
+  const getIncrementReason = (status, score) => {
+    if (status === "INCREMENT") {
+      if (score === 0.5) {
+        return "เปลี่ยนจากมาสาย เป็นเข้าเรียน";
+      } else if (score === 1) {
+        return "เปลี่ยนจากขาดเรียน เป็นเข้าเรียน";
+      } else {
+        return "เพิ่มคะแนน";
       }
     }
     return "";
@@ -153,7 +166,7 @@ function BehaviorTransaction({ term }) {
                 <div className="flex items-center space-x-2 mb-2">
                   <span
                     className={`flex items-center space-x-1 font-medium ${getStatusColor(
-                      transaction.Status
+                      transaction.Status,
                     )}`}
                   >
                     {getStatusIcon(transaction.Status)}
@@ -165,7 +178,17 @@ function BehaviorTransaction({ term }) {
                           (
                           {getDeductionReason(
                             transaction.Status,
-                            transaction.score
+                            transaction.score,
+                          )}
+                          )
+                        </span>
+                      )}
+                      {transaction.Status === "INCREMENT" && (
+                        <span className="ml-1 text-xs font-normal text-gray-600">
+                          (
+                          {getIncrementReason(
+                            transaction.Status,
+                            transaction.score,
                           )}
                           )
                         </span>
@@ -195,7 +218,7 @@ function BehaviorTransaction({ term }) {
 
               <div
                 className={`text-lg font-bold ${getStatusColor(
-                  transaction.Status
+                  transaction.Status,
                 )}`}
               >
                 {transaction.Status === "INCREMENT" ? "+" : "-"}
@@ -250,7 +273,7 @@ function BehaviorTransaction({ term }) {
                   );
                 }
                 return null;
-              }
+              },
             )}
           </div>
 
