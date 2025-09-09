@@ -31,6 +31,7 @@ function daybetween(Start, End) {
 
 function AttedenceByDaySummarize({ term }) {
     const navigate = useNavigate();
+    
     const navigateDetailPage = (date) => {
         navigate('/history/datedetail', { state: { date: date, termId: term.termId } })
     }
