@@ -63,8 +63,10 @@ export const formatTitle = (title) => {
 }
 
 export const getThaiMonth = (month) => {
-    switch (month) {
+    // console.log(month);
+    switch (Number(month)) {
         case 1:
+            // console.log('1')
             return 'มกราคม';
         case 2:
             return 'กุมภาพันธ์';

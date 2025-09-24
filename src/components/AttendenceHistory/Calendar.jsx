@@ -1,104 +1,214 @@
 import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { getThaiMonth } from "../../helper";
-import DatePicker from "./DatePicker";
+import { TIME_ZONE } from "../../config";
+
 // import DatePicker from "./Calendar/DatePicker";
 function Calendar({
     term,
     navigateDetailPage
 }) {
-    const [monthList, setMonthList] = useState([]);
-    const [selectMonth, setSelectMonth] = useState(null);
-    const [selectDate, setSelectDate] = useState("");
-    const createMonthList = () => {
-        const startDate = DateTime.fromISO(term.termStart).setZone('Asia/Bangkok').month;
-        const endDate = DateTime.fromISO(term.termEnd).setZone('Asia/Bangkok').month;
-        let monthRange = [];
-        for (let i = startDate; i <= endDate; i++) {
-            monthRange.push(i);
+    let startTermDate = DateTime.fromISO(term.termStart).setZone(TIME_ZONE).startOf('month');
+    let endTermDate = DateTime.fromISO(term.termEnd).setZone(TIME_ZONE).endOf('month');
+    const [dayList, setDayList] = useState([]);
+    const [selectMonthAndYear, setSelectMonthAndYear] = useState({
+        month: 2025,
+        year: 1
+    });
+    const [selectDate, setSelectDate] = useState('')
+
+
+    let holidayList = term.holiday.map((value, index) => {
+        const holidayDate = DateTime.fromISO(value.startHolidayDate).setZone(TIME_ZONE).toFormat('yyyy-MM-dd');
+        return holidayDate;
+    });
+
+    let starDateMonth = DateTime.fromObject({
+        month: selectMonthAndYear.month,
+        year: selectMonthAndYear.year
+    }).startOf('month');
+    let endDateMonth = DateTime.fromObject({
+        month: selectMonthAndYear.month,
+        year: selectMonthAndYear.year
+    }).endOf('month');
+
+    const handleSelectDate = (date) => {
+        if (date === selectDate) {
+            setSelectDate('');
+        } else {
+            setSelectDate(date);
         };
-        setMonthList(monthRange);
-        setSelectMonth(monthRange[0]);
-
     };
 
-    const handleSelectMonth = (operation) => {
-        if (operation == '+') {
-            let addMonth = selectMonth;
-            addMonth++;
-            // console.log(addMonth);
-            if (monthList.includes(addMonth)) setSelectMonth(addMonth);
-        } else if (operation == '-') {
-            let minusMonth = selectMonth;
-            minusMonth--;
-            if (monthList.includes(minusMonth)) setSelectMonth(minusMonth);
+    const handleSelectMonthAndYearChange = (condition) => {
+        let date = DateTime.fromObject({
+            month: parseInt(selectMonthAndYear.month),
+            year: parseInt(selectMonthAndYear.year),
+        });
+
+        if (condition === "increase") {
+            date = date.plus({ month: 1 });
+            if (date > endTermDate) {
+                date = date.minus({ month: 1 });
+            };
+        } else if (condition === "decrease") {
+            date = date.minus({ month: 1 });
+            if (date < startTermDate) {
+                date = date.plus({ month: 1 });
+            };
+        };
+
+        setSelectMonthAndYear({
+            month: String(date.month),
+            year: String(date.year),
+        });
+    };
+
+    const createDate = () => {
+        let dayArr = [];
+        let startWeekDay = starDateMonth.weekday; //If weekday is 'wednesday' mean 3
+        // let endWeekDay = endDateMonth.weekday; // If weekday is 'friday' mean 5
+        let dayInMonths = starDateMonth.daysInMonth;
+        // console.log(startWeekDay + 6-endWeekDay + dayInMonths)
+
+        for (let i = 0; i < dayInMonths; i++) {
+            let date = starDateMonth.plus({ day: i }).toFormat('yyyy-MM-dd');
+            dayArr.push(date);
+        };
+
+        let frontEmpty = [];
+        for (let i = 1; i < startWeekDay; i++) {
+            let date = starDateMonth.minus({ days: i }).toFormat('yyyy-MM-dd');
+            frontEmpty.push(date);
+        };
+
+        let backEmpty = [];
+        for (let i = 1; i <= 42 - (dayArr.length + frontEmpty.length); i++) {
+            let date = endDateMonth.plus({ days: i }).toFormat('yyyy-MM-dd');
+            backEmpty.push(date);
         }
-    };
 
+
+        dayArr = [...frontEmpty.reverse(), ...dayArr, ...backEmpty];
+        // console.log(dayArr);
+        setDayList(dayArr);
+        return;
+    }
 
     useEffect(() => {
-        if (term != null) {
-            createMonthList();
-        }
+        setSelectMonthAndYear({
+            year: String(startTermDate.year),
+            month: String(startTermDate.month)
+        })
+    }, [term])
 
-    }, [term]);
+    useEffect(() => {
+        createDate();
+    }, [selectMonthAndYear]);
 
     return (
-        <div className="w-full h-fit p-2">
-            { selectDate == "" && (
-                <div className="flex items-center px-2 py-1 bg-yellow-200 border border-yellow-300 rounded-md mb-4">
-                    <div className="flex items-center gap-4 text-xs">
-                        <span className="text-yellow-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
-                                <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM12 8.25a.75.75 0 0 1 .75.75v3.75a.75.75 0 0 1-1.5 0V9a.75.75 0 0 1 .75-.75Zm0 8.25a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clipRule="evenodd" />
-                            </svg>
-                        </span>
-                        <div className="flex-1">
-                            <strong className="block font-medium text-yellow-500">กรุณาเลือกวันที่ต้องการดูรายละเอียดการเข้าเรียน</strong>
+        <div className="grid grid-col-2">
+            <div className="flex justify-between items-center px-1.5">
+                <div className="text-gray-500" onClick={() => handleSelectMonthAndYearChange("decrease")}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5">
+                        <path fillRule="evenodd" d="M11.78 5.22a.75.75 0 0 1 0 1.06L8.06 10l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clipRule="evenodd" />
+                    </svg>
+                </div>
+                <h2
+                    className="text-base"
+                >
+                    {selectMonthAndYear.month && selectMonthAndYear.year && (
+                        `${getThaiMonth(selectMonthAndYear.month)} ${(parseInt(selectMonthAndYear.year) + 543)}`
+                    )}
+                </h2>
+                <div className="text-gray-500" onClick={() => handleSelectMonthAndYearChange("increase")}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5">
+                        <path fillRule="evenodd" d="M8.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L11.94 10 8.22 6.28a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+                    </svg>
+                </div>
+            </div>
+            <div className="grid grid-cols-1 gap-2 mt-2">
+                <div className="grid grid-cols-7 gap-2 text-center text-sm font-medium">
+                    {["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."].map((value, index) => (
+                        <div key={index}>
+                            {value}
                         </div>
-                    </div>
+                    ))}
                 </div>
-            )}
-            
-            <div className="w-full flex justify-between items-center">
-                <div
-                    className="p-1 shadow  rounded-lg flex justify-center items-center"
-                    onClick={() => handleSelectMonth('-')}
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4">
-                        <path fillRule="evenodd" d="M7.72 12.53a.75.75 0 0 1 0-1.06l7.5-7.5a.75.75 0 1 1 1.06 1.06L9.31 12l6.97 6.97a.75.75 0 1 1-1.06 1.06l-7.5-7.5Z" clipRule="evenodd" />
-                    </svg>
-                </div>
-                <div className="w-3/4 flex justify-center items-center">
-                    <h5 className="text-base font-medium">{getThaiMonth(selectMonth)}</h5>
-                </div>
-                <div
-                    className="p-1 shadow rounded-lg flex justify-center items-center"
-                    onClick={() => handleSelectMonth('+')}
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-4">
-                        <path fillRule="evenodd" d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z" clipRule="evenodd" />
-                    </svg>
+                <div className="grid grid-cols-7 place-items-center gap-2 text-center text-sm font-medium">
+                    {dayList.map((value, index) => {
+                        const valueDate = DateTime.fromISO(`${value}`).setZone(TIME_ZONE).startOf('day');
+                        if (holidayList.includes(valueDate.toFormat('yyyy-MM-dd'))) {
+                            return (
+                                <div
+                                    key={index}
+                                    className="flex justify-center items-center w-6.5 h-6.5 bg-red-300 text-white font-bold rounded-full"
+
+                                >
+                                    {parseInt(value.split('-')[2])}
+                                </div>
+                            )
+                        }
+
+                        if (valueDate >= startTermDate && valueDate <= endTermDate) {
+                            if (valueDate >= starDateMonth && valueDate <= endDateMonth) {
+                                return (
+                                    <div
+                                        key={index}
+                                        className={`cursor-pointer flex justify-center items-center w-6.5 h-6.5 text-gray-950 font-medium ${selectDate === value && 'rounded-full bg-primary text-white font-medium'} `}
+                                        onClick={
+                                            !(valueDate.weekday == 1 || valueDate.weekday == 7)
+                                                ? () => handleSelectDate(value)
+                                                : undefined
+                                        }
+                                    >
+                                        {parseInt(value.split('-')[2])}
+                                    </div>
+                                )
+                            } else {
+                                return (
+                                    <div
+                                        key={index}
+                                        className={`cursor-pointer flex justify-center items-center w-6.5 h-6.5 text-gray-500  font-medium ${selectDate === value && 'rounded-full bg-primary text-white font-medium'}`}
+                                        onClick={
+                                            !(valueDate.weekday == 1 || valueDate.weekday == 7)
+                                                ? () => handleSelectDate(value)
+                                                : undefined
+                                        }
+                                    >
+                                        {parseInt(value.split('-')[2])}
+                                    </div>
+                                )
+                            }
+
+                        } else {
+                            return (
+                                <div key={index} className=" flex justify-center items-center w-6.5 h-6.5 text-gray-200">
+                                    {parseInt(value.split('-')[2])}
+                                </div>
+                            )
+                        }
+                    })}
                 </div>
             </div>
-            <div className="border-t border-gray-200 mt-2.5 mb-2.5"></div>
-            <div className="grid grid-cols-7 gap-x-2 gap-y-2 mb-2 text-gray-400 text-xs">
-                <p className="flex justify-center items-center rounded-md place-self-center w-5 h-5 p-1">อา.</p>
-                <p className="flex justify-center items-center rounded-md place-self-center w-5 h-5 p-1">จ.</p>
-                <p className="flex justify-center items-center rounded-md place-self-center w-5 h-5 p-1">อ.</p>
-                <p className="flex justify-center items-center rounded-md place-self-center w-5 h-5 p-1">พ.</p>
-                <p className="flex justify-center items-center rounded-md place-self-center w-5 h-5 p-1">พฤ.</p>
-                <p className="flex justify-center items-center rounded-md place-self-center w-5 h-5 p-1">ศ.</p>
-                <p className="flex justify-center items-center rounded-md place-self-center w-5 h-5 p-1">ส.</p>
-            </div>
-            <DatePicker term={term} month={selectMonth} selectDate={selectDate} setSelectDate={setSelectDate} />
             <button
                 type="button"
-                className={`bg-primary w-full text-white font-medium py-1.5 px-2.5 mt-5 rounded hover:bg-primary-dark transition duration-300 ${selectDate == "" ? 'opacity-50 cursor-not-allowed' : ''}`}
-                onClick={() => navigateDetailPage(selectDate)}
+                disabled={selectDate === '' ? true : false}
+                onClick={selectDate === '' ? null : () => navigateDetailPage(selectDate) }
+                className={`
+                    w-full rounded-md mt-4 py-2 
+                    font-medium
+                    cursor-pointer disabled:cursor-not-allowed 
+                    transition-all duration-300 ease-in-out
+                    ${selectDate === ''
+                                        ? 'bg-gray-300 border-gray-300 text-white'
+                                        : 'bg-primary border-primary text-white hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] shadow-md hover:shadow-lg'
+                                    }
+                `}
             >
                 รายละเอียดการเข้าเรียน
             </button>
+
         </div>
     );
 };
