@@ -167,25 +167,11 @@ function ActivityMainPage() {
                   key={index}
                   className="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-l-primary border border-gray-200"
                 >
-                  <div
-                    className={`p-4 text-white ${
-                      isActivityTimeCanEnrollment(act)
-                        ? "bg-gray-500"
-                        : "bg-primary"
-                    }`}
-                  >
+                  <div className="p-4 text-white bg-primary">
                     <div className="flex justify-between items-center">
                       <h2 className="text-lg font-bold">{act.actName}</h2>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm ${
-                          isActivityTimeCanEnrollment(act)
-                            ? "bg-white text-gray-600"
-                            : "bg-white text-primary"
-                        }`}
-                      >
-                        {isActivityTimeCanEnrollment(act)
-                          ? "ผ่านไปแล้ว"
-                          : "กำลังดำเนินการ"}
+                      <span className="px-3 py-1 rounded-full text-xs font-bold shadow-sm bg-white text-primary">
+                        กำลังดำเนินการ
                       </span>
                     </div>
                   </div>
@@ -246,16 +232,12 @@ function ActivityMainPage() {
 
                     <button
                       className={`mt-4 w-full py-2 rounded-md font-medium transition-colors flex items-center justify-center shadow-sm ${
-                        isActivityTimeCanEnrollment(act)
-                          ? "bg-gray-400 text-white opacity-50 cursor-not-allowed"
-                          : act.isCheckedIn
+                        act.isCheckedIn
                           ? "bg-gray-400 text-white opacity-50 cursor-not-allowed"
                           : "bg-primary text-white hover:bg-primary/90"
                       }`}
                       onClick={() => checkInActivity(act)}
-                      disabled={
-                        isActivityTimeCanEnrollment(act) || act.isCheckedIn
-                      }
+                      disabled={act.isCheckedIn}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -269,9 +251,7 @@ function ActivityMainPage() {
                           clipRule="evenodd"
                         />
                       </svg>
-                      {isActivityTimeCanEnrollment(act)
-                        ? "กิจกรรมสิ้นสุดแล้ว"
-                        : act.isCheckedIn
+                      {act.isCheckedIn
                         ? "เช็คชื่อเข้าร่วมกิจกรรมแล้ว"
                         : "เข้าร่วมกิจกรรม"}
                     </button>
@@ -324,27 +304,13 @@ function ActivityMainPage() {
                 {passedActivity.map((act, index) => (
                   <div
                     key={index}
-                    className="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-l-primary border border-gray-200"
+                    className="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-l-gray-400 border border-gray-200"
                   >
-                    <div
-                      className={`p-4 text-white ${
-                        isActivityTimeCanEnrollment(act)
-                          ? "bg-gray-500"
-                          : "bg-primary"
-                      }`}
-                    >
+                    <div className="p-4 text-white bg-gray-500">
                       <div className="flex justify-between items-center">
                         <h2 className="text-lg font-bold">{act.actName}</h2>
-                        <span
-                          className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm ${
-                            isActivityTimeCanEnrollment(act)
-                              ? "bg-white text-gray-600"
-                              : "bg-white text-primary"
-                          }`}
-                        >
-                          {isActivityTimeCanEnrollment(act)
-                            ? "ผ่านไปแล้ว"
-                            : "กำลังดำเนินการ"}
+                        <span className="px-3 py-1 rounded-full text-xs font-bold shadow-sm bg-white text-gray-600">
+                          ผ่านไปแล้ว
                         </span>
                       </div>
                     </div>
