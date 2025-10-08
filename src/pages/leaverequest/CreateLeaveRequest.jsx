@@ -8,7 +8,7 @@ import { userStore } from "../../store";
 function CreateLeaveRequest() {
   const navigate = useNavigate();
   const user = userStore((state) => state.user);
-  console.log("User data:", user);
+  // console.log("User data:", user);
   
   const [formData, setFormData] = useState({
     leaveTypeId: "",
@@ -139,7 +139,7 @@ function CreateLeaveRequest() {
         submitData.append("leaveFile", formData.leaveFile);
       }
 
-      console.log("Submitting leave request with data:", submitData.entries());
+      // console.log("Submitting leave request with data:", submitData.entries());
       
       await axios.post(`${HOSTNAME}/s/leave`, submitData, {
         headers: {
@@ -147,11 +147,12 @@ function CreateLeaveRequest() {
         },
       });
       
-      navigate("/leavereq");
+      navigate("/leavereq", {state : {title: "ส่งคำร้องลาเรียนสำเร็จ", description: "ส่งคำร้องลาเรียนไปยังคุณครูประจำวิชาทุกคนสำเร็จ"}});
     } catch (error) {
       console.error("Error submitting leave request:", error);
       setError(error.response?.data?.message || "เกิดข้อผิดพลาดในการส่งคำร้องขอลา กรุณาลองอีกครั้ง");
     } finally {
+
       setIsSubmitting(false);
     }
   };

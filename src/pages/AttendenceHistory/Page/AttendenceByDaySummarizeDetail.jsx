@@ -116,7 +116,7 @@ function AttendenceByDaySummarizeDetail() {
                     <tbody>
                         {!studingTime.length > 0 && (
                             <tr className="bg-white border-b border-gray-200 text-xs">
-                                <td className="px-6 py-4 whitespace-nowrap" colSpan={3}>
+                                <td className="text-center px-6 py-4 whitespace-nowrap" colSpan={4}>
                                     ไม่มีคาบเรียนในวันนี้
                                 </td>
                             </tr>
@@ -145,6 +145,7 @@ function AttendenceByDaySummarizeDetail() {
                                         ) : (
                                             <div
                                                 className={`${getAttStatusColor('absent')} w-fit px-1 py-0.5 rounded-xl text-[10px]`}
+
                                             >
                                                 ไม่มีบันทึกการเข้าเรียน
                                             </div>
