@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { HOSTNAME } from "../../config";
 import { DateTime } from "luxon";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import AlertSuccess from "../../components/alert/success";
 
 function LeaveRequestListItem({ leaveRequest, onRefresh }) {
   const navigate = useNavigate();
@@ -54,6 +55,21 @@ function LeaveRequest() {
   const [leaveRequests, setLeaveRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const location = useLocation();
+  const [success, setSuccess] = useState({
+    title: "",
+    description: ""
+  });
+
+  useEffect(() => {
+    if(location.state){
+      setSuccess({
+        title: location.state.title,
+        description: location.state.description
+      })
+    };
+  },[]);
+  
   
   const navigate = useNavigate();
 
@@ -104,6 +120,13 @@ function LeaveRequest() {
           ส่งคำร้องขอลา
         </button>
       </div>
+
+      { success.title && success.description && (
+        <div className="mb-6" onClick={() => setSuccess({title: "", description: ""})}>
+          <AlertSuccess title={success.title} description={success.description}/>
+        </div>
+      )}
+
 
       {loading ? (
         <div className="text-center py-8">
