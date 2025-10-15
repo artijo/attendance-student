@@ -134,112 +134,157 @@ function ActivityInfo() {
 
   if (!activity) {
     return (
-<<<<<<< Updated upstream
-      <div className="grid grid-cols-1 gap-2 sm:max-w-md md:max-w-lg mx-auto p-4">
+      <div className="grid grid-cols-1 gap-3 sm:max-w-md md:max-w-lg mx-auto p-4">
         <div>
           <h2 className="text-2xl font-semibold text-left text-primary font-heading">
             รายละเอียดกิจกรรม
           </h2>
           <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
-=======
-        <div className="grid grid-cols-1 gap-3 sm:max-w-md md:max-w-lg mx-auto p-4">
-            <div>
-                <h2 className="text-2xl font-semibold text-left text-primary font-heading">รายละเอียดกิจกรรม</h2>
-                <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
+        </div>
+        <div className="grid grid-cols-1 gap-1.5 p-3 border border-gray-200 rounded bg-white">
+          <div className="flex justify-start items-center gap-1.5">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+              className="size-8 text-primary"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+              />
+            </svg>
+            <div className="flex justify-start items-center gap-1.5">
+              <h5 className="font-bold text-text-color">{activity.actName}</h5>
+              <p
+                className={
+                  activityStatusFormat(activity.actStatus) === "กำลังดำเนิน"
+                    ? "text-xs bg-green-100 text-green-800 rounded-full px-1.5"
+                    : "text-xs bg-yellow-200 text-yellow-800 rounded-full px-1.5"
+                }
+              >
+                {activityStatusFormat(activity.actStatus)}
+              </p>
             </div>
-            <div className="grid grid-cols-1 gap-1.5 p-3 border border-gray-200 rounded bg-white">
-                <div className="flex justify-start items-center gap-1.5">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-8 text-primary">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
-                    </svg>
-                    <div className="flex justify-start items-center gap-1.5">
-                        <h5 className="font-bold text-text-color">{activity.actName}</h5>
-                        <p className={
-                            activityStatusFormat(activity.actStatus) === 'กำลังดำเนิน' ? 'text-xs bg-green-100 text-green-800 rounded-full px-1.5' : 'text-xs bg-yellow-200 text-yellow-800 rounded-full px-1.5'
-                        }>
-                            {activityStatusFormat(activity.actStatus)}
-                        </p>
-                    </div>
-
-                </div>
-                <div className="grid grid-cols-1 gap-1.5">
-                    <div className="flex justify-between text-xs pb-1 border-b border-gray-200">
-                        <p className="font-bold">ระยะเวลากิจกรรม</p>
-                        <p className="text-text-color-alt">{formatDateRange(activity.actDate, activity.actDateEnd)}</p>
-                    </div>
-                    <div className="flex justify-between text-xs pb-1 border-b border-gray-200">
-                        <p className="font-bold">เวลาเริ่ม-สิ้นสุด</p>
-                        <p className="text-text-color-alt">{activity.actStartTime} น.- {activity.actEndTime} น.</p>
-                    </div>
-                    <div className="flex justify-between text-xs pb-1 border-b border-gray-200">
-                        <p className="font-bold">สถานที่</p>
-                        <p className="text-text-color-alt">{activity.actLocation}</p>
-                    </div>
-                    <div className="flex justify-between text-xs pb-1 border-b border-gray-200">
-                        <p className="font-bold">ประเภทกิจกรรม</p>
-                        <p className="text-text-color-alt">{activity.activityType.actTypeName}</p>
-                    </div>
-                    <div className="flex justify-between text-xs pb-1 ">
-                        <p className="font-bold w-3/4">รายละเอียดกิจกรรม</p>
-                        <p className="text-text-color-alt text-right">{activity.actDesc}</p>
-                    </div>
-                </div>
+          </div>
+          <div className="grid grid-cols-1 gap-1.5">
+            <div className="flex justify-between text-xs pb-1 border-b border-gray-200">
+              <p className="font-bold">ระยะเวลากิจกรรม</p>
+              <p className="text-text-color-alt">
+                {formatDateRange(activity.actDate, activity.actDateEnd)}
+              </p>
             </div>
-            <div className="grid grid-cols-1 gap-5">
-                <div>
-                    <h2 className="text-2xl font-semibold text-left text-primary font-heading">ประวัติการเข้าร่วมกิจกรรม</h2>
-                    <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
-                </div>
-                <div className="overflow-auto h-[400px]">
-                    <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-                        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
-                            <tr>
-                                <th scope="col" className="bg-gray-50 px-6 py-3 whitespace-nowrap sticky">
-                                    วันที่
-                                </th>
-                                <th scope="col" className="bg-gray-50 px-6 py-3 whitespace-nowrap sticky">
-                                    สถานะการเข้าร่วม
-                                </th>
-                                <th scope="col" className="bg-gray-50 px-6 py-3 whitespace-nowrap sticky">
-                                    จัดการโดย
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {sliceActivityHistoryProcessedList.length === 0 && (
-                                <tr className="bg-white border-b  border-gray-200">
-                                    <td colSpan="5" className="px-6 py-4 text-center text-text-color-alt">
-                                        ไม่มีประวัติการเข้าร่วมกิจกรรม
-                                    </td>
-                                </tr>
-                            )}
-                            {sliceActivityHistoryProcessedList.length > 0 && sliceActivityHistoryProcessedList.map((act, index) => {
-                                const isTeacherOpereted = act?.teacher;
-                                const isLeaderOpereted = act?.leader;
-                                return (
-                                    <tr key={act.date} className="bg-white border-b  border-gray-200">
-                                        <th scope="row" className="px-6 py-4 font-bold text-gray-900 whitespace-nowrap ">
-                                            {act.date}
-                                        </th>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            <div className="flex flex-row justify-start gap-1.5">
-                                                <p
-                                                    className={act.joinTimestamp != null ? 'text-xs bg-green-100 text-green-800 rounded-full px-1.5' : 'text-xs bg-red-200 text-red-800 rounded-full px-1.5'}
-                                                >{act.joinTimestamp != null ? 'เข้าร่วม' : 'ไม่เข้าร่วม'}</p>
-                                                <p className="text-xs">{act.joinTimestamp != null ? formatTimeLocalTh(act.joinTimestamp) : ''}</p>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap">
-                                            {act.operateBy === 'teacher' ? (
-                                                `คุณครู ${isTeacherOpereted.fName} ${isTeacherOpereted.lName}`
-                                            ) : act.operateBy === 'leader' ?(
-                                                `คุณครู ${isLeaderOpereted.fName} ${isLeaderOpereted.lName}`
-                                            ) : act.operateBy === 'student' &&(
-                                                `ตนเอง`
-                                            )
-
-                                            }
-                                            {/* {(() => {
+            <div className="flex justify-between text-xs pb-1 border-b border-gray-200">
+              <p className="font-bold">เวลาเริ่ม-สิ้นสุด</p>
+              <p className="text-text-color-alt">
+                {activity.actStartTime} น.- {activity.actEndTime} น.
+              </p>
+            </div>
+            <div className="flex justify-between text-xs pb-1 border-b border-gray-200">
+              <p className="font-bold">สถานที่</p>
+              <p className="text-text-color-alt">{activity.actLocation}</p>
+            </div>
+            <div className="flex justify-between text-xs pb-1 border-b border-gray-200">
+              <p className="font-bold">ประเภทกิจกรรม</p>
+              <p className="text-text-color-alt">
+                {activity.activityType.actTypeName}
+              </p>
+            </div>
+            <div className="flex justify-between text-xs pb-1 ">
+              <p className="font-bold w-3/4">รายละเอียดกิจกรรม</p>
+              <p className="text-text-color-alt text-right">
+                {activity.actDesc}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 gap-5">
+          <div>
+            <h2 className="text-2xl font-semibold text-left text-primary font-heading">
+              ประวัติการเข้าร่วมกิจกรรม
+            </h2>
+            <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
+          </div>
+          <div className="overflow-auto h-[400px]">
+            <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+                <tr>
+                  <th
+                    scope="col"
+                    className="bg-gray-50 px-6 py-3 whitespace-nowrap sticky"
+                  >
+                    วันที่
+                  </th>
+                  <th
+                    scope="col"
+                    className="bg-gray-50 px-6 py-3 whitespace-nowrap sticky"
+                  >
+                    สถานะการเข้าร่วม
+                  </th>
+                  <th
+                    scope="col"
+                    className="bg-gray-50 px-6 py-3 whitespace-nowrap sticky"
+                  >
+                    จัดการโดย
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {sliceActivityHistoryProcessedList.length === 0 && (
+                  <tr className="bg-white border-b  border-gray-200">
+                    <td
+                      colSpan="5"
+                      className="px-6 py-4 text-center text-text-color-alt"
+                    >
+                      ไม่มีประวัติการเข้าร่วมกิจกรรม
+                    </td>
+                  </tr>
+                )}
+                {sliceActivityHistoryProcessedList.length > 0 &&
+                  sliceActivityHistoryProcessedList.map((act, index) => {
+                    const isTeacherOpereted = act?.teacher;
+                    const isLeaderOpereted = act?.leader;
+                    return (
+                      <tr
+                        key={act.date}
+                        className="bg-white border-b  border-gray-200"
+                      >
+                        <th
+                          scope="row"
+                          className="px-6 py-4 font-bold text-gray-900 whitespace-nowrap "
+                        >
+                          {act.date}
+                        </th>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="flex flex-row justify-start gap-1.5">
+                            <p
+                              className={
+                                act.joinTimestamp != null
+                                  ? "text-xs bg-green-100 text-green-800 rounded-full px-1.5"
+                                  : "text-xs bg-red-200 text-red-800 rounded-full px-1.5"
+                              }
+                            >
+                              {act.joinTimestamp != null
+                                ? "เข้าร่วม"
+                                : "ไม่เข้าร่วม"}
+                            </p>
+                            <p className="text-xs">
+                              {act.joinTimestamp != null
+                                ? formatTimeLocalTh(act.joinTimestamp)
+                                : ""}
+                            </p>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          {act.operateBy === "teacher"
+                            ? `คุณครู ${isTeacherOpereted.fName} ${isTeacherOpereted.lName}`
+                            : act.operateBy === "leader"
+                            ? `คุณครู ${isLeaderOpereted.fName} ${isLeaderOpereted.lName}`
+                            : act.operateBy === "student" && `ตนเอง`}
+                          {/* {(() => {
                                                 if (isTeacherOpereted !== null) {
                                                     return `คุณครู ${isTeacherOpereted.fName} ${isTeacherOpereted.lName}`;
                                                 }
@@ -248,80 +293,107 @@ function ActivityInfo() {
                                                 }
                                                 // return 'ตนเอง';
                                             })()} */}
-                                        </td>
-                                    </tr>
-                                )
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+          {sliceActivityHistoryProcessedList.length > 0 && (
+            <div className="border-t border-line px-6 py-4">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-text-color-alt">
+                  แสดง{" "}
+                  <span className="font-medium text-text-color">
+                    {sliceActivityHistoryProcessedList.length}
+                  </span>{" "}
+                  จาก{" "}
+                  <span className="font-medium text-text-color">
+                    {activityHistoryProcessed.length}
+                  </span>{" "}
+                  รายการ
+                </p>
 
-                            })}
-                        </tbody>
-                    </table>
+                <div className="flex items-center justify-end gap-1">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className={`flex items-center justify-center px-3 py-1 rounded border ${
+                      currentPage === 1
+                        ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "border-gray-200 bg-white text-text-color hover:bg-gray-50 transition-colors"
+                    }`}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 19l-7-7 7-7"
+                      />
+                    </svg>
+                  </button>
+
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((page) => {
+                      // Show current page, first, last, and pages near current
+                      return (
+                        page === 1 ||
+                        page === totalPages ||
+                        (page >= currentPage - 1 && page <= currentPage + 1)
+                      );
+                    })
+                    .map((page, index, array) => (
+                      <React.Fragment key={page}>
+                        {index > 0 && array[index - 1] !== page - 1 && (
+                          <span className="px-2 text-text-color-alt">...</span>
+                        )}
+                        <button
+                          onClick={() => handlePageChange(page)}
+                          className={`px-3 py-1 rounded ${
+                            currentPage === page
+                              ? "bg-primary text-white"
+                              : "bg-white text-text-color hover:bg-gray-50 border border-gray-200 transition-colors"
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      </React.Fragment>
+                    ))}
+
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className={`flex items-center justify-center px-3 py-1 rounded border ${
+                      currentPage === totalPages
+                        ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "border-gray-200 bg-white text-text-color hover:bg-gray-50 transition-colors"
+                    }`}
+                  >
+                    <svg
+                      className="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </button>
                 </div>
-                {sliceActivityHistoryProcessedList.length > 0 && (
-                    <div className="border-t border-line px-6 py-4">
-                        <div className="flex items-center justify-between">
-                            <p className="text-sm text-text-color-alt">
-                                แสดง <span className="font-medium text-text-color">{sliceActivityHistoryProcessedList.length}</span> จาก <span className="font-medium text-text-color">{activityHistoryProcessed.length}</span> รายการ
-                            </p>
-
-                            <div className="flex items-center justify-end gap-1">
-                                <button
-                                    onClick={() => handlePageChange(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                    className={`flex items-center justify-center px-3 py-1 rounded border ${currentPage === 1
-                                        ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
-                                        : 'border-gray-200 bg-white text-text-color hover:bg-gray-50 transition-colors'
-                                        }`}
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                                    </svg>
-                                </button>
-
-                                {Array.from({ length: totalPages }, (_, i) => i + 1)
-                                    .filter(page => {
-                                        // Show current page, first, last, and pages near current
-                                        return page === 1 ||
-                                            page === totalPages ||
-                                            (page >= currentPage - 1 && page <= currentPage + 1);
-                                    })
-                                    .map((page, index, array) => (
-                                        <React.Fragment key={page}>
-                                            {index > 0 && array[index - 1] !== page - 1 && (
-                                                <span className="px-2 text-text-color-alt">...</span>
-                                            )}
-                                            <button
-                                                onClick={() => handlePageChange(page)}
-                                                className={`px-3 py-1 rounded ${currentPage === page
-                                                    ? 'bg-primary text-white'
-                                                    : 'bg-white text-text-color hover:bg-gray-50 border border-gray-200 transition-colors'
-                                                    }`}
-                                            >
-                                                {page}
-                                            </button>
-                                        </React.Fragment>
-                                    ))
-                                }
-
-                                <button
-                                    onClick={() => handlePageChange(currentPage + 1)}
-                                    disabled={currentPage === totalPages}
-                                    className={`flex items-center justify-center px-3 py-1 rounded border ${currentPage === totalPages
-                                        ? 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
-                                        : 'border-gray-200 bg-white text-text-color hover:bg-gray-50 transition-colors'
-                                        }`}
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
+              </div>
             </div>
-
->>>>>>> Stashed changes
+          )}
         </div>
       </div>
     );
