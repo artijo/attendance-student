@@ -2,7 +2,7 @@ import axios from "axios";
 import { HOSTNAME } from "../config";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { validateStudentId } from "../../validator";
+import { validateStudentId } from "../validator";
 import { userStore } from "../store";
 import GoogleLoginButton from "../hooks/GoogleLogin";
 import cookie from "cookiejs";
@@ -21,7 +21,7 @@ function Login() {
       setError("กรุณากรอกรหัสนักเรียนให้ถูกต้อง");
       return false;
     }
-    
+
     setIsLoading(true);
     try {
       const res = await axios.get(`${HOSTNAME}/auth/s/check/${studentId}`);
@@ -38,14 +38,13 @@ function Login() {
     }
   };
 
-  
   // Handle Enter key on student ID input
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       checkStudentId();
     }
   };
-  
+
   // Reset to ID input
   const handleBack = () => {
     setShowIdInput(true);
@@ -54,39 +53,64 @@ function Login() {
 
   useEffect(() => {
     console.log(cookie.get("accessToken"));
-
   }, []);
-
 
   return (
     <div className="w-full h-[96dvh] flex flex-col gap-2 justify-center items-center bg-background">
       <div className="shadow-xl p-10 md:p-16 rounded-xl bg-white border border-line-alt max-w-md w-full transition-all duration-300 hover:shadow-2xl">
         <div className="mb-8 text-center">
-          <h1 className="text-center text-2xl md:text-3xl font-bold text-primary font-heading">เข้าสู่ระบบ • สำหรับนักเรียน</h1>
+          <h1 className="text-center text-2xl md:text-3xl font-bold text-primary font-heading">
+            เข้าสู่ระบบ • สำหรับนักเรียน
+          </h1>
           <div className="mt-2 h-1 w-16 bg-secondary mx-auto rounded-full"></div>
         </div>
-        
+
         <div className="mt-6 space-y-5 font-body">
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-600 text-sm flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 100-2 1 1 0 000 2z" clipRule="evenodd" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 mr-2"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zm-1 9a1 1 0 100-2 1 1 0 000 2z"
+                    clipRule="evenodd"
+                  />
                 </svg>
-                {typeof error === 'object' ? (error.email || error.password || "เกิดข้อผิดพลาด") : error}
+                {typeof error === "object"
+                  ? error.email || error.password || "เกิดข้อผิดพลาด"
+                  : error}
               </p>
             </div>
           )}
-          
+
           {showIdInput ? (
             <div className="space-y-2">
-              <label htmlFor="studentId" className="block text-sm font-medium text-text-color">
+              <label
+                htmlFor="studentId"
+                className="block text-sm font-medium text-text-color"
+              >
                 รหัสนักเรียน
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-text-color-alt" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-text-color-alt"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                    />
                   </svg>
                 </div>
                 <input
@@ -98,26 +122,51 @@ function Login() {
                   onKeyDown={handleKeyDown}
                 />
               </div>
-              
+
               <div className="pt-4 flex flex-col gap-3">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="w-full py-3 px-5 text-sm font-medium text-white bg-primary hover:bg-accent rounded-lg focus:outline-none focus:ring-4 focus:ring-primary/30 transition-all duration-300 flex items-center justify-center"
                   onClick={checkStudentId}
                   disabled={isLoading}
                 >
                   {isLoading ? (
                     <>
-                      <svg className="animate-spin -ml-1 mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <svg
+                        className="animate-spin -ml-1 mr-2 h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                       </svg>
                       กำลังตรวจสอบ...
                     </>
                   ) : (
                     <>
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clipRule="evenodd" />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M3 3a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
                       </svg>
                       ตรวจสอบรหัสนักเรียน
                     </>
@@ -129,15 +178,19 @@ function Login() {
             <div className="space-y-5">
               <div className="bg-gray-50 p-4 rounded-lg border border-line">
                 <h3 className="font-medium text-text-color">ข้อมูลนักเรียน</h3>
-                <p className="mt-1 text-sm text-text-color-alt">{student?.studentName} [{studentId}]</p>
+                <p className="mt-1 text-sm text-text-color-alt">
+                  {student?.studentName} [{studentId}]
+                </p>
               </div>
-              
+
               <div className="space-y-3">
                 {/* Show appropriate login options based on student account status */}
                 {!student?.googleId && !student?.lineId && (
-                  <p className="text-sm text-text-color-alt">กรุณาเลือกวิธีการเข้าสู่ระบบที่ต้องการ</p>
+                  <p className="text-sm text-text-color-alt">
+                    กรุณาเลือกวิธีการเข้าสู่ระบบที่ต้องการ
+                  </p>
                 )}
-                
+
                 {/* Google login option */}
                 {/* <button
                   type="button"
@@ -154,12 +207,23 @@ function Login() {
                 </button> */}
                 <GoogleLoginButton studentId={studentId} />
                 <p className="text-xs text-center text-blue-600 mt-1 italic">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 inline-block mr-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   แนะนำให้ใช้บัญชี Google ของโรงเรียน (@nps.ac.th)
                 </p>
-                
+
                 {/* Line login option */}
                 {/* <button
                   type="button"
@@ -171,14 +235,23 @@ function Login() {
                   </svg>
                   {student?.lineId ? "เข้าสู่ระบบด้วย Line" : "ดำเนินการต่อด้วย Line"}
                 </button> */}
-                
+
                 <button
                   type="button"
                   className="w-full py-2 px-5 text-sm font-medium text-text-color-alt hover:text-primary transition-all duration-300 flex items-center justify-center"
                   onClick={handleBack}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 mr-1"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   ย้อนกลับ
                 </button>
@@ -187,9 +260,10 @@ function Login() {
           )}
         </div>
       </div>
-      
+
       <div className="mt-4 text-text-color-alt text-sm font-body">
-        © {new Date().getFullYear()} ระบบบันทึกและติดตามการเข้าเรียนและกิจกรรมของนักเรียน
+        © {new Date().getFullYear()}{" "}
+        ระบบบันทึกและติดตามการเข้าเรียนและกิจกรรมของนักเรียน
       </div>
     </div>
   );
