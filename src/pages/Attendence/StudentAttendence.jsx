@@ -218,7 +218,7 @@ function StudentAttendence() {
                         เช็คชื่อเข้าเรียน
                     </h1>
                     <div className="mt-2 h-1 w-20 bg-secondary rounded-full"></div>
-                    <p className="mt-3 text-gray-600">
+                    <p className="mt-3 text-gray-700">
                         {weekDayToThaiString(dtNow.weekday)}, {dtNow.day} {getThaiMonth(dtNow.month)} {dtNow.year + 543}
                     </p>
                 </div>
@@ -249,7 +249,7 @@ function StudentAttendence() {
                                     <h5 className="font-bold text-lg text-slate-900">คาบเรียนที่กำลังดำเนินการ</h5>
                                 </div>
                                 <div className="mb-4 grid grid-cols-1 gap-4">
-                                    <p className="text-center text-gray-500">ไม่มีคาบเรียนที่ดำเนินการขณะนี้</p>
+                                    <p className="text-center text-gray-700">ไม่มีคาบเรียนที่ดำเนินการขณะนี้</p>
                                 </div>
                             </div>
                         )}

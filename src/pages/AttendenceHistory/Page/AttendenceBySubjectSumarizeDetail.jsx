@@ -202,6 +202,12 @@ function AttendenceBySubjectSumarizeDetail() {
     }, []);
 
 
+    useEffect(() => {
+        if(filter.startDate !== "" && filter.endDate !== "") {
+            console.log("true")
+        }
+    },[filter])
+
     return (
         <div className="sm:max-w-md md:max-w-lg mx-auto p-2">
             <h1 className="text-2xl font-bold text-accent">การเข้าเรียนตามรายวิชา</h1>
@@ -222,7 +228,10 @@ function AttendenceBySubjectSumarizeDetail() {
                 </div>
             </div>
             {studytime.length > 0 && (
-                <div className="grid grid-cols-1 gap-4 bg-gray-50 border border-line rounded-lg p-4">
+                <div className={`
+                    grid grid-cols-1 gap-4 bg-gray-50 border border-line rounded-lg p-4 
+                    ${((filter.startDate != '' && filter.endDate != '') || filter.isEnrollAttendence !== 'default') && "outline-2 shadow-accent outline-accent"}
+                `}>
                     <div className="flex items-center gap-2">
                         <div className="bg-primary p-1 w-fit rounded-md">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-6 w-6 text-white">
@@ -302,8 +311,8 @@ function AttendenceBySubjectSumarizeDetail() {
                         {/* ปุ่มลบตัวกรอง */}
                         <button
                             className="mt-4 md:mt-0 px-3 py-2 text-sm bg-white border border-gray-300 text-gray-700 
-               rounded-xl hover:bg-red-50 hover:border-red-400 hover:text-red-600 
-               transition-all duration-200 flex items-center shadow-sm"
+                                rounded-xl hover:bg-red-50 hover:border-red-400 hover:text-red-600 
+                                transition-all duration-200 flex items-center shadow-sm"
                             onClick={() => handleOnClickDeleteFilter()}
                         >
                             <svg
@@ -350,33 +359,6 @@ function AttendenceBySubjectSumarizeDetail() {
                             ใส่ตัวกรอง
                         </button>
                     </div>
-
-                    {/* <div className="w-fit ml-auto flex gap-2 items-center">
-                        <button
-                            className="mt-4 md:mt-0 px-2 py-1 text-xs bg-white border border-gray-200 text-black rounded-lg hover:bg-gray-200 transition-colors flex items-center"
-                            onClick={() => handleOnClickDeleteFilter()}
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5 mr-1">
-                                <path fillRule="evenodd" d="M4.25 12a.75.75 0 0 1 .75-.75h14a.75.75 0 0 1 0 1.5H5a.75.75 0 0 1-.75-.75Z" clipRule="evenodd" />
-                            </svg>
-                            ลบตัวกรอง
-                        </button>
-                        <button
-                            className="mt-4 md:mt-0 px-2 py-1 text-xs bg-primary text-white rounded-lg hover:bg-accent transition-colors flex items-center disabled:bg-blue-300 disabled:hover:bg-blue-300"
-                            disabled={(filter.startDate != '' && filter.endDate != '') || filter.isEnrollAttendence != 'default' ? false : true}
-                            onClick={() => handleOnClickAddFilter()}
-                        >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5 mr-1"
-                                viewBox="0 0 20 20"
-                                fill="currentColor"
-                            >
-                                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
-                            </svg>
-                            ใส่ตัวกรอง
-                        </button>
-                    </div> */}
                 </div>
             )}
             <div className="mt-4 overflow-auto h-[350px] bg-white    border border-gray-200 rounded-lg ">
