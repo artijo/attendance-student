@@ -129,7 +129,7 @@ function Calendar({
             </div>
             <div className="grid grid-cols-1 gap-2 mt-2">
                 <div className="grid grid-cols-7 gap-2 text-center text-sm font-medium">
-                    {["อา.", "จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส."].map((value, index) => (
+                    {["จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส.", "อา."].map((value, index) => (
                         <div key={index}>
                             {value}
                         </div>
@@ -155,9 +155,9 @@ function Calendar({
                                 return (
                                     <div
                                         key={index}
-                                        className={`cursor-pointer flex justify-center items-center w-6.5 h-6.5 text-gray-950 font-medium ${selectDate === value && 'rounded-full bg-primary text-white font-medium'} `}
+                                        className={`cursor-pointer flex justify-center items-center w-6.5 h-6.5 text-gray-950 font-bold ${selectDate === value && 'rounded-full bg-primary text-white font-medium'} `}
                                         onClick={
-                                            !(valueDate.weekday == 1 || valueDate.weekday == 7)
+                                            !(valueDate.weekday == 6 || valueDate.weekday == 7)
                                                 ? () => handleSelectDate(value)
                                                 : undefined
                                         }
@@ -169,9 +169,9 @@ function Calendar({
                                 return (
                                     <div
                                         key={index}
-                                        className={`cursor-pointer flex justify-center items-center w-6.5 h-6.5 text-gray-500  font-medium ${selectDate === value && 'rounded-full bg-primary text-white font-medium'}`}
+                                        className={`cursor-pointer flex justify-center items-center w-6.5 h-6.5 text-gray-500  font-bold ${selectDate === value && 'rounded-full bg-primary text-white font-medium'}`}
                                         onClick={
-                                            !(valueDate.weekday == 1 || valueDate.weekday == 7)
+                                            !(valueDate.weekday == 6 || valueDate.weekday == 7)
                                                 ? () => handleSelectDate(value)
                                                 : undefined
                                         }
@@ -183,7 +183,7 @@ function Calendar({
 
                         } else {
                             return (
-                                <div key={index} className=" flex justify-center items-center w-6.5 h-6.5 text-gray-200">
+                                <div key={index} className=" flex justify-center items-center w-6.5 h-6.5 text-gray-200 font-bold">
                                     {parseInt(value.split('-')[2])}
                                 </div>
                             )

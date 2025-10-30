@@ -651,7 +651,7 @@ function ActivityInfo() {
                         <td className="px-4 md:px-6 py-4">
                           <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                             <span
-                              className={`inline-flex w-fit px-2 py-1 text-xs font-medium rounded-full ${
+                              className={`inline-flex w-fit px-2 py-1 text-xs font-medium rounded-full text-nowrap ${
                                 act.joinTimestamp != null
                                   ? "bg-green-100 text-green-800"
                                   : "bg-red-100 text-red-800"
@@ -732,7 +732,7 @@ function ActivityInfo() {
                         d="M15 19l-7-7 7-7"
                       />
                     </svg>
-                    <span className="ml-1 hidden sm:inline">ก่อนหน้า</span>
+                    <span className="ml-1 hidden sm:inline text-nowrap">ก่อนหน้า</span>
                   </button>
 
                   <div className="hidden sm:flex space-x-1">
@@ -772,7 +772,7 @@ function ActivityInfo() {
                         : "border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
                     }`}
                   >
-                    <span className="mr-1 hidden sm:inline">ถัดไป</span>
+                    <span className="mr-1 hidden sm:inline text-nowrap">ถัดไป</span>
                     <svg
                       className="h-4 w-4"
                       fill="none"
