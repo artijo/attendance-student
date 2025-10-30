@@ -15,7 +15,7 @@ function ActivityInfo() {
   const totalPages = Math.ceil(activityHistoryProcessed.length / itemsPerPage);
   const sliceActivityHistoryProcessedList = activityHistoryProcessed.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   useEffect(() => {
@@ -35,7 +35,7 @@ function ActivityInfo() {
   const setUpActivityHistory = async () => {
     try {
       const response = await axios.get(
-        `${HOSTNAME}/s/activity/hitory/${activity.actId}`
+        `${HOSTNAME}/s/activity/hitory/${activity.actId}`,
       );
       if (response.status === 200) {
         setActivityHistory(response.data);
@@ -279,20 +279,11 @@ function ActivityInfo() {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          {act.operateBy === "teacher"
-                            ? `คุณครู ${isTeacherOpereted.fName} ${isTeacherOpereted.lName}`
-                            : act.operateBy === "leader"
-                            ? `คุณครู ${isLeaderOpereted.fName} ${isLeaderOpereted.lName}`
-                            : act.operateBy === "student" && `ตนเอง`}
-                          {/* {(() => {
-                                                if (isTeacherOpereted !== null) {
-                                                    return `คุณครู ${isTeacherOpereted.fName} ${isTeacherOpereted.lName}`;
-                                                }
-                                                if (isLeaderOpereted !== null) {
-                                                    return `${formatTitle(isLeaderOpereted.student.title)} ${isLeaderOpereted.student.fName} ${isLeaderOpereted.student.lName}`;
-                                                }
-                                                // return 'ตนเอง';
-                                            })()} */}
+                          {act.operateBy === "teacher".toUpperCase()
+                            ? `คุณครู ${act.teacher.fName} ${act.teacher.lName}`
+                            : act.operateBy === "leader".toUpperCase()
+                              ? `คุณครู ${isLeaderOpereted.fName} ${isLeaderOpereted.lName}`
+                              : act.operateBy === "student" && `ตนเอง`}
                         </td>
                       </tr>
                     );
@@ -670,13 +661,14 @@ function ActivityInfo() {
                         </td>
                         <td className="px-4 md:px-6 py-4 whitespace-nowrap">
                           <span className="text-sm text-gray-900">
-                            {act.operateBy === "teacher"
+                            {act.operateBy === "teacher".toLocaleUpperCase()
                               ? `คุณครู ${isTeacherOpereted.fName} ${isTeacherOpereted.lName}`
-                              : act.operateBy === "leader"
-                              ? `คุณครู ${isLeaderOpereted.fName} ${isLeaderOpereted.lName}`
-                              : act.operateBy === "student"
-                              ? "ตนเอง"
-                              : "-"}
+                              : act.operateBy === "leader".toLocaleUpperCase()
+                                ? `หัวหน้าห้อง`
+                                : act.operateBy ===
+                                    "student".toLocaleUpperCase()
+                                  ? "ตนเอง"
+                                  : "-"}
                           </span>
                         </td>
                       </tr>
@@ -699,7 +691,7 @@ function ActivityInfo() {
                   <span className="font-medium">
                     {Math.min(
                       currentPage * itemsPerPage,
-                      activityHistoryProcessed.length
+                      activityHistoryProcessed.length,
                     )}
                   </span>{" "}
                   จาก{" "}
@@ -732,7 +724,9 @@ function ActivityInfo() {
                         d="M15 19l-7-7 7-7"
                       />
                     </svg>
-                    <span className="ml-1 hidden sm:inline text-nowrap">ก่อนหน้า</span>
+                    <span className="ml-1 hidden sm:inline text-nowrap">
+                      ก่อนหน้า
+                    </span>
                   </button>
 
                   <div className="hidden sm:flex space-x-1">
@@ -772,7 +766,9 @@ function ActivityInfo() {
                         : "border-gray-300 text-gray-700 bg-white hover:bg-gray-50"
                     }`}
                   >
-                    <span className="mr-1 hidden sm:inline text-nowrap">ถัดไป</span>
+                    <span className="mr-1 hidden sm:inline text-nowrap">
+                      ถัดไป
+                    </span>
                     <svg
                       className="h-4 w-4"
                       fill="none"
