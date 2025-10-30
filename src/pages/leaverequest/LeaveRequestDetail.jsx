@@ -2,7 +2,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { HOSTNAME } from "../../config";
 import { useParams, useNavigate } from "react-router";
-import { formatTitle, formatDate, formatDateTime} from "../../helper";
+import {
+  formatTitle,
+  formatThaiDate,
+  formatDateTime,
+  formatThaiDateTime,
+} from "../../helper";
 
 function LeaveRequestDetail() {
   const { id } = useParams();
@@ -133,7 +138,9 @@ function LeaveRequestDetail() {
             />
           </svg>
         </button>
-        <h1 className="text-2xl font-bold text-primary">รายละเอียดคำร้องขอลา</h1>
+        <h1 className="text-2xl font-bold text-primary">
+          รายละเอียดคำร้องขอลา
+        </h1>
       </div>
 
       <div className="bg-white rounded-lg border border-line shadow-sm p-6 max-w-2xl mx-auto">
@@ -144,8 +151,17 @@ function LeaveRequestDetail() {
           </div>
         ) : error ? (
           <div className="bg-red-50 p-6 rounded-lg text-red-600 text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-red-500 mx-auto mb-4" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-red-500 mx-auto mb-4"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
             </svg>
             <p className="text-lg font-medium">{error}</p>
             <div className="mt-4">
@@ -166,11 +182,15 @@ function LeaveRequestDetail() {
                     <h3 className="font-medium text-lg">
                       {getLeaveTypeName(leaveRequest)}
                     </h3>
-                    {leaveRequest.studingTime && leaveRequest.studingTime.length > 0 && 
-                      getStatusDisplay(leaveRequest.studingTime[0].leaveStatus)}
+                    {/* {leaveRequest.studingTime &&
+                      leaveRequest.studingTime.length > 0 &&
+                      getStatusDisplay(leaveRequest.studingTime[0].leaveStatus)}*/}
                   </div>
                   <p className="text-sm text-text-color-alt mt-2">
-                    หมายเลขคำร้อง: <span className="font-medium">{leaveRequest.leaveId?.substring(0, 8) || "-"}</span>
+                    หมายเลขคำร้อง:{" "}
+                    <span className="font-medium">
+                      {leaveRequest.leaveId?.substring(0, 8) || "-"}
+                    </span>
                   </p>
                 </div>
               </div>
@@ -178,26 +198,44 @@ function LeaveRequestDetail() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-gray-50 p-4 rounded-lg border border-line">
-                <h4 className="font-medium mb-2 text-primary text-sm uppercase">วันที่ลา</h4>
-                <p className="text-text-color font-medium">{formatDate(leaveRequest.leaveDate)}</p>
+                <h4 className="font-medium mb-2 text-primary text-sm uppercase">
+                  วันที่ลา
+                </h4>
+                <p className="text-text-color font-medium">
+                  {formatThaiDate(leaveRequest.leaveDate)}
+                </p>
               </div>
-              
+
               <div className="bg-gray-50 p-4 rounded-lg border border-line">
-                <h4 className="font-medium mb-2 text-primary text-sm uppercase">วันที่ส่งคำร้อง</h4>
-                <p className="text-text-color font-medium">{formatDateTime(leaveRequest.createdAt)}</p>
+                <h4 className="font-medium mb-2 text-primary text-sm uppercase">
+                  วันที่ส่งคำร้อง
+                </h4>
+                <p className="text-text-color font-medium">
+                  {formatThaiDateTime(leaveRequest.createdAt)}
+                </p>
               </div>
             </div>
 
             <div>
               <h4 className="font-medium mb-3 text-primary flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 ข้อมูลนักเรียน
               </h4>
               <div className="bg-gray-50 p-4 rounded-lg border border-line hover:shadow-sm transition-shadow">
                 <p className="text-text-color font-medium">
-                  {formatTitle(leaveRequest.student?.title)}{leaveRequest.student?.fName} {leaveRequest.student?.lName}
+                  {formatTitle(leaveRequest.student?.title)}
+                  {leaveRequest.student?.fName} {leaveRequest.student?.lName}
                 </p>
                 <p className="text-sm text-text-color-alt mt-1">
                   อีเมล: {leaveRequest.student?.email || "-"}
@@ -212,24 +250,44 @@ function LeaveRequestDetail() {
 
             <div>
               <h4 className="font-medium mb-3 text-primary flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
                   <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
                 </svg>
                 รายวิชาที่ขอลา
               </h4>
-              {leaveRequest.studingTime && leaveRequest.studingTime.length > 0 ? (
+              {leaveRequest.studingTime &&
+              leaveRequest.studingTime.length > 0 ? (
                 leaveRequest.studingTime.map((item) => (
-                  <SubjectItem key={item.leaveRequestStudingTimeId} studyTimeItem={item} />
+                  <SubjectItem
+                    key={item.leaveRequestStudingTimeId}
+                    studyTimeItem={item}
+                  />
                 ))
               ) : (
-                <p className="text-text-color-alt bg-gray-50 p-4 rounded-lg border border-line">ไม่พบข้อมูลรายวิชาที่ขอลา</p>
+                <p className="text-text-color-alt bg-gray-50 p-4 rounded-lg border border-line">
+                  ไม่พบข้อมูลรายวิชาที่ขอลา
+                </p>
               )}
             </div>
 
             <div>
               <h4 className="font-medium mb-3 text-primary flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 เหตุผลในการลา
               </h4>
@@ -243,8 +301,17 @@ function LeaveRequestDetail() {
             {leaveRequest.LeaveFile && (
               <div>
                 <h4 className="font-medium mb-3 text-primary flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 102 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clipRule="evenodd" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 102 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
+                      clipRule="evenodd"
+                    />
                   </svg>
                   ไฟล์แนบ
                 </h4>
@@ -275,73 +342,128 @@ function LeaveRequestDetail() {
               </div>
             )}
 
-            {leaveRequest.studingTime && leaveRequest.studingTime.some(item => 
-              item.leaveStatus === "APPROVED" || item.leaveStatus === "REJECTED") && (
-              <div>
-                <h4 className="font-medium mb-3 text-primary flex items-center gap-2">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                  </svg>
-                  ข้อมูลการอนุมัติ
-                </h4>
-                {leaveRequest.studingTime
-                  .filter(item => item.teacherApprove || item.leaveStatus === "APPROVED" || item.leaveStatus === "REJECTED")
-                  .map((item, index) => (
-                    <div key={index} className="bg-gray-50 p-4 rounded-lg border border-line space-y-2 mb-3 hover:shadow-sm transition-shadow">
-                      <div className="flex justify-between items-center">
-                        <p className="font-medium">
-                          {item.studingTime?.timetable?.subject?.subNameThai || "รายวิชาไม่ระบุ"}:
-                        </p>
-                        {getStatusDisplay(item.leaveStatus)}
+            {leaveRequest.studingTime &&
+              leaveRequest.studingTime.some(
+                (item) =>
+                  item.leaveStatus === "APPROVED" ||
+                  item.leaveStatus === "REJECTED",
+              ) && (
+                <div>
+                  <h4 className="font-medium mb-3 text-primary flex items-center gap-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    ข้อมูลการอนุมัติ
+                  </h4>
+                  {leaveRequest.studingTime
+                    .filter(
+                      (item) =>
+                        item.teacherApprove ||
+                        item.leaveStatus === "APPROVED" ||
+                        item.leaveStatus === "REJECTED",
+                    )
+                    .map((item, index) => (
+                      <div
+                        key={index}
+                        className="bg-gray-50 p-4 rounded-lg border border-line space-y-2 mb-3 hover:shadow-sm transition-shadow"
+                      >
+                        <div className="flex justify-between items-center">
+                          <p className="font-medium">
+                            {item.studingTime?.timetable?.subject
+                              ?.subNameThai || "รายวิชาไม่ระบุ"}
+                            :
+                          </p>
+                          {getStatusDisplay(item.leaveStatus)}
+                        </div>
+                        <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2">
+                          <p>
+                            <span className="text-text-color-alt">
+                              ผู้อนุมัติ:{" "}
+                            </span>
+                            <span className="text-text-color">
+                              {item.teacherApprove?.fName}{" "}
+                              {item.teacherApprove?.lName || "ไม่ระบุ"}
+                            </span>
+                          </p>
+                          <p>
+                            <span className="text-text-color-alt">
+                              เวลาอนุมัติ:{" "}
+                            </span>
+                            <span className="text-text-color">
+                              {formatDateTime(item.approverTimestamp)}
+                            </span>
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2">
-                        <p>
-                          <span className="text-text-color-alt">ผู้อนุมัติ: </span>
-                          <span className="text-text-color">
-                            {item.teacherApprove?.fName} {item.teacherApprove?.lName || "ไม่ระบุ"}
-                          </span>
-                        </p>
-                        <p>
-                          <span className="text-text-color-alt">เวลาอนุมัติ: </span>
-                          <span className="text-text-color">
-                            {formatDateTime(item.approverTimestamp)}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                ))}
-              </div>
-            )}
+                    ))}
+                </div>
+              )}
 
-            {leaveRequest.studingTime && leaveRequest.studingTime.every(item => item.leaveStatus === "WAITING") && (
-              <div className="border-t pt-5 mt-2">
-                <button 
-                  onClick={async () => {
-                    if (confirm("คุณต้องการยกเลิกคำร้องขอลานี้ใช่หรือไม่?")) {
-                      try {
-                        await axios.delete(`${HOSTNAME}/s/leave/${leaveRequest.leaveId}`, {
-                          leaveStatus: "CANCELED",
-                        });
-                        navigate("/leavereq");
-                      } catch (error) {
-                        console.error("Error canceling leave request:", error);
+            {leaveRequest.studingTime &&
+              leaveRequest.studingTime.every(
+                (item) => item.leaveStatus === "WAITING",
+              ) && (
+                <div className="border-t pt-5 mt-2">
+                  <button
+                    onClick={async () => {
+                      if (confirm("คุณต้องการยกเลิกคำร้องขอลานี้ใช่หรือไม่?")) {
+                        try {
+                          await axios.delete(
+                            `${HOSTNAME}/s/leave/${leaveRequest.leaveId}`,
+                            {
+                              leaveStatus: "CANCELED",
+                            },
+                          );
+                          navigate("/leavereq");
+                        } catch (error) {
+                          console.error(
+                            "Error canceling leave request:",
+                            error,
+                          );
+                        }
                       }
-                    }
-                  }}
-                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
-                  </svg>
-                  ยกเลิกคำขอ
-                </button>
-              </div>
-            )}
+                    }}
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center gap-2"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    ยกเลิกคำขอ
+                  </button>
+                </div>
+              )}
           </div>
         ) : (
           <div className="bg-yellow-50 p-6 rounded-lg text-yellow-700 text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-yellow-500 mx-auto mb-4" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 text-yellow-500 mx-auto mb-4"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                clipRule="evenodd"
+              />
             </svg>
             <p className="text-lg font-medium">ไม่พบข้อมูลคำร้องขอลา</p>
             <div className="mt-4">

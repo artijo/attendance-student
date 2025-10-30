@@ -48,8 +48,8 @@ function CreateLeaveRequest() {
       setAvailableStudyTimes(sortedStudyTimes);
       return sortedStudyTimes;
     } catch (error) {
-      console.error("Error fetching studying time:", error);
-      setError("ไม่สามารถโหลดข้อมูลเวลาที่เรียนได้");
+      // console.error("Error fetching studying time:", error);
+      setError("ไม่มีข้อมูลคาบเรียนในวันที่เลือก");
       setAvailableStudyTimes([]);
       return [];
     }
@@ -79,7 +79,7 @@ function CreateLeaveRequest() {
 
       if (isSelected) {
         updatedTimes = prev.selectedStudyTimes.filter(
-          (id) => id !== studyTimeId
+          (id) => id !== studyTimeId,
         );
       } else {
         updatedTimes = [...prev.selectedStudyTimes, studyTimeId];
@@ -155,7 +155,7 @@ function CreateLeaveRequest() {
       console.error("Error submitting leave request:", error);
       setError(
         error.response?.data?.message ||
-          "เกิดข้อผิดพลาดในการส่งคำร้องขอลา กรุณาลองอีกครั้ง"
+          "เกิดข้อผิดพลาดในการส่งคำร้องขอลา กรุณาลองอีกครั้ง",
       );
     } finally {
       setIsSubmitting(false);
@@ -373,13 +373,13 @@ function CreateLeaveRequest() {
                 >
                   {availableStudyTimes.map((studyTime) => {
                     const isSelected = formData.selectedStudyTimes.includes(
-                      studyTime.studyTimeId
+                      studyTime.studyTimeId,
                     );
                     const subject = studyTime.timetable?.subject || {};
                     return (
                       <div
                         key={studyTime.studyTimeId}
-                        className={`relative p-4 flex items-center border-b last:border-b-0 cursor-pointer 
+                        className={`relative p-4 flex items-center border-b last:border-b-0 cursor-pointer
                           transition-all duration-200 hover:bg-gray-50
                           ${isSelected ? "bg-primary/10 bg-opacity-10" : ""}`}
                         onClick={() =>
@@ -531,7 +531,7 @@ function CreateLeaveRequest() {
               <div className="flex items-center justify-center w-full">
                 <label
                   htmlFor="file-upload"
-                  className={`flex flex-col items-center justify-center w-full h-32 rounded-lg cursor-pointer 
+                  className={`flex flex-col items-center justify-center w-full h-32 rounded-lg cursor-pointer
                   border-2 border-dashed ${
                     fieldErrors.leaveFile ? "border-red-400" : "border-line"
                   } hover:bg-gray-50 transition-colors ${
