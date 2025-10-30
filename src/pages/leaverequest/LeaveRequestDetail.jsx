@@ -362,7 +362,7 @@ function LeaveRequestDetail() {
                         clipRule="evenodd"
                       />
                     </svg>
-                    ข้อมูลการอนุมัติ
+                    ข้อมูลการดำเนินการ
                   </h4>
                   {leaveRequest.studingTime
                     .filter(
@@ -387,7 +387,7 @@ function LeaveRequestDetail() {
                         <div className="flex flex-wrap gap-x-6 gap-y-2 mt-2">
                           <p>
                             <span className="text-text-color-alt">
-                              ผู้อนุมัติ:{" "}
+                              ผู้ดำเนินการ:{" "}
                             </span>
                             <span className="text-text-color">
                               {item.teacherApprove?.fName}{" "}
@@ -396,13 +396,23 @@ function LeaveRequestDetail() {
                           </p>
                           <p>
                             <span className="text-text-color-alt">
-                              เวลาอนุมัติ:{" "}
+                              เวลาดำเนินการ:{" "}
                             </span>
                             <span className="text-text-color">
-                              {formatDateTime(item.approverTimestamp)}
+                              {formatThaiDateTime(item.approverTimestamp)}
                             </span>
                           </p>
                         </div>
+                        {item.rejectedNote && (
+                          <p>
+                            <span className="text-text-color-alt">
+                              เหตุผลการปฏิเสธ:{" "}
+                            </span>
+                            <span className="text-text-color">
+                              {item.rejectedNote}
+                            </span>
+                          </p>
+                        )}
                       </div>
                     ))}
                 </div>
