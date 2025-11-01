@@ -4,15 +4,10 @@ import { HOSTNAME } from "../../config";
 import { DateTime } from "luxon";
 import { useLocation, useNavigate } from "react-router";
 import AlertSuccess from "../../components/alert/success";
+import { formatThaiDate } from "../../helper";
 
 function LeaveRequestListItem({ leaveRequest, onRefresh }) {
   const navigate = useNavigate();
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    const dt = DateTime.fromISO(dateString);
-    return dt.toFormat("dd/MM/yyyy");
-  };
 
   // Get leave type name from the leaveRequestType object
   const getLeaveTypeName = () => {
@@ -23,14 +18,15 @@ function LeaveRequestListItem({ leaveRequest, onRefresh }) {
     <div className="bg-white border border-line rounded-lg shadow-sm p-4 mb-4">
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3">
         <div>
-          <h3 className="font-medium text-primary">
-            {getLeaveTypeName()}
-          </h3>
+          <h3 className="font-medium text-primary">{getLeaveTypeName()}</h3>
           <p className="text-sm text-text-color-alt mt-1">
-            หมายเลขคำร้อง: <span className="font-medium">{leaveRequest.leaveId?.substring(0, 8) || "-"}</span>
+            หมายเลขคำร้อง:{" "}
+            <span className="font-medium">
+              {leaveRequest.leaveId?.substring(0, 8) || "-"}
+            </span>
           </p>
           <p className="text-sm text-text-color-alt mt-1">
-            วันที่ลา: {formatDate(leaveRequest.leaveDate)}
+            วันที่ลา: {formatThaiDate(leaveRequest.leaveDate)}
           </p>
           <p className="text-sm text-text-color mt-2">
             เหตุผล: {leaveRequest.leaveReason?.substring(0, 80) || "-"}
@@ -58,19 +54,18 @@ function LeaveRequest() {
   const location = useLocation();
   const [success, setSuccess] = useState({
     title: "",
-    description: ""
+    description: "",
   });
 
   useEffect(() => {
-    if(location.state){
+    if (location.state) {
       setSuccess({
         title: location.state.title,
-        description: location.state.description
-      })
-    };
-  },[]);
-  
-  
+        description: location.state.description,
+      });
+    }
+  }, []);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -109,24 +104,33 @@ function LeaveRequest() {
           onClick={() => navigate("/leavereq/create")}
           className="mt-4 md:mt-0 px-4 py-2 bg-primary text-white rounded-lg hover:bg-accent transition-colors flex items-center"
         >
-          <svg 
-            xmlns="http://www.w3.org/2000/svg" 
-            className="h-5 w-5 mr-2" 
-            viewBox="0 0 20 20" 
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 mr-2"
+            viewBox="0 0 20 20"
             fill="currentColor"
           >
-            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+            <path
+              fillRule="evenodd"
+              d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+              clipRule="evenodd"
+            />
           </svg>
           ส่งคำร้องขอลา
         </button>
       </div>
 
-      { success.title && success.description && (
-        <div className="mb-6" onClick={() => setSuccess({title: "", description: ""})}>
-          <AlertSuccess title={success.title} description={success.description}/>
+      {success.title && success.description && (
+        <div
+          className="mb-6"
+          onClick={() => setSuccess({ title: "", description: "" })}
+        >
+          <AlertSuccess
+            title={success.title}
+            description={success.description}
+          />
         </div>
       )}
-
 
       {loading ? (
         <div className="text-center py-8">

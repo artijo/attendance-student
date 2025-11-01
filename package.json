@@ -21,6 +21,7 @@
     "react-router-dom": "^7.7.1",
     "react-select": "^5.10.2",
     "vite-plugin-compression2": "^2.2.0",
+    "yup": "^1.7.1",
     "zustand": "^5.0.6"
   },
   "devDependencies": {
