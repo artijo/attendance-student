@@ -1,21 +1,19 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { HOSTNAME } from "../../config";
+import { useEffect, useState } from "react";
+import { HOSTNAME, TIME_ZONE } from "../../config";
 import { DateTime } from "luxon";
 import {
   getThaiMonth,
-  getThaiMonthAbbreviation,
   weekDayToThaiString,
 } from "../../helper";
-import { useNavigate } from "react-router-dom";
-
 function ActivityMainPage() {
-  const navigate = useNavigate();
   const dtNow = DateTime.now().setZone("Asia/Bangkok");
   // const [activityInThisDay, setActivityInThisDay] = useState([]);
   const [currentActivity, setCurrentActivity] = useState([]);
   const [passedActivity, setPassedActivity] = useState([]);
-  const [isCheckedIn, setIsCheckedIn] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
+
   // const [activity, setActivity] = useState([]);
 
   const isActivityTimeCanEnrollment = (activity) => {
@@ -36,6 +34,7 @@ function ActivityMainPage() {
 
   const isCheckedInActivity = async (activityId) => {
     try {
+
       const respone = await axios.get(
         `${HOSTNAME}/s/activity/isCheckin/${activityId}`
       );
@@ -51,6 +50,8 @@ function ActivityMainPage() {
 
   const checkInActivity = async (activity) => {
     try {
+      setIsLoading(true);
+      setLoadingMessage("กำลังบันทึกการเข้ากิจกรรม...");
       const respone = await axios.post(`${HOSTNAME}/s/activity`, {
         activity: activity,
       });
@@ -64,8 +65,24 @@ function ActivityMainPage() {
       }
     } catch (error) {
       console.error(error);
-    }
+      setIsLoading(false);
+      setLoadingMessage("");
+      alert("เกิดข้อผิดพลาดในการบันทึกการเข้ากิจกรรม");
+    } finally {
+      setIsLoading(false);
+      setLoadingMessage("");
+    };
   };
+
+  const activityStatus = (activity) => {
+    const startTime = DateTime.fromISO(`${dtNow.toFormat("yyyy-MM-dd")}T${activity.actStartTime}:00`).setZone(TIME_ZONE);
+    const endTime = DateTime.fromISO(`${dtNow.toFormat("yyyy-MM-dd")}T${activity.actEndTime}:00`).setZone(TIME_ZONE);
+    if (dtNow < startTime) {
+      return "ยังไม่เริ่ม";
+    } else if (dtNow > endTime) {
+      return "สิ้นสุดแล้ว";
+    }
+  }
 
   const isCurrentDateInRange = async (activity) => {
     const now = DateTime.now().setZone("Asia/Bangkok");
@@ -103,7 +120,11 @@ function ActivityMainPage() {
     );
     const passedActivityFilter = addIsActivityCheckInArr.filter(
       (act) => !isActivityTimeCanEnrollment(act)
-    );
+    ).sort((a, b) => {
+      const endA = DateTime.fromISO(`${a.actDate}T${a.actEndTime}:00`, { zone: "Asia/Bangkok" });
+      const endB = DateTime.fromISO(`${b.actDate}T${b.actEndTime}:00`, { zone: "Asia/Bangkok" });
+      return endB - endA;
+    });
 
     setCurrentActivity(currentActivityFilter);
     setPassedActivity(passedActivityFilter);
@@ -111,15 +132,24 @@ function ActivityMainPage() {
 
   const callActivity = async () => {
     try {
+      setIsLoading(true);
+      setLoadingMessage("กำลังโหลดข้อมูลกิจกรรม...");
       const respone = await axios.get(`${HOSTNAME}/s/activity`);
       if (respone.status === 200) {
         // setActivity(respone.data);
         isCurrentDateInRange(respone.data);
       } else {
         throw new Error(respone.data.message);
+
       }
     } catch (error) {
       console.error(error);
+      setIsLoading(false);
+      setLoadingMessage("");
+      alert("เกิดข้อผิดพลาดในการโหลดข้อมูลกิจกรรม");
+    } finally {
+      setIsLoading(false);
+      setLoadingMessage("");
     }
   };
 
@@ -141,9 +171,16 @@ function ActivityMainPage() {
         </p>
       </div>
 
+      {isLoading && (
+        <div className="fixed inset-0 z-50 w-full h-full flex flex-col justify-center items-center py-12 gap-5 backdrop-blur-sm bg-white/30">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary"></div>
+          <p className="text-primary">{loadingMessage}</p>
+        </div>
+      )}
+
       {/* Quick Activity Check-in Section */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4 flex items-center text-gray-900">
+        <h2 className="text-xl font-semibold mb-4 flex items-center text-gray-900 text-nowrap">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-5 w-5 mr-2 text-primary"
@@ -168,9 +205,9 @@ function ActivityMainPage() {
                   className="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-l-primary border border-gray-200"
                 >
                   <div className="p-4 text-white bg-primary">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center gap-2">
                       <h2 className="text-lg font-bold">{act.actName}</h2>
-                      <span className="px-3 py-1 rounded-full text-xs font-bold shadow-sm bg-white text-primary">
+                      <span className="text-nowrap px-3 py-1 rounded-full text-xs font-bold shadow-sm bg-white text-primary">
                         กำลังดำเนินการ
                       </span>
                     </div>
@@ -231,11 +268,10 @@ function ActivityMainPage() {
                     </div>
 
                     <button
-                      className={`mt-4 w-full py-2 rounded-md font-medium transition-colors flex items-center justify-center shadow-sm ${
-                        act.isCheckedIn
-                          ? "bg-gray-400 text-white opacity-50 cursor-not-allowed"
-                          : "bg-primary text-white hover:bg-primary/90"
-                      }`}
+                      className={`mt-4 w-full py-2 rounded-md font-medium transition-colors flex items-center justify-center shadow-sm ${act.isCheckedIn
+                        ? "bg-gray-400 text-white opacity-50 cursor-not-allowed"
+                        : "bg-primary text-white hover:bg-primary/90"
+                        }`}
                       onClick={() => checkInActivity(act)}
                       disabled={act.isCheckedIn}
                     >
@@ -296,7 +332,7 @@ function ActivityMainPage() {
                   clipRule="evenodd"
                 />
               </svg>
-              กิจกรรมที่สิ้นสุดเวลาแล้ว
+              กิจกรรมที่สิ้นสุดเวลาแล้วหรือยังไม่เริ่ม
             </h2>
 
             {passedActivity.length > 0 ? (
@@ -307,10 +343,10 @@ function ActivityMainPage() {
                     className="bg-white rounded-lg shadow-md overflow-hidden border-l-4 border-l-gray-400 border border-gray-200"
                   >
                     <div className="p-4 text-white bg-gray-500">
-                      <div className="flex justify-between items-center">
+                      <div className="flex justify-between items-center gap-2">
                         <h2 className="text-lg font-bold">{act.actName}</h2>
-                        <span className="px-3 py-1 rounded-full text-xs font-bold shadow-sm bg-white text-gray-600">
-                          ผ่านไปแล้ว
+                        <span className="px-3 py-1 rounded-full text-xs font-bold shadow-sm bg-white text-gray-600 text-nowrap">
+                          {activityStatus(act)}
                         </span>
                       </div>
                     </div>
